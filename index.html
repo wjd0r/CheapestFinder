@@ -68,14 +68,58 @@
         };
 
         descriptionToCost = () => {
+            let reals = [];
+            this.state.items.map(item => {
+                if(item.description.indexOf("가격") != -1 && item.description.indexOf("원") != -1) {
+                    item.cost = item.description.split("가격")[1].split("원")[0].replace(/,/gi,"") * 1;
+                    if(item.description.indexOf("판매중") != -1) item.type = "판매중";
+                    if(item.description.indexOf("판매완료") != -1) item.type = "판매완료";
+                    if(item.description.indexOf("예약중") != -1) item.type = "예약중";
 
+                    reals.push(item);
+                }
+            });
+
+            reals.sort((a, b) => a.cost < b.cost ? -1 : a.cost > b.cost ? 1 : 0);
+
+            this.setState((prevState) => {
+                return {
+                    items: reals,
+                }
+            });
         }
 
         getData = (e) => {
             e.preventDefault();
+
+            this.setState((prevState) => {
+                return {
+                    items: [],
+                }
+            });
+
+            this.getData2(1);
+
+            setTimeout(() => {
+                let cnt = this.state.total;
+                cnt = (cnt / 100) > 20 ? 20 : (cnt / 100);
+
+                console.log("cnt : " + cnt);
+
+                for(let i = 1; i < cnt; i++) {
+                    this.getData2(100*i);
+                }
+            }, 3000);
+
+            setTimeout(() => {
+                this.descriptionToCost();
+            }, 10000);
+        }
+
+        getData2 = (start) => {
             let request = new XMLHttpRequest();
 
-            request.open('GET', 'https://cors-anywhere.herokuapp.com/https://openapi.naver.com/v1/search/cafearticle?query='+this.state.query+'&display=100&start=1&sort=sim', true);
+            request.open('GET', 'https://cors-anywhere.herokuapp.com/https://openapi.naver.com/v1/search/cafearticle?query='+this.state.query+'&display=100&start='+start+'&sort=sim', true);
             request.setRequestHeader('X-Naver-Client-Id', 'E73v0xFMsyAGr9GrOcID');
             request.setRequestHeader('X-Naver-Client-Secret', 'uvWTcWYkCv');
 
@@ -90,7 +134,7 @@
                             total: responseObject.total,
                             start: responseObject.start,
                             display: responseObject.display,
-                            items: responseObject.items,
+                            items: this.state.items.concat(responseObject.items),
                         }
                     });
                 } else {
@@ -140,21 +184,20 @@
                             <table className="table table-striped table-dark">
                                 <thead>
                                     <tr>
+                                        <th>type</th>
                                         <th>title</th>
                                         <th>cost</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                 {this.state.items.map(item => {
-                                    if(item.description.indexOf("가격") != -1 && item.description.indexOf("원") != -1 && item.description.indexOf("판매중") != -1) {
-                                        return (
-                                            <tr onClick={() => window.open(item.link ,'_blank')}>
-                                                <td>{item.title.replace("<b>","").replace("</b>","")}</td>
-                                                <td>{item.description.split("가격")[1].split("원")[0]}</td>
-                                            </tr>
-                                        )
-                                    }
-                                    return null
+                                    return (
+                                        <tr onClick={() => window.open(item.link ,'_blank')}>
+                                            <td>{item.type}</td>
+                                            <td>{item.title.replace("<b>","").replace("</b>","")}</td>
+                                            <td>{item.cost}원</td>
+                                        </tr>
+                                    )
                                 })}
                                 </tbody>
                             </table>
