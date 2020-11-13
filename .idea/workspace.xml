@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="320910c3-9705-4ea3-81bb-bbca316673f6" name="Default Changelist" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="HTML File" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectId" id="1jXOqmR7wqSbf0budFOoLqjpwRq" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="DefaultHtmlFileTemplate" value="HTML File" />
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/js" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.detected.package.tslint" value="true" />
+    <property name="node.js.path.for.package.eslint" value="project" />
+    <property name="node.js.path.for.package.tslint" value="project" />
+    <property name="node.js.selected.package.eslint" value="(autodetect)" />
+    <property name="node.js.selected.package.tslint" value="(autodetect)" />
+    <property name="nodejs_package_manager_path" value="npm" />
+    <property name="settings.editor.selected.configurable" value="http.certificates" />
+    <property name="vue.rearranger.settings.migration" value="true" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\cyber\WebstormProjects\untitled\js" />
+      <recent name="C:\Users\cyber\WebstormProjects\untitled" />
+      <recent name="C:\Users\cyber\WebstormProjects\untitled\css" />
+    </key>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="320910c3-9705-4ea3-81bb-bbca316673f6" name="Default Changelist" comment="" />
+      <created>1603947163480</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1603947163480</updated>
+      <workItem from="1603947164780" duration="6523000" />
+      <workItem from="1604014775991" duration="5172000" />
+      <workItem from="1604298988340" duration="3000000" />
+      <workItem from="1604645535473" duration="71000" />
+      <workItem from="1604646723872" duration="631000" />
+      <workItem from="1604969014707" duration="181000" />
+      <workItem from="1604969212221" duration="6000" />
+      <workItem from="1605226599357" duration="10635000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="841" y="417" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1603953880934">
+      <screen x="0" y="0" width="1920" height="1160" />
+    </state>
+    <state x="841" y="417" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1920.1160/1920.0.1920.1160@0.0.1920.1160" timestamp="1603953880934" />
+    <state x="690" y="326" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1605241402972">
+      <screen x="0" y="0" width="1920" height="1160" />
+    </state>
+    <state x="690" y="326" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1920.1160/1920.0.1920.1160@0.0.1920.1160" timestamp="1605241402972" />
+    <state x="740" y="335" key="FileChooserDialogImpl" timestamp="1604646752974">
+      <screen x="0" y="0" width="1920" height="1160" />
+    </state>
+    <state x="740" y="335" key="FileChooserDialogImpl/0.0.1920.1160/1920.0.1920.1160@0.0.1920.1160" timestamp="1604646752974" />
+    <state x="2381" y="224" key="SettingsEditor" timestamp="1604014830488">
+      <screen x="1920" y="0" width="1920" height="1160" />
+    </state>
+    <state x="461" y="224" key="SettingsEditor/0.0.1920.1160/1920.0.1920.1160@0.0.1920.1160" timestamp="1603955117735" />
+    <state x="2381" y="224" key="SettingsEditor/0.0.1920.1160/1920.0.1920.1160@1920.0.1920.1160" timestamp="1604014830488" />
+  </component>
+</project>

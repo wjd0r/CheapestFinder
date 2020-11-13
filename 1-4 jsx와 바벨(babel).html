@@ -1,0 +1,32 @@
+<html>
+<head>
+    <script crossorigin src="./react.development.js"></script>
+    <script crossorigin src="./react-dom.development.js"></script>
+    <script crossorigin src="./babel.js"></script>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+    class LikeButton extends React.Component {
+        constructor(props) {
+            super(props);
+            this.state = {
+
+                liked: false,
+            };
+        }
+
+        render() {
+            return <button
+            type="submit"
+            onClick={() => { this.setState({ liked: true })}}>
+                {this.state.liked === true ? '좋아요 누름' : '좋아요'}
+            </button>;
+        }
+    }
+</script>
+<script type="text/babel">
+    ReactDOM.render(<div><LikeButton /><LikeButton /><LikeButton /><LikeButton /></div>, document.querySelector('#root'));
+</script>
+</body>
+</html>

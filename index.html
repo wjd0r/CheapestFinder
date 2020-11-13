@@ -1,0 +1,172 @@
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>구구단</title>
+    <script crossorigin src="./js/react.development.js"></script>
+    <script crossorigin src="./js/react-dom.development.js"></script>
+    <script crossorigin src="./js/babel.js"></script>
+
+    <script crossorigin src="./js/jquery-3.5.1.js"></script>
+
+    <script crossorigin src="./js/bootstrap.bundle.js"></script>
+    <script crossorigin src="./js/bootstrap.js"></script>
+
+    <link rel="stylesheet" href="./css/bootstrap.css">
+    <link rel="stylesheet" href="./css/bootstrap-grid.css">
+    <link rel="stylesheet" href="./css/bootstrap-reboot.css">
+
+    <meta name="theme-color" content="#563d7c">
+    <style>
+        .main {
+            position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px; overflow: hidden; pointer-events: none; visibility: hidden; z-index: -1;
+        }
+
+        .navbar-brand {
+            padding-top: .75rem;
+            padding-bottom: .75rem;
+            font-size: 1rem;
+            background-color: rgba(0, 0, 0, .25);
+            box-shadow: inset -1px 0 0 rgba(0, 0, 0, .25);
+        }
+
+        .navbar .form-control {
+            padding: .75rem 1rem;
+            border-width: 0;
+            border-radius: 0;
+        }
+
+        .form-control-dark {
+            color: #fff;
+            background-color: rgba(255, 255, 255, .1);
+            border-color: rgba(255, 255, 255, .1);
+        }
+
+        @media (min-width: 768px) {
+            .bd-placeholder-img-lg {
+                font-size: 3.5rem;
+            }
+        }
+
+        .table-dark.table-striped tbody tr:hover {
+            background-color: rgba(255,255,255,.5);
+            cursor: pointer;
+        }
+    </style>
+
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+    class CheapestFinder extends React.Component {
+        state = {
+            query: '',
+            lastBuildDate: '',
+            total: '',
+            start: '',
+            display: '',
+            items: [],
+        };
+
+        descriptionToCost = () => {
+
+        }
+
+        getData = (e) => {
+            e.preventDefault();
+            let request = new XMLHttpRequest();
+
+            request.open('GET', 'https://cors-anywhere.herokuapp.com/https://openapi.naver.com/v1/search/cafearticle?query='+this.state.query+'&display=100&start=1&sort=sim', true);
+            request.setRequestHeader('X-Naver-Client-Id', 'E73v0xFMsyAGr9GrOcID');
+            request.setRequestHeader('X-Naver-Client-Secret', 'uvWTcWYkCv');
+
+            request.onload = (e) => {
+                if (request.status >= 200 && request.status < 400) {
+                    let responseObject = JSON.parse(request.responseText);
+                    const date = new Date(responseObject.lastBuildDate);
+
+                    this.setState((prevState) => {
+                        return {
+                            lastBuildDate: date.getFullYear() + "." + (date.getMonth()+1) + "." + date.getDate(),
+                            total: responseObject.total,
+                            start: responseObject.start,
+                            display: responseObject.display,
+                            items: responseObject.items,
+                        }
+                    });
+                } else {
+                    console.log('We reached our target server, but it returned an error');
+                    console.log('Possibly handle the error by changing your state.');
+                }
+            };
+
+            request.onerror = () => {
+                console.log('There was a connection error of some sort.');
+                console.log('Possibly handle the error by changing your state.');
+            };
+
+            request.send();
+        }
+
+        onChange = (e) => {
+            this.setState({query:e.target.value});
+        }
+
+        render() {
+            return (
+                <React.Fragment>
+                    <form name="cheapest_finder">
+                        <nav className="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
+                            <a className="navbar-brand col-md-3 col-lg-2 mr-0 px-3" href="#">Price Comparison</a>
+                            <button className="navbar-toggler position-absolute d-md-none collapsed"
+                                    type="button"
+                                    data-toggle="collapse"
+                                    data-target="#sidebarMenu"
+                                    aria-controls="sidebarMenu"
+                                    aria-expanded="false"
+                                    aria-label="Toggle navigation">
+                                <span className="navbar-toggler-icon"></span>
+                            </button>
+                            <input className="form-control form-control-dark w-100" type="text" value={this.state.query} onChange={this.onChange} placeholder="Search" aria-label="Search" />
+                            <ul className="navbar-nav px-3">
+                                <li className="nav-item text-nowrap">
+                                    <a className="nav-link" href="#" onClick={this.getData}>Finder</a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </form>
+                    <main className="main" role="main" className="col-md-12 ml-sm-auto col-lg-12 px-md-12">
+                        <h2>{this.state.query}</h2>
+                        <div className="table-responsive">
+                            <table className="table table-striped table-dark">
+                                <thead>
+                                    <tr>
+                                        <th>title</th>
+                                        <th>cost</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                {this.state.items.map(item => {
+                                    if(item.description.indexOf("가격") != -1 && item.description.indexOf("원") != -1 && item.description.indexOf("판매중") != -1) {
+                                        return (
+                                            <tr onClick={() => window.open(item.link ,'_blank')}>
+                                                <td>{item.title.replace("<b>","").replace("</b>","")}</td>
+                                                <td>{item.description.split("가격")[1].split("원")[0]}</td>
+                                            </tr>
+                                        )
+                                    }
+                                    return null
+                                })}
+                                </tbody>
+                            </table>
+                        </div>
+                    </main>
+                </React.Fragment>
+            );
+        }
+    }
+</script>
+<script type="text/babel">
+    ReactDOM.render(<div><CheapestFinder /></div>, document.querySelector('#root'));
+</script>
+</body>
+</html>
