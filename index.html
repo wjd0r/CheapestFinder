@@ -2,7 +2,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>구구단</title>
+    <title>Price Comparison</title>
     <script crossorigin src="./js/react.development.js"></script>
     <script crossorigin src="./js/react-dom.development.js"></script>
     <script crossorigin src="./js/babel.js"></script>
@@ -58,24 +58,29 @@
 <body>
 <div id="root"></div>
 <script type="text/babel">
-    class CheapestFinder extends React.Component {
-        state = {
-            query: '',
-            lastBuildDate: '',
-            total: '',
-            start: '',
-            display: '',
-            items: [],
-        };
+    class PriceComparison extends React.Component {
+        constructor(props) {
+            super(props);
+
+            this.state = {
+                query: '',
+                lastBuildDate: '',
+                total: '',
+                start: '',
+                display: '',
+                items: [],
+            };
+
+        }
 
         descriptionToCost = () => {
             let reals = [];
             this.state.items.map(item => {
-                if(item.description.indexOf("가격") != -1 && item.description.indexOf("원") != -1) {
-                    item.cost = item.description.split("가격")[1].split("원")[0].replace(/,/gi,"") * 1;
-                    if(item.description.indexOf("판매중") != -1) item.type = "판매중";
-                    if(item.description.indexOf("판매완료") != -1) item.type = "판매완료";
-                    if(item.description.indexOf("예약중") != -1) item.type = "예약중";
+                if (item.description.indexOf("가격") != -1 && item.description.indexOf("원") != -1 && ( item.description.indexOf("판매중") != -1)) {
+                    item.cost = item.description.split("가격")[1].split("원")[0].replace(/,/gi, "").replace(/ /g,"") * 1;
+                    if (item.description.indexOf("판매중") != -1) item.type = "판매중";
+                    if (item.description.indexOf("판매완료") != -1) item.type = "판매완료";
+                    if (item.description.indexOf("예약중") != -1) item.type = "예약중";
 
                     reals.push(item);
                 }
@@ -90,7 +95,8 @@
             });
         }
 
-        getData = (e) => {
+        getData = async (e) => {
+
             e.preventDefault();
 
             this.setState((prevState) => {
@@ -99,45 +105,55 @@
                 }
             });
 
-            this.getData2(1);
+            await this.getData2(this.state.query, 1).then((responseObject) => {
+                const date = new Date(responseObject.lastBuildDate);
+                console.log(date);
 
-            setTimeout(() => {
-                let cnt = this.state.total;
-                cnt = (cnt / 100) > 20 ? 20 : (cnt / 100);
+                this.setState((prevState) => {
+                    return {
+                        lastBuildDate: date.getFullYear() + "." + (date.getMonth() + 1) + "." + date.getDate(),
+                        total: responseObject.total,
+                        start: responseObject.start,
+                        display: responseObject.display,
+                        items: this.state.items.concat(responseObject.items),
+                    }
+                });
+            });
 
-                console.log("cnt : " + cnt);
+            this.descriptionToCost();
 
-                for(let i = 1; i < cnt; i++) {
-                    this.getData2(100*i);
-                }
-            }, 3000);
+            let cnt = this.state.total;
+            cnt = (cnt / 100) > 5 ? 5 : (cnt / 100);
 
-            setTimeout(() => {
+            //console.log("cnt : " + cnt);
+
+            for (let i = 1; i < cnt; i++) {
+                await this.getData2(this.state.query, 100 * i).then((responseObject) => {
+                    const date = new Date(responseObject.lastBuildDate);
+                    console.log(date);
+
+                    this.setState((prevState) => {
+                        return {
+                            items: this.state.items.concat(responseObject.items),
+                        }
+                    });
+                });
+
                 this.descriptionToCost();
-            }, 10000);
+            }
         }
 
-        getData2 = (start) => {
+        getData2 = (query, start) => new Promise(function(resolve, reject) {
             let request = new XMLHttpRequest();
 
-            request.open('GET', 'https://cors-anywhere.herokuapp.com/https://openapi.naver.com/v1/search/cafearticle?query='+this.state.query+'&display=100&start='+start+'&sort=sim', true);
+            request.open('GET', 'https://cors-anywhere.herokuapp.com/https://openapi.naver.com/v1/search/cafearticle?query=' + query + '&display=100&start=' + start + '&sort=sim', true);
             request.setRequestHeader('X-Naver-Client-Id', 'E73v0xFMsyAGr9GrOcID');
             request.setRequestHeader('X-Naver-Client-Secret', 'uvWTcWYkCv');
 
             request.onload = (e) => {
                 if (request.status >= 200 && request.status < 400) {
                     let responseObject = JSON.parse(request.responseText);
-                    const date = new Date(responseObject.lastBuildDate);
-
-                    this.setState((prevState) => {
-                        return {
-                            lastBuildDate: date.getFullYear() + "." + (date.getMonth()+1) + "." + date.getDate(),
-                            total: responseObject.total,
-                            start: responseObject.start,
-                            display: responseObject.display,
-                            items: this.state.items.concat(responseObject.items),
-                        }
-                    });
+                    resolve(responseObject);
                 } else {
                     console.log('We reached our target server, but it returned an error');
                     console.log('Possibly handle the error by changing your state.');
@@ -147,10 +163,12 @@
             request.onerror = () => {
                 console.log('There was a connection error of some sort.');
                 console.log('Possibly handle the error by changing your state.');
+                reject();
             };
 
             request.send();
-        }
+        });
+
 
         onChange = (e) => {
             this.setState({query:e.target.value});
@@ -210,7 +228,7 @@
     }
 </script>
 <script type="text/babel">
-    ReactDOM.render(<div className="cheapest_finder"><CheapestFinder /></div>, document.querySelector('#root'));
+    ReactDOM.render(<div className="cheapest_finder"><PriceComparison /></div>, document.querySelector('#root'));
 </script>
 </body>
 </html>
