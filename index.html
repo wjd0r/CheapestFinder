@@ -61,8 +61,8 @@
             }
         }
 
-        .table-dark.table-striped tbody tr:hover {
-            background-color: rgba(255,255,255,.5);
+        .table-striped tbody tr:hover {
+            background-color: rgba(0,0,0,.1);
             cursor: pointer;
         }
     </style>
@@ -149,7 +149,7 @@
             this.descriptionToCost();
 
             let cnt = this.state.total;
-            cnt = (cnt / 100) > 5 ? 5 : (cnt / 100);
+            cnt = (cnt / 100) > 1 ? 1 : (cnt / 100);
 
             //console.log("cnt : " + cnt);
 
@@ -203,7 +203,6 @@
             request.send();
         });
 
-
         onChange = (e) => {
             this.setState({query:e.target.value});
         }
@@ -213,14 +212,22 @@
                 <React.Fragment>
                     <form name="cheapest_finder">
                         <nav className="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
-                            <a className="navbar-brand col-md-3 col-lg-2 mr-0 px-3" href="#">중고 검색기</a>
+                            <a className="navbar-brand col-md-3 col-lg-2 mr-0 px-3" href="#">
+                                <svg width="1em" height="1em" viewBox="0 0 16 16" className="bi bi-gift-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd" d="M3 2.5a2.5 2.5 0 0 1 5 0 2.5 2.5 0 0 1 5 0v.006c0 .07 0 .27-.038.494H15a1 1 0 0 1 1 1v1a1 1 0 0 1-1 1H1a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h2.038A2.968 2.968 0 0 1 3 2.506V2.5zm1.068.5H7v-.5a1.5 1.5 0 1 0-3 0c0 .085.002.274.045.43a.522.522 0 0 0 .023.07zM9 3h2.932a.56.56 0 0 0 .023-.07c.043-.156.045-.345.045-.43a1.5 1.5 0 0 0-3 0V3z"/>
+                                    <path d="M15 7v7.5a1.5 1.5 0 0 1-1.5 1.5H9V7h6zM2.5 16A1.5 1.5 0 0 1 1 14.5V7h6v9H2.5z"/>
+                                </svg> 중고 검색기</a>
 
 
                             <input className="form-control form-control-dark w-100" type="text" value={this.state.query} onChange={this.onChange} placeholder="제품 입력" aria-label="Search" />
                             <ul className="navbar-nav px-3">
                                 <li className="nav-item text-nowrap">
                                     <input className="search-submit" type="submit" onClick={this.getData} value="검색" />
-                                    <a className="nav-link" href="#" onClick={this.getData}>검색</a>
+                                    <a className="nav-link" href="#" onClick={this.getData}>
+                                        검색 <svg width="1em" height="1em" viewBox="0 0 16 16" className="bi bi-search" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                            <path fill-rule="evenodd" d="M10.442 10.442a1 1 0 0 1 1.415 0l3.85 3.85a1 1 0 0 1-1.414 1.415l-3.85-3.85a1 1 0 0 1 0-1.415z"/>
+                                            <path fill-rule="evenodd" d="M6.5 12a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11zM13 6.5a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0z"/>
+                                        </svg></a>
                                 </li>
                             </ul>
                         </nav>
@@ -238,7 +245,7 @@
                             </div>
                         </div>
                         <div className="table-responsive">
-                            <table className="table table-striped table-dark">
+                            <table className="table table-striped">
                                 <thead>
                                     <tr>
                                         <th>구분</th>
@@ -250,9 +257,11 @@
                                 {this.state.items.map(item => {
                                     return (
                                         <tr onClick={() => window.open(item.link ,'_blank')}>
-                                            <td>{item.type}</td>
-                                            <td>{item.title.replace("<b>","").replace("</b>","")}</td>
-                                            <td>{item.cost}원</td>
+                                            <td>{item.type == '판매중'
+                                                ? <span className="badge badge-success">판매중</span>
+                                                : <span className="badge badge-secondary">판매완료</span>}</td>
+                                            <td><span className="badge badge-primary">{item.cafename}</span> {item.title.replace("<b>","").replace("</b>","").replace(/&lt;/g,"").replace(/&gt;/g,"")}</td>
+                                            <td>{item.cost}</td>
                                         </tr>
                                     )
                                 })}
