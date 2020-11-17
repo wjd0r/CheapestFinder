@@ -51,6 +51,10 @@
             border-color: rgba(255, 255, 255, .1);
         }
 
+        .search-submit {
+            display: none;
+        }
+
         @media (min-width: 768px) {
             .bd-placeholder-img-lg {
                 font-size: 3.5rem;
@@ -78,6 +82,8 @@
                 start: '',
                 display: '',
                 items: [],
+                count: 0,
+                type: '검색전',
             };
 
         }
@@ -90,6 +96,13 @@
                     if (item.description.indexOf("판매중") != -1) item.type = "판매중";
                     if (item.description.indexOf("판매완료") != -1) item.type = "판매완료";
                     if (item.description.indexOf("예약중") != -1) item.type = "예약중";
+
+                    this.setState((prevState) => {
+                        return {
+                            count: this.state.count + 1,
+                            type: '검색중',
+                        }
+                    });
 
                     reals.push(item);
                 }
@@ -108,9 +121,13 @@
 
             e.preventDefault();
 
+            $('html').css('cursor', 'wait');
+
             this.setState((prevState) => {
                 return {
                     items: [],
+                    count: 0,
+                    type: '검색시작',
                 }
             });
 
@@ -150,6 +167,14 @@
 
                 this.descriptionToCost();
             }
+
+            this.setState((prevState) => {
+                return {
+                    type: '검색완료',
+                }
+            });
+
+            $('html').css('cursor', 'default');
         }
 
         getData2 = (query, start) => new Promise(function(resolve, reject) {
@@ -189,25 +214,29 @@
                     <form name="cheapest_finder">
                         <nav className="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
                             <a className="navbar-brand col-md-3 col-lg-2 mr-0 px-3" href="#">중고 검색기</a>
-                            <button className="navbar-toggler position-absolute d-md-none collapsed"
-                                    type="button"
-                                    data-toggle="collapse"
-                                    data-target="#sidebarMenu"
-                                    aria-controls="sidebarMenu"
-                                    aria-expanded="false"
-                                    aria-label="Toggle navigation">
-                                <span className="navbar-toggler-icon"></span>
-                            </button>
-                            <input className="form-control form-control-dark w-100" type="text" value={this.state.query} onChange={this.onChange} placeholder="Search" aria-label="Search" />
+
+
+                            <input className="form-control form-control-dark w-100" type="text" value={this.state.query} onChange={this.onChange} placeholder="제품 입력" aria-label="Search" />
                             <ul className="navbar-nav px-3">
                                 <li className="nav-item text-nowrap">
-                                    <a className="nav-link" href="#" onClick={this.getData}>Finder</a>
+                                    <input className="search-submit" type="submit" onClick={this.getData} value="검색" />
+                                    <a className="nav-link" href="#" onClick={this.getData}>검색</a>
                                 </li>
                             </ul>
                         </nav>
                     </form>
                     <main className="main" role="main" className="col-md-12 ml-sm-auto col-lg-12 px-md-12">
-                        <h2>{this.state.query}</h2>
+                        <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                            <h2>{this.state.query == '' ? '제품을 입력해주세요' : this.state.query}</h2>
+                            <div className="btn-group mb-2 mb-md-0">
+                                <button type="button" className="btn btn-sm btn-outline-secondary">
+                                    {this.state.type}
+                                </button>
+                                <button type="button" className="btn btn-sm btn-outline-secondary">
+                                    데이터 량 : {this.state.count}
+                                </button>
+                            </div>
+                        </div>
                         <div className="table-responsive">
                             <table className="table table-striped table-dark">
                                 <thead>
