@@ -20,50 +20,46 @@
     <meta name="theme-color" content="#563d7c">
 
     <meta name="author" content="jyk86">
-    <meta name="description" content="모든 중고 제품을 한번에 검색할 수 있는 가격 비교 사이트 입니다.">
-    <meta property="og:title" content="중고 검색기: 간편한 가격 비교">
-    <meta property="og:description" content="모든 중고 제품을 한번에 검색할 수 있는 가격 비교 사이트 입니다.">
+    <meta name="description" content="모든 제품을 한번에 비교 검색할 수 있는 가격비교 사이트 입니다.">
+    <meta property="og:title" content="가격비교 스케너: 간편한 가격 비교">
+    <meta property="og:description" content="모든 중고 제품을 한번에 비교 검색할 수 있는 가격비교 사이트 입니다.">
 
     <link rel="canonical" href="https://wjd0r.github.io">
 
     <style>
+        /* 나눔 고딕 폰트 */
+        @import url('https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@800&display=swap');
+
+        .nanum-gothic {
+            font-family: 'Nanum Gothic', sans-serif;
+        }
+
+        /* navbar 사라지지 않도록 */
+        .navbar-expand-lg .navbar-collapse {
+            display: -ms-flexbox !important;
+            display: flex !important;
+            -ms-flex-preferred-size: auto;
+            flex-basis: auto;
+        }
+
+
         .main {
             position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px; overflow: hidden; pointer-events: none; visibility: hidden; z-index: -1;
-        }
-
-        .navbar-brand {
-            padding-top: .75rem;
-            padding-bottom: .75rem;
-            font-size: 1rem;
-            background-color: rgba(0, 0, 0, .25);
-            box-shadow: inset -1px 0 0 rgba(0, 0, 0, .25);
-        }
-
-        .navbar .form-control {
-            padding: .75rem 1rem;
-            border-width: 0;
-            border-radius: 0;
-        }
-
-        .form-control-dark {
-            color: #fff;
-            background-color: rgba(255, 255, 255, .1);
-            border-color: rgba(255, 255, 255, .1);
-        }
-
-        .search-submit {
-            display: none;
-        }
-
-        @media (min-width: 768px) {
-            .bd-placeholder-img-lg {
-                font-size: 3.5rem;
-            }
         }
 
         .table-striped tbody tr:hover {
             background-color: rgba(0,0,0,.1);
             cursor: pointer;
+        }
+
+        .txt_line { /* 텍스트 한줄로 */
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .fixed-top{
+            margin-top: 200px;
         }
     </style>
 
@@ -71,6 +67,305 @@
 <body>
 <div id="root"></div>
 <script type="text/babel">
+    class PriceComparisonTop extends React.Component {
+        constructor(props) {
+            super(props);
+            this.state = {
+                query: '',
+                items: [],
+                jumbotronShow: false,
+                jumbotronTitle: '스마트한 가격비교',
+                jumbotronContent: '가격 비교 통한 똑똑한 소비',
+            };
+        }
+
+        init = () => {
+            this.setState((prevState) => {
+                return {
+                    jumbotronShow: false,
+                    jumbotronTitle: '스마트한 가격비교',
+                    jumbotronContent: '가격 비교 통한 똑똑한 소비',
+                }
+            });
+        }
+
+        onChange = (e) => {
+            this.setState({query:e.target.value});
+        }
+
+        onFocus = (e) => {
+            $('.form-control').css('width', '100%');
+            $('.form-inline').css('width', '100%');
+            $('.navbar-brand').css('display', 'none');
+
+            this.setState((prevState) => {
+                return {
+                    jumbotronShow: true,
+                    jumbotronTitle: 'Search 선택',
+                    jumbotronContent: '검색어 입력 후 엔터를 눌러주세요.',
+                }
+            });
+        }
+
+        onFocusout = (e) => {
+            $('.form-control').css('width', 'auto');
+            $('.form-inline').css('width', 'auto');
+            $('.navbar-brand').css('display', 'inline');
+
+            this.init();
+        }
+
+        searchSubmit = async (e) => {
+            e.preventDefault();
+
+            this.setState((prevState) => {
+                return {
+                    jumbotronTitle: '검색중...',
+                    jumbotronContent: 0,
+                }
+            });
+
+            let progress_interval = setInterval(() => {
+                this.setState((prevState) => {
+                    return {
+                        jumbotronContent: Number(Number(this.state.jumbotronContent) + 0.1).toFixed(1),
+                    }
+                })
+            }, 100);
+
+            await this.naverShopApi(this.state.query).then((response) => {
+                this.setState((prevState) => {
+                    return {
+                        items: response.items,
+                    }
+                });
+            });
+
+            this.subProductType();
+
+            clearInterval(progress_interval);
+            this.init();
+
+            /* 검색 완료 후 점보트론 안보이도록 */
+            this.setState((prevState) => {
+                return {
+                    jumbotronShow: false,
+                    query: '',
+                }
+            });
+
+            /* 검색 완료 후 포커스 해제 */
+            $(':focus').blur();
+
+            this.props.searchCallback(this.state);
+        }
+
+        subProductType = () => {
+            let tempProductType = [];
+            this.state.items.map(item => {
+                if (item.productType == '1') {
+                    tempProductType.push(item);
+                }
+            });
+
+            this.setState((prevState) => {
+                return {
+                    items: tempProductType,
+                }
+            });
+        }
+
+        naverShopApi = (query) => new Promise(function(resolve, reject) {
+            let request = new XMLHttpRequest();
+
+            request.open('GET', 'https://cors-anywhere.herokuapp.com/https://openapi.naver.com/v1/search/shop?query=' + query + '&display=100', true);
+            request.setRequestHeader('X-Naver-Client-Id', 'E73v0xFMsyAGr9GrOcID');
+            request.setRequestHeader('X-Naver-Client-Secret', 'uvWTcWYkCv');
+
+            request.onload = (e) => {
+                if (request.status >= 200 && request.status < 400) {
+                    let responseObject = JSON.parse(request.responseText);
+                    resolve(responseObject);
+                } else {
+                    console.log('We reached our target server, but it returned an error');
+                    console.log('Possibly handle the error by changing your state.');
+                }
+            };
+
+            request.onerror = () => {
+                console.log('There was a connection error of some sort.');
+                console.log('Possibly handle the error by changing your state.');
+                reject();
+            };
+
+            request.send();
+        });
+
+        render() {
+            return (
+                <React.Fragment>
+                    <header>
+                        <nav className="navbar navbar-expand-lg navbar-light bg-light rounded">
+                            <a className="navbar-brand nanum-gothic" href="#">가격비교 스케너</a>
+
+                            <div className="collapse navbar-collapse" id="navbarsExample09">
+                                <div className="navbar-nav mr-auto"></div>
+                                <form className="form-inline my-2 my-md-0" onSubmit={this.searchSubmit}>
+                                    <input className="form-control" type="text" placeholder="Search" aria-label="Search" onChange={this.onChange} value={this.state.query} onFocus={this.onFocus} onBlur={this.onFocusout}/>
+                                </form>
+                            </div>
+                        </nav>
+                    </header>
+                    {this.state.jumbotronShow || this.state.items.length == 0
+                        ? <div style={{padding: '0.5rem 1rem'}}>
+                            <div className="jumbotron">
+                                <h1>{this.state.jumbotronTitle}</h1>
+                                <p className="lead">{this.state.jumbotronContent}</p>
+                            </div>
+                        </div>
+                        : <div></div>
+                    }
+                </React.Fragment>
+            );
+        }
+    }
+/*top******************************************************************************************************************************/
+/*item******************************************************************************************************************************/
+    class PriceComparisonItem extends React.Component {
+        constructor(props) {
+            super(props);
+            this.state = {
+                items: [],
+            };
+        }
+
+        descriptionToCost = () => {
+            let reals = [];
+            this.state.items.map(item => {
+                if (item.description.indexOf("가격") != -1 && item.description.indexOf("원") != -1 && item.description.indexOf("판매중") != -1 && item.description.indexOf("매입") == -1 ) {
+                    item.cost = item.description.split("가격")[1].split("원")[0].replace(/,/gi, "").replace(/ /g,"") * 1;
+                    if (item.description.indexOf("판매중") != -1) item.type = "판매중";
+                    if (item.description.indexOf("판매완료") != -1) item.type = "판매완료";
+                    if (item.description.indexOf("예약중") != -1) item.type = "예약중";
+
+                    reals.push(item);
+                }
+            });
+
+            reals.sort((a, b) => a.cost < b.cost ? -1 : a.cost > b.cost ? 1 : 0);
+
+            this.setState((prevState) => {
+                return {
+                    items: reals,
+                }
+            });
+        }
+
+        naverCafeApi = () => {
+            let request = new XMLHttpRequest();
+
+            request.open('GET', 'https://cors-anywhere.herokuapp.com/https://openapi.naver.com/v1/search/cafearticle?query=' + this.props.item.title.replace(/<b>/gi, "").replace(/<\/b>/gi, "") + '&display=100&start=1&sort=sim', true);
+            request.setRequestHeader('X-Naver-Client-Id', 'E73v0xFMsyAGr9GrOcID');
+            request.setRequestHeader('X-Naver-Client-Secret', 'uvWTcWYkCv');
+
+            request.onload = (e) => {
+                if (request.status >= 200 && request.status < 400) {
+                    let responseObject = JSON.parse(request.responseText);
+                    this.setState((prevState) => {
+                        return {
+                            items: responseObject.items,
+                        }
+                    });
+                    this.descriptionToCost();
+                } else {
+                    console.log('We reached our target server, but it returned an error');
+                    console.log('Possibly handle the error by changing your state.');
+                }
+            };
+
+            request.onerror = () => {
+                console.log('There was a connection error of some sort.');
+                console.log('Possibly handle the error by changing your state.');
+                reject();
+            };
+
+            request.send();
+        };
+
+        numberWithCommas = (x) => x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+        render() {
+            return (
+                <div className="shadow-lg card p-2 mb-2 bg-white rounded">
+                    <div className="no-gutters">
+                        <div className="">
+                            <img src={this.props.item.image} className="rounded float-left mr-2" height="82" width="82" />
+                        </div>
+
+                        <span className="badge badge-secondary">{this.props.item.maker}</span>&nbsp;
+                        <span className="badge badge-secondary">{this.props.item.brand}</span>&nbsp;
+                        <span className="badge badge-secondary">{this.props.item.category1}</span>&nbsp;
+                        <p className="h6">{this.props.item.title.replace(/<b>/gi, "").replace(/<\/b>/gi, "")}</p>
+                        <div className="" style={{'display':'flex'}}>
+                            <div className="mr-auto">
+                                <strong className="h5 nanum-gothic" style={{color:'#f24443'}}>{this.numberWithCommas(this.props.item.lprice)}원</strong>
+                            </div>
+                            <span>
+                                <button type="button" className="btn btn-primary btn-sm"
+                                        data-toggle="collapse"
+                                        href={"#collapse"+this.props.item.productId}
+                                        role="button"
+                                        aria-expanded="false"
+                                        aria-controls={"collapse"+this.props.item.productId}
+                                        onClick={this.naverCafeApi}
+                                >중고 시세</button>&nbsp;
+                                <button type="button" className="btn btn-secondary btn-sm">제품 상세</button>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div id={"collapse"+this.props.item.productId} className="collapse multi-collapse">
+                        <div className="table-responsive">
+                            <table className="table table-striped">
+                                <tbody>
+                                {this.state.items.map(item => {
+                                    return (
+                                        <PriceComparisonItemItem item={item}></PriceComparisonItemItem>
+                                    )
+                                })}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+    }
+/*item******************************************************************************************************************************/
+/*item>item******************************************************************************************************************************/
+    class PriceComparisonItemItem extends React.Component {
+        constructor(props) {
+            super(props);
+
+            this.state = {
+                item: [],
+            };
+        }
+
+        render() {
+            return (
+                <tr onClick={() => window.open(this.props.item.link ,'_blank')}>
+                    <td><span className="badge badge-success">{this.props.item.type}</span>
+                        <span className="badge badge-primary">{this.props.item.cafename}</span><br/>
+                        <span>{this.props.item.title.replace(/<b>/gi, "").replace(/<\/b>/gi, "").replace(/&lt;/g,"").replace(/&gt;/g,"")}</span>
+                    </td>
+                    <td className="txt_line">{this.props.item.cost}원</td>
+                </tr>
+            );
+        }
+    }
+/*item>item******************************************************************************************************************************/
+/*******************************************************************************************************************************/
     class PriceComparison extends React.Component {
         constructor(props) {
             super(props);
@@ -81,11 +376,22 @@
                 total: '',
                 start: '',
                 display: '',
+                newItems: [],
                 items: [],
                 count: 0,
                 type: '검색전',
+                progress: 0,
+                cnt: 0,
             };
+        }
 
+        searchCallback = (dataChild) => {
+            this.setState((prevState) => {
+                return {
+                    query: dataChild.query,
+                    newItems: dataChild.items,
+                }
+            });
         }
 
         descriptionToCost = () => {
@@ -121,12 +427,15 @@
 
             e.preventDefault();
 
-            $('html').css('cursor', 'wait');
+            $('.toast').toast({autohide : false});
+            $('.toast').toast('show');
 
             this.setState((prevState) => {
                 return {
                     items: [],
                     count: 0,
+                    cnt: 0,
+                    progress: 0,
                     type: '검색시작',
                 }
             });
@@ -142,18 +451,17 @@
                         start: responseObject.start,
                         display: responseObject.display,
                         items: this.state.items.concat(responseObject.items),
+                        cnt: (responseObject.total / 100) > 5 ? 5 : (responseObject.total / 100),
+                        progress: (100 / ((responseObject.total / 100) > 5 ? 5 : (responseObject.total / 100))) + this.state.progress,
                     }
                 });
+
+                $('.progress-bar').css('width', this.state.progress+'%');
             });
 
             this.descriptionToCost();
 
-            let cnt = this.state.total;
-            cnt = (cnt / 100) > 5 ? 5 : (cnt / 100);
-
-            //console.log("cnt : " + cnt);
-
-            for (let i = 1; i < cnt; i++) {
+            for (let i = 1; i < this.state.cnt; i++) {
                 await this.getData2(this.state.query, 100 * i).then((responseObject) => {
                     const date = new Date(responseObject.lastBuildDate);
                     console.log(date);
@@ -161,8 +469,10 @@
                     this.setState((prevState) => {
                         return {
                             items: this.state.items.concat(responseObject.items),
+                            progress: (100 / this.state.cnt) + this.state.progress,
                         }
                     });
+                    $('.progress-bar').css('width', this.state.progress+'%');
                 });
 
                 this.descriptionToCost();
@@ -174,7 +484,7 @@
                 }
             });
 
-            $('html').css('cursor', 'default');
+            $('.toast').toast('hide');
         }
 
         getData2 = (query, start) => new Promise(function(resolve, reject) {
@@ -210,65 +520,15 @@
         render() {
             return (
                 <React.Fragment>
-                    <form name="cheapest_finder">
-                        <nav className="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
-                            <a className="navbar-brand col-md-3 col-lg-2 mr-0 px-3" href="#">
-                                <svg width="1em" height="1em" viewBox="0 0 16 16" className="bi bi-gift-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                    <path fill-rule="evenodd" d="M3 2.5a2.5 2.5 0 0 1 5 0 2.5 2.5 0 0 1 5 0v.006c0 .07 0 .27-.038.494H15a1 1 0 0 1 1 1v1a1 1 0 0 1-1 1H1a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h2.038A2.968 2.968 0 0 1 3 2.506V2.5zm1.068.5H7v-.5a1.5 1.5 0 1 0-3 0c0 .085.002.274.045.43a.522.522 0 0 0 .023.07zM9 3h2.932a.56.56 0 0 0 .023-.07c.043-.156.045-.345.045-.43a1.5 1.5 0 0 0-3 0V3z"/>
-                                    <path d="M15 7v7.5a1.5 1.5 0 0 1-1.5 1.5H9V7h6zM2.5 16A1.5 1.5 0 0 1 1 14.5V7h6v9H2.5z"/>
-                                </svg> 중고 검색기</a>
+                    <PriceComparisonTop searchCallback={this.searchCallback}></PriceComparisonTop>
 
-
-                            <input className="form-control form-control-dark w-100" type="text" value={this.state.query} onChange={this.onChange} placeholder="제품 입력" aria-label="Search" />
-                            <ul className="navbar-nav px-3">
-                                <li className="nav-item text-nowrap">
-                                    <input className="search-submit" type="submit" onClick={this.getData} value="검색" />
-                                    <a className="nav-link" href="#" onClick={this.getData}>
-                                        검색 <svg width="1em" height="1em" viewBox="0 0 16 16" className="bi bi-search" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                            <path fill-rule="evenodd" d="M10.442 10.442a1 1 0 0 1 1.415 0l3.85 3.85a1 1 0 0 1-1.414 1.415l-3.85-3.85a1 1 0 0 1 0-1.415z"/>
-                                            <path fill-rule="evenodd" d="M6.5 12a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11zM13 6.5a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0z"/>
-                                        </svg></a>
-                                </li>
-                            </ul>
-                        </nav>
-                    </form>
-                    <main className="main" role="main" className="col-md-12 ml-sm-auto col-lg-12 px-md-12">
-                        <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                            <h2>{this.state.query == '' ? '제품을 입력해주세요' : this.state.query}</h2>
-                            <div className="btn-group mb-2 mb-md-0">
-                                {this.state.type == '검색 완료'
-                                    ? <button type="button" className="btn btn-sm btn-danger">{this.state.type}</button>
-                                    : <button type="button" className="btn btn-sm btn-secondary">{this.state.type}</button>}
-                                <button type="button" className="btn btn-sm btn-outline-secondary">
-                                    데이터 량 : {this.state.count}
-                                </button>
-                            </div>
-                        </div>
-                        <div className="table-responsive">
-                            <table className="table table-striped">
-                                <thead>
-                                    <tr>
-                                        <th>구분</th>
-                                        <th>제목</th>
-                                        <th>가격</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                {this.state.items.map(item => {
-                                    return (
-                                        <tr onClick={() => window.open(item.link ,'_blank')}>
-                                            <td>{item.type == '판매중'
-                                                ? <span className="badge badge-success">판매중</span>
-                                                : <span className="badge badge-secondary">판매완료</span>}</td>
-                                            <td><span className="badge badge-primary">{item.cafename}</span> {item.title.replace("<b>","").replace("</b>","").replace(/&lt;/g,"").replace(/&gt;/g,"")}</td>
-                                            <td>{item.cost}</td>
-                                        </tr>
-                                    )
-                                })}
-                                </tbody>
-                            </table>
-                        </div>
-                    </main>
+                    <div style={{padding: '0.5rem 1rem'}}>
+                        {this.state.newItems.map(item => {
+                            return (
+                                <PriceComparisonItem item={item}/>
+                            )
+                        })}
+                    </div>
                 </React.Fragment>
             );
         }
