@@ -391,7 +391,7 @@
                         <span className="badge badge-primary">{this.props.item.cafename}</span><br/>
                         <span>{this.props.item.title.replace(/<b>/gi, "").replace(/<\/b>/gi, "").replace(/&lt;/g,"").replace(/&gt;/g,"")}</span>
                     </td>
-                    <td className="txt_line align-middle"><strong className="h5 nanum-gothic" style={{color:'var(--danger)'}}>{this.numberWithCommas(String(this.props.item.cost))}원</strong></td>
+                    <td className="txt_line align-middle text-right"><strong className="h5 nanum-gothic" style={{color:'var(--danger)'}}>{this.numberWithCommas(String(this.props.item.cost))}원</strong></td>
                 </tr>
             );
         }
