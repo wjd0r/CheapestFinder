@@ -13,6 +13,13 @@
     <script crossorigin src="./js/bootstrap.bundle.js"></script>
     <script crossorigin src="./js/bootstrap.js"></script>
 
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/8.0.2/firebase-app.js"></script>
+
+    <!-- TODO: Add SDKs for Firebase products that you want to use
+         https://firebase.google.com/docs/web/setup#available-libraries -->
+    <script src="https://www.gstatic.com/firebasejs/8.0.2/firebase-analytics.js"></script>
+
     <link rel="stylesheet" href="./css/bootstrap.css">
     <link rel="stylesheet" href="./css/bootstrap-grid.css">
     <link rel="stylesheet" href="./css/bootstrap-reboot.css">
@@ -44,7 +51,6 @@
             flex-basis: auto;
         }
 
-
         .main {
             position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px; overflow: hidden; pointer-events: none; visibility: hidden; z-index: -1;
         }
@@ -67,6 +73,7 @@
 
 </head>
 <body>
+
 <div id="root"></div>
 <script type="text/babel">
     class PriceComparisonTop extends React.Component {
@@ -120,6 +127,14 @@
         searchSubmit = async (e) => {
             e.preventDefault();
 
+            this.init();
+
+            /* 부모에게 데이터 넘김 */
+            this.props.searchCallback({
+                query: '',
+                items: [],
+            });
+
             this.setState((prevState) => {
                 return {
                     jumbotronTitle: '검색중...',
@@ -146,7 +161,6 @@
             this.subProductType();
 
             clearInterval(progress_interval);
-            this.init();
 
             /* 검색 완료 후 점보트론 안보이도록 */
             this.setState((prevState) => {
@@ -159,6 +173,7 @@
             /* 검색 완료 후 포커스 해제 */
             $(':focus').blur();
 
+            /* 부모에게 데이터 넘김 */
             this.props.searchCallback(this.state);
         }
 
@@ -208,7 +223,7 @@
                 <React.Fragment>
                     <header>
                         <nav className="navbar navbar-expand-lg navbar-light bg-light rounded">
-                            <a className="navbar-brand nanum-gothic" href="#">가격비교 스케너</a>
+                            <a className="navbar-brand nanum-gothic" href="#" style={{color: 'var(--danger)'}}>가격비교 스케너</a>
 
                             <div className="collapse navbar-collapse" id="navbarsExample09">
                                 <div className="navbar-nav mr-auto"></div>
@@ -218,14 +233,14 @@
                             </div>
                         </nav>
                     </header>
-                    {this.state.jumbotronShow || this.state.items.length == 0
+                    {this.state.jumbotronShow
                         ? <div style={{padding: '0.5rem 1rem'}}>
                             <div className="jumbotron">
                                 <h1>{this.state.jumbotronTitle}</h1>
                                 <p className="lead">{this.state.jumbotronContent}</p>
                             </div>
                         </div>
-                        : <div></div>
+                        : null
                     }
                 </React.Fragment>
             );
@@ -310,10 +325,10 @@
                         <p className="h6">{this.props.item.title.replace(/<b>/gi, "").replace(/<\/b>/gi, "")}</p>
                         <div className="" style={{'display':'flex'}}>
                             <div className="mr-auto">
-                                <strong className="h5 nanum-gothic" style={{color:'#f24443'}}>{this.numberWithCommas(this.props.item.lprice)}원</strong>
+                                <strong className="h5 nanum-gothic" style={{color:'var(--danger)'}}>{this.numberWithCommas(this.props.item.lprice)}원</strong>
                             </div>
                             <span>
-                                <button type="button" className="btn btn-primary btn-sm"
+                                <button type="button" className="btn btn-danger btn-sm"
                                         data-toggle="collapse"
                                         href={"#collapse"+this.props.item.productId}
                                         role="button"
@@ -321,7 +336,6 @@
                                         aria-controls={"collapse"+this.props.item.productId}
                                         onClick={this.naverCafeApi}
                                 >중고 시세</button>&nbsp;
-                                <button type="button" className="btn btn-secondary btn-sm">제품 상세</button>
                             </span>
                         </div>
                     </div>
@@ -330,11 +344,20 @@
                         <div className="table-responsive">
                             <table className="table table-striped mb-0">
                                 <tbody>
-                                {this.state.items.map(item => {
-                                    return (
-                                        <PriceComparisonItemItem item={item}></PriceComparisonItemItem>
-                                    )
-                                })}
+                                {this.state.items.length != 0
+                                    ? this.state.items.map(item => {
+                                        return (
+                                            <PriceComparisonItemItem item={item}></PriceComparisonItemItem>
+                                        )
+                                    })
+                                    : <tr>
+                                        <td className="align-middle m-1" style={{'text-align': 'center', color:'var(--danger)'}}>
+                                            <div className="spinner-border" role="status">
+                                                <span className="sr-only">Loading...</span>
+                                            </div> <strong className="h5">Loading...</strong>
+                                        </td>
+                                    </tr>
+                                }
                                 </tbody>
                             </table>
                         </div>
@@ -363,7 +386,7 @@
                         <span className="badge badge-primary">{this.props.item.cafename}</span><br/>
                         <span>{this.props.item.title.replace(/<b>/gi, "").replace(/<\/b>/gi, "").replace(/&lt;/g,"").replace(/&gt;/g,"")}</span>
                     </td>
-                    <td className="txt_line"><strong className="h5 nanum-gothic" style={{color:'#f24443'}}>{this.numberWithCommas(String(this.props.item.cost))}원</strong></td>
+                    <td className="txt_line align-middle"><strong className="h5 nanum-gothic" style={{color:'var(--danger)'}}>{this.numberWithCommas(String(this.props.item.cost))}원</strong></td>
                 </tr>
             );
         }
@@ -527,11 +550,18 @@
                     <PriceComparisonTop searchCallback={this.searchCallback}></PriceComparisonTop>
 
                     <div style={{padding: '0.5rem 1rem'}}>
-                        {this.state.newItems.map(item => {
-                            return (
-                                <PriceComparisonItem item={item}/>
-                            )
-                        })}
+                        {this.state.newItems != 0
+                            ? this.state.newItems.map(item => {
+                                return (
+                                    <PriceComparisonItem item={item}/>
+                                )
+                            })
+                            : <div className="shadow-lg card p-2 mb-2 bg-white rounded align-middle p-1" style={{'text-align':'center', color:'var(--danger)', display:'block'}}>
+                                <div className="spinner-border" role="status">
+                                    <span className="sr-only">Loading...</span>
+                                </div> <strong className="h5">Loading...</strong>
+                            </div>
+                        }
                     </div>
                 </React.Fragment>
             );
