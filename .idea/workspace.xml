@@ -20,7 +20,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="320910c3-9705-4ea3-81bb-bbca316673f6" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/font/BlackHanSans-Regular.ttf" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
     </list>
@@ -51,7 +50,7 @@
     <property name="DefaultHtmlFileTemplate" value="HTML File" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/원클릭 이용신청 (prod)" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/js" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
@@ -65,9 +64,9 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\cyber\WebstormProjects\untitled\js" />
       <recent name="C:\Users\cyber\WebstormProjects\untitled\font" />
       <recent name="C:\Users\cyber\WebstormProjects\untitled" />
-      <recent name="C:\Users\cyber\WebstormProjects\untitled\js" />
       <recent name="C:\Users\cyber\WebstormProjects\untitled\css" />
     </key>
   </component>
@@ -90,7 +89,8 @@
       <workItem from="1605504299602" duration="5852000" />
       <workItem from="1605518120064" duration="431000" />
       <workItem from="1605569316767" duration="25496000" />
-      <workItem from="1605656352963" duration="27985000" />
+      <workItem from="1605656352963" duration="28362000" />
+      <workItem from="1605742979609" duration="6530000" />
     </task>
     <servers />
   </component>
@@ -110,10 +110,10 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="841" y="417" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1605687015990">
+    <state x="841" y="417" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1605745960064">
       <screen x="0" y="0" width="1920" height="1160" />
     </state>
-    <state x="841" y="417" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1920.1160/1920.0.1920.1160@0.0.1920.1160" timestamp="1605687015990" />
+    <state x="841" y="417" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1920.1160/1920.0.1920.1160@0.0.1920.1160" timestamp="1605745960064" />
     <state x="690" y="326" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1605241402972">
       <screen x="0" y="0" width="1920" height="1160" />
     </state>
@@ -126,14 +126,18 @@
       <screen x="0" y="0" width="1920" height="1160" />
     </state>
     <state x="740" y="335" key="FileChooserDialogImpl/0.0.1920.1160/1920.0.1920.1160@0.0.1920.1160" timestamp="1605687095429" />
-    <state x="750" y="281" key="RollbackChangesDialog" timestamp="1605687034759">
+    <state x="750" y="281" key="RollbackChangesDialog" timestamp="1605749037777">
       <screen x="0" y="0" width="1920" height="1160" />
     </state>
-    <state x="750" y="281" key="RollbackChangesDialog/0.0.1920.1160/1920.0.1920.1160@0.0.1920.1160" timestamp="1605687034759" />
+    <state x="750" y="281" key="RollbackChangesDialog/0.0.1920.1160/1920.0.1920.1160@0.0.1920.1160" timestamp="1605749037777" />
     <state x="2381" y="224" key="SettingsEditor" timestamp="1604014830488">
       <screen x="1920" y="0" width="1920" height="1160" />
     </state>
     <state x="461" y="224" key="SettingsEditor/0.0.1920.1160/1920.0.1920.1160@0.0.1920.1160" timestamp="1603955117735" />
     <state x="2381" y="224" key="SettingsEditor/0.0.1920.1160/1920.0.1920.1160@1920.0.1920.1160" timestamp="1604014830488" />
+    <state x="668" y="178" width="584" height="804" key="find.popup" timestamp="1605745967378">
+      <screen x="0" y="0" width="1920" height="1160" />
+    </state>
+    <state x="668" y="178" width="584" height="804" key="find.popup/0.0.1920.1160/1920.0.1920.1160@0.0.1920.1160" timestamp="1605745967378" />
   </component>
 </project>
