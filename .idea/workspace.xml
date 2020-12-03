@@ -20,7 +20,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="320910c3-9705-4ea3-81bb-bbca316673f6" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/lotto.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index2.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -49,7 +51,7 @@
     <property name="DefaultHtmlFileTemplate" value="HTML File" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/js" />
+    <property name="last_opened_file_path" value="$USER_HOME$/Downloads/log" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
@@ -63,9 +65,9 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\cyber\WebstormProjects\untitled" />
       <recent name="C:\Users\cyber\WebstormProjects\untitled\js" />
       <recent name="C:\Users\cyber\WebstormProjects\untitled\font" />
-      <recent name="C:\Users\cyber\WebstormProjects\untitled" />
       <recent name="C:\Users\cyber\WebstormProjects\untitled\css" />
     </key>
   </component>
@@ -91,6 +93,26 @@
       <workItem from="1605656352963" duration="28362000" />
       <workItem from="1605742979609" duration="16471000" />
       <workItem from="1605829181496" duration="809000" />
+      <workItem from="1605830019527" duration="1013000" />
+      <workItem from="1605831048834" duration="1498000" />
+      <workItem from="1606893340808" duration="996000" />
+      <workItem from="1606897071810" duration="604000" />
+      <workItem from="1606954219916" duration="34000" />
+      <workItem from="1606955020317" duration="994000" />
+      <workItem from="1606956050025" duration="1791000" />
+      <workItem from="1606957861923" duration="1790000" />
+      <workItem from="1606959669696" duration="1797000" />
+      <workItem from="1606961484491" duration="1791000" />
+      <workItem from="1606963306119" duration="1790000" />
+      <workItem from="1606965115407" duration="892000" />
+      <workItem from="1606967635843" duration="1792000" />
+      <workItem from="1606969444687" duration="1793000" />
+      <workItem from="1606971254823" duration="2722000" />
+      <workItem from="1606974477978" duration="1697000" />
+      <workItem from="1606976327834" duration="1791000" />
+      <workItem from="1606978135740" duration="1791000" />
+      <workItem from="1606979953853" duration="1791000" />
+      <workItem from="1606981762831" duration="80000" />
     </task>
     <servers />
   </component>
@@ -122,10 +144,10 @@
       <screen x="0" y="0" width="1920" height="1160" />
     </state>
     <state x="92" y="92" width="1736" height="976" key="DiffContextDialog/0.0.1920.1160/1920.0.1920.1160@0.0.1920.1160" timestamp="1605689592415" />
-    <state x="740" y="335" key="FileChooserDialogImpl" timestamp="1605687095429">
+    <state x="740" y="335" key="FileChooserDialogImpl" timestamp="1606954251526">
       <screen x="0" y="0" width="1920" height="1160" />
     </state>
-    <state x="740" y="335" key="FileChooserDialogImpl/0.0.1920.1160/1920.0.1920.1160@0.0.1920.1160" timestamp="1605687095429" />
+    <state x="740" y="335" key="FileChooserDialogImpl/0.0.1920.1160/1920.0.1920.1160@0.0.1920.1160" timestamp="1606954251526" />
     <state x="750" y="281" key="RollbackChangesDialog" timestamp="1605749037777">
       <screen x="0" y="0" width="1920" height="1160" />
     </state>
@@ -135,9 +157,13 @@
     </state>
     <state x="461" y="224" key="SettingsEditor/0.0.1920.1160/1920.0.1920.1160@0.0.1920.1160" timestamp="1603955117735" />
     <state x="2381" y="224" key="SettingsEditor/0.0.1920.1160/1920.0.1920.1160@1920.0.1920.1160" timestamp="1604014830488" />
-    <state x="668" y="178" width="584" height="804" key="find.popup" timestamp="1605745967378">
+    <state x="92" y="92" width="1736" height="976" key="com.intellij.history.integration.ui.views.FileHistoryDialog" timestamp="1606981844262">
       <screen x="0" y="0" width="1920" height="1160" />
     </state>
-    <state x="668" y="178" width="584" height="804" key="find.popup/0.0.1920.1160/1920.0.1920.1160@0.0.1920.1160" timestamp="1605745967378" />
+    <state x="92" y="92" width="1736" height="976" key="com.intellij.history.integration.ui.views.FileHistoryDialog/0.0.1920.1160/1920.0.1920.1160@0.0.1920.1160" timestamp="1606981844262" />
+    <state x="668" y="178" width="584" height="804" key="find.popup" timestamp="1606955304020">
+      <screen x="0" y="0" width="1920" height="1160" />
+    </state>
+    <state x="668" y="178" width="584" height="804" key="find.popup/0.0.1920.1160/1920.0.1920.1160@0.0.1920.1160" timestamp="1606955304020" />
   </component>
 </project>

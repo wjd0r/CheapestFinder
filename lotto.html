@@ -1,0 +1,585 @@
+<html>
+<head>
+    <meta charSet="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="robots" content="index">
+    <title>러떠 분식기</title>
+    <script crossOrigin src="./js/react.development.js"></script>
+    <script crossOrigin src="./js/react-dom.development.js"></script>
+    <script crossOrigin src="./js/babel.js"></script>
+
+    <script crossOrigin src="./js/jquery-3.5.1.js"></script>
+
+    <script crossOrigin src="./js/bootstrap.bundle.js"></script>
+    <script crossOrigin src="./js/bootstrap.js"></script>
+
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/8.0.2/firebase-app.js"></script>
+
+    <!-- TODO: Add SDKs for Firebase products that you want to use
+         https://firebase.google.com/docs/web/setup#available-libraries -->
+    <script src="https://www.gstatic.com/firebasejs/8.0.2/firebase-analytics.js"></script>
+
+    <link rel="stylesheet" href="./css/bootstrap.css">
+    <link rel="stylesheet" href="./css/bootstrap-grid.css">
+    <link rel="stylesheet" href="./css/bootstrap-reboot.css">
+
+    <meta name="theme-color" content="#563d7c">
+
+    <meta name="author" content="jyk86">
+    <meta name="description" content="모든 제품을 한번에 비교 검색할 수 있는 가격비교 사이트 입니다.">
+    <meta property="og:title" content="가격비교 스케너: 간편한 가격 비교">
+    <meta property="og:description" content="모든 중고 제품을 한번에 비교 검색할 수 있는 가격비교 사이트 입니다.">
+
+    <link rel="canonical" href="https://wjd0r.github.io">
+
+    <script data-ad-client="ca-pub-9815296081251834" async
+            src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+
+    <style>
+        /* 나눔 고딕 폰트 */
+        @import url('https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@800&display=swap');
+
+        .nanum-gothic {
+            font-family: 'Nanum Gothic', sans-serif;
+        }
+    </style>
+
+</head>
+<body>
+
+<div id="root"></div>
+<script type="text/babel">
+    const databaseURL = "https://lotto-b47dd-default-rtdb.firebaseio.com/";
+
+    class Main extends React.Component {
+        constructor(props) {
+            super(props);
+
+            this.state = {
+                th: {},
+                one: 0,
+                two: 0,
+                three: 0,
+                four: 0,
+                five: 0,
+                six: 0,
+                bonus: 0,
+                lotto_numbers: [
+                    [1, 0], [2, 0], [3, 0], [4, 0], [5, 0], [6, 0], [7, 0], [8, 0], [9, 0], [10, 0],
+                    [11, 0], [12, 0], [13, 0], [14, 0], [15, 0], [16, 0], [17, 0], [18, 0], [19, 0], [20, 0],
+                    [21, 0], [22, 0], [23, 0], [24, 0], [25, 0], [26, 0], [27, 0], [28, 0], [29, 0], [30, 0],
+                    [31, 0], [32, 0], [33, 0], [34, 0], [35, 0], [36, 0], [37, 0], [38, 0], [39, 0], [40, 0],
+                    [41, 0], [42, 0], [43, 0], [44, 0], [45, 0]
+                ],
+                selectedTh: 2,
+            };
+        }
+
+        initStateNumber() {
+            this.setState({
+                one: 0,
+                two: 0,
+                three: 0,
+                four: 0,
+                five: 0,
+                six: 0,
+                bonus: 0
+            });
+        }
+
+        get() {
+            fetch(`${databaseURL}/th.json`).then(res => {
+                if (res.status != 200) {
+                    throw new Error(res.statusText);
+                }
+                return res.json();
+            }).then(th => this.setState({th: th}));
+        }
+
+        post(th) {
+            return fetch(`${databaseURL}/th.json`, {
+                method: 'POST',
+                body: JSON.stringify(th),
+            }).then(res => {
+                if (res.status != 200) {
+                    throw new Error(res.statusText);
+                }
+                return res.json();
+            }).then(data => {
+                let nextState = this.state.th;
+                nextState[data.name] = th;
+                this.setState({th: nextState});
+                this.initStateNumber();
+            });
+        }
+
+        delete(id) {
+            return fetch(`${databaseURL}/th/${id}.json`, {
+                method: 'DELETE'
+            }).then(res => {
+                if (res.status != 200) {
+                    throw new Error(res.statusText);
+                }
+                return res.json();
+            }).then(() => {
+                let nextState = this.state.th;
+                delete nextState[id];
+                this.setState({th: nextState});
+            });
+        }
+
+        analysis() {
+            console.log(`analysis`);
+
+            const N_TO_1_NUMBER = (this.state.selectedTh - 1) * this.state.selectedTh / 2;
+
+            let lotto_numbers = [N_TO_1_NUMBER, N_TO_1_NUMBER, N_TO_1_NUMBER, N_TO_1_NUMBER, N_TO_1_NUMBER, N_TO_1_NUMBER, N_TO_1_NUMBER, N_TO_1_NUMBER, N_TO_1_NUMBER, N_TO_1_NUMBER,
+                N_TO_1_NUMBER, N_TO_1_NUMBER, N_TO_1_NUMBER, N_TO_1_NUMBER, N_TO_1_NUMBER, N_TO_1_NUMBER, N_TO_1_NUMBER, N_TO_1_NUMBER, N_TO_1_NUMBER, N_TO_1_NUMBER,
+                N_TO_1_NUMBER, N_TO_1_NUMBER, N_TO_1_NUMBER, N_TO_1_NUMBER, N_TO_1_NUMBER, N_TO_1_NUMBER, N_TO_1_NUMBER, N_TO_1_NUMBER, N_TO_1_NUMBER, N_TO_1_NUMBER,
+                N_TO_1_NUMBER, N_TO_1_NUMBER, N_TO_1_NUMBER, N_TO_1_NUMBER, N_TO_1_NUMBER, N_TO_1_NUMBER, N_TO_1_NUMBER, N_TO_1_NUMBER, N_TO_1_NUMBER, N_TO_1_NUMBER,
+                N_TO_1_NUMBER, N_TO_1_NUMBER, N_TO_1_NUMBER, N_TO_1_NUMBER, N_TO_1_NUMBER];
+
+            Object.keys(this.state.th).map((id, index) => {
+                if (index < this.state.selectedTh - 1) {
+                    const th = this.state.th[id];
+
+                    lotto_numbers[th.one - 1] -= index + 1;
+                    lotto_numbers[th.two - 1] -= index + 1;
+                    lotto_numbers[th.three - 1] -= index + 1;
+                    lotto_numbers[th.four - 1] -= index + 1;
+                    lotto_numbers[th.five - 1] -= index + 1;
+                    lotto_numbers[th.six - 1] -= index + 1;
+                    lotto_numbers[th.bonus - 1] -= index + 1;
+                }
+            });
+
+            let sum = 0;
+
+            lotto_numbers.map((number, index) => {
+                sum += number;
+            });
+
+            let sortobj = [];
+
+            lotto_numbers.map((number, index) => {
+                lotto_numbers[index] = (number / sum * 100).toFixed(2);
+                sortobj.push([index + 1, lotto_numbers[index]]);
+            });
+
+            sortobj.sort(function (a, b) {
+                return b[1] - a[1];
+            });
+
+            this.setState({lotto_numbers: sortobj});
+        }
+
+        lottoColor(number) {
+            if (number < 11) {
+                return 'badge badge-pill badge-warning';
+            } else if (number < 21) {
+                return 'badge badge-pill badge-primary';
+            } else if (number < 31) {
+                return 'badge badge-pill badge-danger';
+            } else if (number < 41) {
+                return 'badge badge-pill badge-dark';
+            } else {
+                return 'badge badge-pill badge-success';
+            }
+        }
+
+        selectedTh(selected_th) {
+            this.setState({selectedTh: selected_th});
+        }
+
+        isRealLotto(tempLotto) {
+            let bool = false;
+            let key = Object.keys(this.state.th)[this.state.selectedTh - 1];
+
+            if (key != undefined) {
+                let obj = this.state.th[key];
+
+                Object.keys(obj).map((key, index) => {
+                    if (obj[key] == tempLotto)
+                        bool = true;
+                });
+            }
+
+            return bool;
+        }
+
+        handleValueChange = (e) => {
+            let nextState = {};
+
+            console.log(e.target.name);
+
+            nextState[e.target.name] = e.target.value;
+            this.setState(nextState);
+        }
+
+        handleSubmit = () => {
+            console.log('submit???');
+
+            const th = {
+                one: this.state.one,
+                two: this.state.two,
+                three: this.state.three,
+                four: this.state.four,
+                five: this.state.five,
+                six: this.state.six,
+                bonus: this.state.bonus,
+            }
+
+            this.post(th);
+        }
+
+        handleDelete = (id) => {
+            this.delete(id);
+        }
+
+        componentDidMount() {
+            this.get();
+        }
+
+        render() {
+            return (
+                <React.Fragment>
+                    <div className="col-md-12">
+                        <h2>lotto 6/45</h2>
+                        <p><strong>로또 로또 확률 분석 프로그램</strong> : 당첨된지 오래 되거나 담첨된 횟수가 적을수록 확률이 올라가고, 최근에 당첨이 됐거나 또는 당첨 횟수가
+                            높을수록 확률이 낮아지도록 구현</p>
+
+                        <div className="btn-group" role="group" aria-label="Button group with nested dropdown">
+                            <div className="btn-group" role="group">
+                                <button id="btnGroupDrop1" type="button" className="btn btn-secondary dropdown-toggle"
+                                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    {this.state.selectedTh}회차
+                                </button>
+                                <div className="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                                    {Object.keys(this.state.th).map((id, index) => {
+                                        return (
+                                            <a className="dropdown-item" href="#"
+                                               onClick={() => this.selectedTh(Object.keys(this.state.th).length - index + 1)}>{Object.keys(this.state.th).length - index + 1}회차</a>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+
+                            <input type="button" value="확률 분석 시작하기" onClick={() => this.analysis()}
+                                   className="btn btn-secondary"/>
+                        </div>
+
+                        <table className="table">
+                            <tbody>
+                            <tr>
+                                <td className={this.isRealLotto(this.state.lotto_numbers[0][0]) ? 'table-danger' : ''}>
+                                    <span
+                                        className={this.lottoColor(this.state.lotto_numbers[0][0])}>{this.state.lotto_numbers[0][0]}</span>
+                                </td>
+                                <td className={this.isRealLotto(this.state.lotto_numbers[1][0]) ? 'table-danger' : ''}>
+                                    <span
+                                        className={this.lottoColor(this.state.lotto_numbers[1][0])}>{this.state.lotto_numbers[1][0]}</span>
+                                </td>
+                                <td className={this.isRealLotto(this.state.lotto_numbers[2][0]) ? 'table-danger' : ''}>
+                                    <span
+                                        className={this.lottoColor(this.state.lotto_numbers[2][0])}>{this.state.lotto_numbers[2][0]}</span>
+                                </td>
+                                <td className={this.isRealLotto(this.state.lotto_numbers[3][0]) ? 'table-danger' : ''}>
+                                    <span
+                                        className={this.lottoColor(this.state.lotto_numbers[3][0])}>{this.state.lotto_numbers[3][0]}</span>
+                                </td>
+                                <td className={this.isRealLotto(this.state.lotto_numbers[4][0]) ? 'table-danger' : ''}>
+                                    <span
+                                        className={this.lottoColor(this.state.lotto_numbers[4][0])}>{this.state.lotto_numbers[4][0]}</span>
+                                </td>
+                                <td className={this.isRealLotto(this.state.lotto_numbers[5][0]) ? 'table-danger' : ''}>
+                                    <span
+                                        className={this.lottoColor(this.state.lotto_numbers[5][0])}>{this.state.lotto_numbers[5][0]}</span>
+                                </td>
+                                <td className={this.isRealLotto(this.state.lotto_numbers[6][0]) ? 'table-danger' : ''}>
+                                    <span
+                                        className={this.lottoColor(this.state.lotto_numbers[6][0])}>{this.state.lotto_numbers[6][0]}</span>
+                                </td>
+                                <td className={this.isRealLotto(this.state.lotto_numbers[7][0]) ? 'table-danger' : ''}>
+                                    <span
+                                        className={this.lottoColor(this.state.lotto_numbers[7][0])}>{this.state.lotto_numbers[7][0]}</span>
+                                </td>
+                                <td className={this.isRealLotto(this.state.lotto_numbers[8][0]) ? 'table-danger' : ''}>
+                                    <span
+                                        className={this.lottoColor(this.state.lotto_numbers[8][0])}>{this.state.lotto_numbers[8][0]}</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td className={this.isRealLotto(this.state.lotto_numbers[0][0]) ? 'table-danger' : ''}>{this.state.lotto_numbers[0][1]}%</td>
+                                <td className={this.isRealLotto(this.state.lotto_numbers[1][0]) ? 'table-danger' : ''}>{this.state.lotto_numbers[1][1]}%</td>
+                                <td className={this.isRealLotto(this.state.lotto_numbers[2][0]) ? 'table-danger' : ''}>{this.state.lotto_numbers[2][1]}%</td>
+                                <td className={this.isRealLotto(this.state.lotto_numbers[3][0]) ? 'table-danger' : ''}>{this.state.lotto_numbers[3][1]}%</td>
+                                <td className={this.isRealLotto(this.state.lotto_numbers[4][0]) ? 'table-danger' : ''}>{this.state.lotto_numbers[4][1]}%</td>
+                                <td className={this.isRealLotto(this.state.lotto_numbers[5][0]) ? 'table-danger' : ''}>{this.state.lotto_numbers[5][1]}%</td>
+                                <td className={this.isRealLotto(this.state.lotto_numbers[6][0]) ? 'table-danger' : ''}>{this.state.lotto_numbers[6][1]}%</td>
+                                <td className={this.isRealLotto(this.state.lotto_numbers[7][0]) ? 'table-danger' : ''}>{this.state.lotto_numbers[7][1]}%</td>
+                                <td className={this.isRealLotto(this.state.lotto_numbers[8][0]) ? 'table-danger' : ''}>{this.state.lotto_numbers[8][1]}%</td>
+                            </tr>
+                            <tr>
+                                <td className={this.isRealLotto(this.state.lotto_numbers[9][0]) ? 'table-danger' : ''}>
+                                    <span
+                                        className={this.lottoColor(this.state.lotto_numbers[9][0])}>{this.state.lotto_numbers[9][0]}</span>
+                                </td>
+                                <td className={this.isRealLotto(this.state.lotto_numbers[10][0]) ? 'table-danger' : ''}>
+                                    <span
+                                        className={this.lottoColor(this.state.lotto_numbers[10][0])}>{this.state.lotto_numbers[10][0]}</span>
+                                </td>
+                                <td className={this.isRealLotto(this.state.lotto_numbers[11][0]) ? 'table-danger' : ''}>
+                                    <span
+                                        className={this.lottoColor(this.state.lotto_numbers[11][0])}>{this.state.lotto_numbers[11][0]}</span>
+                                </td>
+                                <td className={this.isRealLotto(this.state.lotto_numbers[12][0]) ? 'table-danger' : ''}>
+                                    <span
+                                        className={this.lottoColor(this.state.lotto_numbers[12][0])}>{this.state.lotto_numbers[12][0]}</span>
+                                </td>
+                                <td className={this.isRealLotto(this.state.lotto_numbers[13][0]) ? 'table-danger' : ''}>
+                                    <span
+                                        className={this.lottoColor(this.state.lotto_numbers[13][0])}>{this.state.lotto_numbers[13][0]}</span>
+                                </td>
+                                <td className={this.isRealLotto(this.state.lotto_numbers[14][0]) ? 'table-danger' : ''}>
+                                    <span
+                                        className={this.lottoColor(this.state.lotto_numbers[14][0])}>{this.state.lotto_numbers[14][0]}</span>
+                                </td>
+                                <td className={this.isRealLotto(this.state.lotto_numbers[15][0]) ? 'table-danger' : ''}>
+                                    <span
+                                        className={this.lottoColor(this.state.lotto_numbers[15][0])}>{this.state.lotto_numbers[15][0]}</span>
+                                </td>
+                                <td className={this.isRealLotto(this.state.lotto_numbers[16][0]) ? 'table-danger' : ''}>
+                                    <span
+                                        className={this.lottoColor(this.state.lotto_numbers[16][0])}>{this.state.lotto_numbers[16][0]}</span>
+                                </td>
+                                <td className={this.isRealLotto(this.state.lotto_numbers[17][0]) ? 'table-danger' : ''}>
+                                    <span
+                                        className={this.lottoColor(this.state.lotto_numbers[17][0])}>{this.state.lotto_numbers[17][0]}</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td className={this.isRealLotto(this.state.lotto_numbers[9][0]) ? 'table-danger' : ''}>{this.state.lotto_numbers[9][1]}%</td>
+                                <td className={this.isRealLotto(this.state.lotto_numbers[10][0]) ? 'table-danger' : ''}>{this.state.lotto_numbers[10][1]}%</td>
+                                <td className={this.isRealLotto(this.state.lotto_numbers[11][0]) ? 'table-danger' : ''}>{this.state.lotto_numbers[11][1]}%</td>
+                                <td className={this.isRealLotto(this.state.lotto_numbers[12][0]) ? 'table-danger' : ''}>{this.state.lotto_numbers[12][1]}%</td>
+                                <td className={this.isRealLotto(this.state.lotto_numbers[13][0]) ? 'table-danger' : ''}>{this.state.lotto_numbers[13][1]}%</td>
+                                <td className={this.isRealLotto(this.state.lotto_numbers[14][0]) ? 'table-danger' : ''}>{this.state.lotto_numbers[14][1]}%</td>
+                                <td className={this.isRealLotto(this.state.lotto_numbers[15][0]) ? 'table-danger' : ''}>{this.state.lotto_numbers[15][1]}%</td>
+                                <td className={this.isRealLotto(this.state.lotto_numbers[16][0]) ? 'table-danger' : ''}>{this.state.lotto_numbers[16][1]}%</td>
+                                <td className={this.isRealLotto(this.state.lotto_numbers[17][0]) ? 'table-danger' : ''}>{this.state.lotto_numbers[17][1]}%</td>
+                            </tr>
+                            <tr>
+                                <td className={this.isRealLotto(this.state.lotto_numbers[18][0]) ? 'table-danger' : ''}>
+                                    <span
+                                        className={this.lottoColor(this.state.lotto_numbers[18][0])}>{this.state.lotto_numbers[18][0]}</span>
+                                </td>
+                                <td className={this.isRealLotto(this.state.lotto_numbers[19][0]) ? 'table-danger' : ''}>
+                                    <span
+                                        className={this.lottoColor(this.state.lotto_numbers[19][0])}>{this.state.lotto_numbers[19][0]}</span>
+                                </td>
+                                <td className={this.isRealLotto(this.state.lotto_numbers[20][0]) ? 'table-danger' : ''}>
+                                    <span
+                                        className={this.lottoColor(this.state.lotto_numbers[20][0])}>{this.state.lotto_numbers[20][0]}</span>
+                                </td>
+                                <td className={this.isRealLotto(this.state.lotto_numbers[21][0]) ? 'table-danger' : ''}>
+                                    <span
+                                        className={this.lottoColor(this.state.lotto_numbers[21][0])}>{this.state.lotto_numbers[21][0]}</span>
+                                </td>
+                                <td className={this.isRealLotto(this.state.lotto_numbers[22][0]) ? 'table-danger' : ''}>
+                                    <span
+                                        className={this.lottoColor(this.state.lotto_numbers[22][0])}>{this.state.lotto_numbers[22][0]}</span>
+                                </td>
+                                <td className={this.isRealLotto(this.state.lotto_numbers[23][0]) ? 'table-danger' : ''}>
+                                    <span
+                                        className={this.lottoColor(this.state.lotto_numbers[23][0])}>{this.state.lotto_numbers[23][0]}</span>
+                                </td>
+                                <td className={this.isRealLotto(this.state.lotto_numbers[24][0]) ? 'table-danger' : ''}>
+                                    <span
+                                        className={this.lottoColor(this.state.lotto_numbers[24][0])}>{this.state.lotto_numbers[24][0]}</span>
+                                </td>
+                                <td className={this.isRealLotto(this.state.lotto_numbers[25][0]) ? 'table-danger' : ''}>
+                                    <span
+                                        className={this.lottoColor(this.state.lotto_numbers[25][0])}>{this.state.lotto_numbers[25][0]}</span>
+                                </td>
+                                <td className={this.isRealLotto(this.state.lotto_numbers[26][0]) ? 'table-danger' : ''}>
+                                    <span
+                                        className={this.lottoColor(this.state.lotto_numbers[26][0])}>{this.state.lotto_numbers[26][0]}</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td className={this.isRealLotto(this.state.lotto_numbers[18][0]) ? 'table-danger' : ''}>{this.state.lotto_numbers[18][1]}%</td>
+                                <td className={this.isRealLotto(this.state.lotto_numbers[19][0]) ? 'table-danger' : ''}>{this.state.lotto_numbers[19][1]}%</td>
+                                <td className={this.isRealLotto(this.state.lotto_numbers[20][0]) ? 'table-danger' : ''}>{this.state.lotto_numbers[20][1]}%</td>
+                                <td className={this.isRealLotto(this.state.lotto_numbers[21][0]) ? 'table-danger' : ''}>{this.state.lotto_numbers[21][1]}%</td>
+                                <td className={this.isRealLotto(this.state.lotto_numbers[22][0]) ? 'table-danger' : ''}>{this.state.lotto_numbers[22][1]}%</td>
+                                <td className={this.isRealLotto(this.state.lotto_numbers[23][0]) ? 'table-danger' : ''}>{this.state.lotto_numbers[23][1]}%</td>
+                                <td className={this.isRealLotto(this.state.lotto_numbers[24][0]) ? 'table-danger' : ''}>{this.state.lotto_numbers[24][1]}%</td>
+                                <td className={this.isRealLotto(this.state.lotto_numbers[25][0]) ? 'table-danger' : ''}>{this.state.lotto_numbers[25][1]}%</td>
+                                <td className={this.isRealLotto(this.state.lotto_numbers[26][0]) ? 'table-danger' : ''}>{this.state.lotto_numbers[26][1]}%</td>
+                            </tr>
+                            <tr>
+                                <td className={this.isRealLotto(this.state.lotto_numbers[27][0]) ? 'table-danger' : ''}>
+                                    <span
+                                        className={this.lottoColor(this.state.lotto_numbers[27][0])}>{this.state.lotto_numbers[27][0]}</span>
+                                </td>
+                                <td className={this.isRealLotto(this.state.lotto_numbers[28][0]) ? 'table-danger' : ''}>
+                                    <span
+                                        className={this.lottoColor(this.state.lotto_numbers[28][0])}>{this.state.lotto_numbers[28][0]}</span>
+                                </td>
+                                <td className={this.isRealLotto(this.state.lotto_numbers[29][0]) ? 'table-danger' : ''}>
+                                    <span
+                                        className={this.lottoColor(this.state.lotto_numbers[29][0])}>{this.state.lotto_numbers[29][0]}</span>
+                                </td>
+                                <td className={this.isRealLotto(this.state.lotto_numbers[30][0]) ? 'table-danger' : ''}>
+                                    <span
+                                        className={this.lottoColor(this.state.lotto_numbers[30][0])}>{this.state.lotto_numbers[30][0]}</span>
+                                </td>
+                                <td className={this.isRealLotto(this.state.lotto_numbers[31][0]) ? 'table-danger' : ''}>
+                                    <span
+                                        className={this.lottoColor(this.state.lotto_numbers[31][0])}>{this.state.lotto_numbers[31][0]}</span>
+                                </td>
+                                <td className={this.isRealLotto(this.state.lotto_numbers[32][0]) ? 'table-danger' : ''}>
+                                    <span
+                                        className={this.lottoColor(this.state.lotto_numbers[32][0])}>{this.state.lotto_numbers[32][0]}</span>
+                                </td>
+                                <td className={this.isRealLotto(this.state.lotto_numbers[33][0]) ? 'table-danger' : ''}>
+                                    <span
+                                        className={this.lottoColor(this.state.lotto_numbers[33][0])}>{this.state.lotto_numbers[33][0]}</span>
+                                </td>
+                                <td className={this.isRealLotto(this.state.lotto_numbers[34][0]) ? 'table-danger' : ''}>
+                                    <span
+                                        className={this.lottoColor(this.state.lotto_numbers[34][0])}>{this.state.lotto_numbers[34][0]}</span>
+                                </td>
+                                <td className={this.isRealLotto(this.state.lotto_numbers[35][0]) ? 'table-danger' : ''}>
+                                    <span
+                                        className={this.lottoColor(this.state.lotto_numbers[35][0])}>{this.state.lotto_numbers[35][0]}</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td className={this.isRealLotto(this.state.lotto_numbers[27][0]) ? 'table-danger' : ''}>{this.state.lotto_numbers[27][1]}%</td>
+                                <td className={this.isRealLotto(this.state.lotto_numbers[28][0]) ? 'table-danger' : ''}>{this.state.lotto_numbers[28][1]}%</td>
+                                <td className={this.isRealLotto(this.state.lotto_numbers[29][0]) ? 'table-danger' : ''}>{this.state.lotto_numbers[29][1]}%</td>
+                                <td className={this.isRealLotto(this.state.lotto_numbers[30][0]) ? 'table-danger' : ''}>{this.state.lotto_numbers[30][1]}%</td>
+                                <td className={this.isRealLotto(this.state.lotto_numbers[31][0]) ? 'table-danger' : ''}>{this.state.lotto_numbers[31][1]}%</td>
+                                <td className={this.isRealLotto(this.state.lotto_numbers[32][0]) ? 'table-danger' : ''}>{this.state.lotto_numbers[32][1]}%</td>
+                                <td className={this.isRealLotto(this.state.lotto_numbers[33][0]) ? 'table-danger' : ''}>{this.state.lotto_numbers[33][1]}%</td>
+                                <td className={this.isRealLotto(this.state.lotto_numbers[34][0]) ? 'table-danger' : ''}>{this.state.lotto_numbers[34][1]}%</td>
+                                <td className={this.isRealLotto(this.state.lotto_numbers[35][0]) ? 'table-danger' : ''}>{this.state.lotto_numbers[35][1]}%</td>
+                            </tr>
+                            <tr>
+                                <td className={this.isRealLotto(this.state.lotto_numbers[36][0]) ? 'table-danger' : ''}>
+                                    <span
+                                        className={this.lottoColor(this.state.lotto_numbers[36][0])}>{this.state.lotto_numbers[36][0]}</span>
+                                </td>
+                                <td className={this.isRealLotto(this.state.lotto_numbers[37][0]) ? 'table-danger' : ''}>
+                                    <span
+                                        className={this.lottoColor(this.state.lotto_numbers[37][0])}>{this.state.lotto_numbers[37][0]}</span>
+                                </td>
+                                <td className={this.isRealLotto(this.state.lotto_numbers[38][0]) ? 'table-danger' : ''}>
+                                    <span
+                                        className={this.lottoColor(this.state.lotto_numbers[38][0])}>{this.state.lotto_numbers[38][0]}</span>
+                                </td>
+                                <td className={this.isRealLotto(this.state.lotto_numbers[39][0]) ? 'table-danger' : ''}>
+                                    <span
+                                        className={this.lottoColor(this.state.lotto_numbers[39][0])}>{this.state.lotto_numbers[39][0]}</span>
+                                </td>
+                                <td className={this.isRealLotto(this.state.lotto_numbers[40][0]) ? 'table-danger' : ''}>
+                                    <span
+                                        className={this.lottoColor(this.state.lotto_numbers[40][0])}>{this.state.lotto_numbers[40][0]}</span>
+                                </td>
+                                <td className={this.isRealLotto(this.state.lotto_numbers[41][0]) ? 'table-danger' : ''}>
+                                    <span
+                                        className={this.lottoColor(this.state.lotto_numbers[41][0])}>{this.state.lotto_numbers[41][0]}</span>
+                                </td>
+                                <td className={this.isRealLotto(this.state.lotto_numbers[42][0]) ? 'table-danger' : ''}>
+                                    <span
+                                        className={this.lottoColor(this.state.lotto_numbers[42][0])}>{this.state.lotto_numbers[42][0]}</span>
+                                </td>
+                                <td className={this.isRealLotto(this.state.lotto_numbers[43][0]) ? 'table-danger' : ''}>
+                                    <span
+                                        className={this.lottoColor(this.state.lotto_numbers[43][0])}>{this.state.lotto_numbers[43][0]}</span>
+                                </td>
+                                <td className={this.isRealLotto(this.state.lotto_numbers[44][0]) ? 'table-danger' : ''}>
+                                    <span
+                                        className={this.lottoColor(this.state.lotto_numbers[44][0])}>{this.state.lotto_numbers[44][0]}</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td className={this.isRealLotto(this.state.lotto_numbers[36][0]) ? 'table-danger' : ''}>{this.state.lotto_numbers[36][1]}%</td>
+                                <td className={this.isRealLotto(this.state.lotto_numbers[37][0]) ? 'table-danger' : ''}>{this.state.lotto_numbers[37][1]}%</td>
+                                <td className={this.isRealLotto(this.state.lotto_numbers[38][0]) ? 'table-danger' : ''}>{this.state.lotto_numbers[38][1]}%</td>
+                                <td className={this.isRealLotto(this.state.lotto_numbers[39][0]) ? 'table-danger' : ''}>{this.state.lotto_numbers[39][1]}%</td>
+                                <td className={this.isRealLotto(this.state.lotto_numbers[40][0]) ? 'table-danger' : ''}>{this.state.lotto_numbers[40][1]}%</td>
+                                <td className={this.isRealLotto(this.state.lotto_numbers[41][0]) ? 'table-danger' : ''}>{this.state.lotto_numbers[41][1]}%</td>
+                                <td className={this.isRealLotto(this.state.lotto_numbers[42][0]) ? 'table-danger' : ''}>{this.state.lotto_numbers[42][1]}%</td>
+                                <td className={this.isRealLotto(this.state.lotto_numbers[43][0]) ? 'table-danger' : ''}>{this.state.lotto_numbers[43][1]}%</td>
+                                <td className={this.isRealLotto(this.state.lotto_numbers[44][0]) ? 'table-danger' : ''}>{this.state.lotto_numbers[44][1]}%</td>
+                            </tr>
+                            </tbody>
+                        </table>
+
+                        <table className="table d-none">
+                            <thead>
+                            <tr>
+                                <td>one</td>
+                                <td>one</td>
+                                <td>two</td>
+                                <td>three</td>
+                                <td>four</td>
+                                <td>five</td>
+                                <td>six</td>
+                                <td>bonus</td>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {Object.keys(this.state.th).map((id, index) => {
+                                const th = this.state.th[id];
+                                return (
+                                    <tr key={id}>
+                                        <td><span className="badge badge-pill badge-secondary">{index + 1} 회차</span>
+                                        </td>
+                                        <td><h3><span className={this.lottoColor(th.one)}>{th.one}</span></h3></td>
+                                        <td><h3><span className={this.lottoColor(th.two)}>{th.two}</span></h3></td>
+                                        <td><h3><span className={this.lottoColor(th.three)}>{th.three}</span></h3></td>
+                                        <td><h3><span className={this.lottoColor(th.four)}>{th.four}</span></h3></td>
+                                        <td><h3><span className={this.lottoColor(th.five)}>{th.five}</span></h3></td>
+                                        <td><h3><span className={this.lottoColor(th.six)}>{th.six}</span></h3></td>
+                                        <td><h3><span className={this.lottoColor(th.bonus)}>{th.bonus}</span></h3></td>
+                                        <td><input type="button" value="삭제" onClick={() => this.handleDelete(id)}
+                                                   className="btn btn-secondary"/></td>
+                                    </tr>
+                                );
+                            })}
+                            <tr>
+                                <td></td>
+                                <td><input type="number" name="one" value={this.state.one}
+                                           onChange={this.handleValueChange} className="form-control"/></td>
+                                <td><input type="number" name="two" value={this.state.two}
+                                           onChange={this.handleValueChange} className="form-control"/></td>
+                                <td><input type="number" name="three" value={this.state.three}
+                                           onChange={this.handleValueChange} className="form-control"/></td>
+                                <td><input type="number" name="four" value={this.state.four}
+                                           onChange={this.handleValueChange} className="form-control"/></td>
+                                <td><input type="number" name="five" value={this.state.five}
+                                           onChange={this.handleValueChange} className="form-control"/></td>
+                                <td><input type="number" name="six" value={this.state.six}
+                                           onChange={this.handleValueChange} className="form-control"/></td>
+                                <td><input type="number" name="bonus" value={this.state.bonus}
+                                           onChange={this.handleValueChange} className="form-control"/></td>
+                                <td><input type="button" value="입력" onClick={this.handleSubmit}
+                                           className="btn btn-secondary"/></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </React.Fragment>
+            );
+        }
+    }
+</script>
+<script type="text/babel">
+    ReactDOM.render(<div><Main/></div>, document.querySelector('#root'));
+</script>
+</body>
+</html>
