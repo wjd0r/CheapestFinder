@@ -20,9 +20,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="320910c3-9705-4ea3-81bb-bbca316673f6" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/lotto.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/roulette.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index2.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lotto.html" beforeDir="false" afterPath="$PROJECT_DIR$/lotto.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -51,7 +51,7 @@
     <property name="DefaultHtmlFileTemplate" value="HTML File" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$USER_HOME$/Downloads/log" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
@@ -112,7 +112,14 @@
       <workItem from="1606976327834" duration="1791000" />
       <workItem from="1606978135740" duration="1791000" />
       <workItem from="1606979953853" duration="1791000" />
-      <workItem from="1606981762831" duration="80000" />
+      <workItem from="1606981762831" duration="1083000" />
+      <workItem from="1607039494638" duration="1460000" />
+      <workItem from="1607041322352" duration="1791000" />
+      <workItem from="1607043132150" duration="1791000" />
+      <workItem from="1607044950078" duration="2225000" />
+      <workItem from="1607050440599" duration="1803000" />
+      <workItem from="1607052261757" duration="1079000" />
+      <workItem from="1607054162972" duration="211000" />
     </task>
     <servers />
   </component>
@@ -157,13 +164,13 @@
     </state>
     <state x="461" y="224" key="SettingsEditor/0.0.1920.1160/1920.0.1920.1160@0.0.1920.1160" timestamp="1603955117735" />
     <state x="2381" y="224" key="SettingsEditor/0.0.1920.1160/1920.0.1920.1160@1920.0.1920.1160" timestamp="1604014830488" />
-    <state x="92" y="92" width="1736" height="976" key="com.intellij.history.integration.ui.views.FileHistoryDialog" timestamp="1606981844262">
+    <state x="92" y="92" width="1736" height="976" key="com.intellij.history.integration.ui.views.FileHistoryDialog" timestamp="1606982250440">
       <screen x="0" y="0" width="1920" height="1160" />
     </state>
-    <state x="92" y="92" width="1736" height="976" key="com.intellij.history.integration.ui.views.FileHistoryDialog/0.0.1920.1160/1920.0.1920.1160@0.0.1920.1160" timestamp="1606981844262" />
-    <state x="668" y="178" width="584" height="804" key="find.popup" timestamp="1606955304020">
+    <state x="92" y="92" width="1736" height="976" key="com.intellij.history.integration.ui.views.FileHistoryDialog/0.0.1920.1160/1920.0.1920.1160@0.0.1920.1160" timestamp="1606982250440" />
+    <state x="668" y="178" width="584" height="804" key="find.popup" timestamp="1607050799537">
       <screen x="0" y="0" width="1920" height="1160" />
     </state>
-    <state x="668" y="178" width="584" height="804" key="find.popup/0.0.1920.1160/1920.0.1920.1160@0.0.1920.1160" timestamp="1606955304020" />
+    <state x="668" y="178" width="584" height="804" key="find.popup/0.0.1920.1160/1920.0.1920.1160@0.0.1920.1160" timestamp="1607050799537" />
   </component>
 </project>
