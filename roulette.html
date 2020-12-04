@@ -82,7 +82,7 @@
                 bonus: 0,
                 red: 0,
                 black: 0,
-                betAmount: [0,0,0,0,0,0,1,2,4,7,11,17,26,40,61,92,139,209,314,472,709,1064,1597,2396,3595,5393],
+                betAmount: [0,0,0,0,0,0,0,0,1,2,4,7,11,17,26,40,61,92,139,209,314,472,709,1064,1597,2396,3595,5393],
             };
         }
 
@@ -172,13 +172,13 @@
 
             if([1,3,5,7,9,12,14,16,18,19,21,23,25,27,30,32,34,36].indexOf(number) != -1) { // 값이 없으면 -1 리턴
                 this.setState({
-                    red: 0,
-                    black: this.state.black + 1,
+                    red: this.state.red + 1,
+                    black: 0,
                 });
             } else {
                 this.setState({
-                    red: this.state.red + 1,
-                    black: 0,
+                    red: 0,
+                    black: this.state.black + 1,
                 });
             }
         }
@@ -247,12 +247,12 @@
                                 </tr>
                                 <tr>
                                     <td></td>
-                                    <td colSpan="2" className="table-active">1~18 <span className="badge badge-secondary">{Math.pow(this.state.left-5<0?0:this.state.left-5,3)}</span></td>
-                                    <td colSpan="2" className="table-active">짝수 <span className="badge badge-secondary">{Math.pow(this.state.even-5<0?0:this.state.even-5,3)}</span></td>
-                                    <td colSpan="2" className="bg-danger"><span className="badge badge-secondary">{Math.pow(this.state.black-5<0?0:this.state.black-5,3)}</span></td>
-                                    <td colSpan="2" className="bg-dark"><span className="badge badge-secondary">{Math.pow(this.state.red-5<0?0:this.state.red-5,3)}</span></td>
-                                    <td colSpan="2" className="table-active">홀수 <span className="badge badge-secondary">{Math.pow(this.state.odd-5<0?0:this.state.odd-5,3)}</span></td>
-                                    <td colSpan="2" className="table-active">19~36 <span className="badge badge-secondary">{Math.pow(this.state.right-5<0?0:this.state.right-5,3)}</span></td>
+                                    <td colSpan="2" className="table-active">1~18 <span className="badge badge-secondary">{Math.pow(this.state.left-4<0?0:this.state.left-4,3)}</span></td>
+                                    <td colSpan="2" className="table-active">짝수 <span className="badge badge-secondary">{Math.pow(this.state.even-4<0?0:this.state.even-4,3)}</span></td>
+                                    <td colSpan="2" className="bg-danger"><span className="badge badge-secondary">{Math.pow(this.state.black-4<0?0:this.state.black-4,3)}</span></td>
+                                    <td colSpan="2" className="bg-dark"><span className="badge badge-secondary">{Math.pow(this.state.red-4<0?0:this.state.red-4,3)}</span></td>
+                                    <td colSpan="2" className="table-active">홀수 <span className="badge badge-secondary">{Math.pow(this.state.odd-4<0?0:this.state.odd-4,3)}</span></td>
+                                    <td colSpan="2" className="table-active">19~36 <span className="badge badge-secondary">{Math.pow(this.state.right-4<0?0:this.state.right-4,3)}</span></td>
                                 </tr>
                             </tbody>
                         </table>
