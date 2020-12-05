@@ -209,7 +209,7 @@
                     <div className="col-md-12">
                         <h2>roulette</h2>
                         
-                        {this.state.rouletteNumbers.map(number=> {
+                        {this.state.rouletteNumbers.reverse().map(number=> {
                             return (<span className={this.ballCalss(number)}><span style={{"lineHeight":"31px"}}>{number}</span></span>)
                         })}
 
