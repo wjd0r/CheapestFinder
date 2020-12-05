@@ -165,6 +165,10 @@
                     c: this.state.c + 1,
                     coin: this.state.coin + (this.state.betAmount[this.state.a]*2) - this.state.betAmount[this.state.b] - this.state.betAmount[this.state.c],
                 });
+
+                console.log("+"+this.state.betAmount[this.state.a]*2)
+                console.log("-"+this.state.betAmount[this.state.b])
+                console.log("-"+this.state.betAmount[this.state.c])
             } else if(number < 25) {
                 this.setState({
                     a: this.state.a + 1,
@@ -172,6 +176,10 @@
                     c: this.state.c + 1,
                     coin: this.state.coin - this.state.betAmount[this.state.a] + (this.state.betAmount[this.state.b]*2) - this.state.betAmount[this.state.c],
                 });
+
+                console.log("-"+this.state.betAmount[this.state.a])
+                console.log("+"+this.state.betAmount[this.state.b]*2)
+                console.log("-"+this.state.betAmount[this.state.c])
             } else {
                 this.setState({
                     a: this.state.a + 1,
@@ -179,6 +187,10 @@
                     c: 0,
                     coin: this.state.coin - this.state.betAmount[this.state.a] - this.state.betAmount[this.state.b] + (this.state.betAmount[this.state.c]*2),
                 });
+
+                console.log("-"+this.state.betAmount[this.state.a])
+                console.log("-"+this.state.betAmount[this.state.b])
+                console.log("+"+this.state.betAmount[this.state.c]*2)
             }
 
             if(number % 3 == 0) {
@@ -188,6 +200,10 @@
                     one: this.state.one + 1,
                     coin: this.state.coin + (this.state.betAmount[this.state.three]*2) - this.state.betAmount[this.state.two] - this.state.betAmount[this.state.one],
                 });
+
+                console.log("+"+this.state.betAmount[this.state.three]*2)
+                console.log("-"+this.state.betAmount[this.state.two])
+                console.log("-"+this.state.betAmount[this.state.one])
             } else if(number % 3 == 2) {
                 this.setState({
                     three: this.state.three + 1,
@@ -195,6 +211,10 @@
                     one: this.state.one + 1,
                     coin: this.state.coin - this.state.betAmount[this.state.three] + (this.state.betAmount[this.state.two]*2) - this.state.betAmount[this.state.one],
                 });
+
+                console.log("-"+this.state.betAmount[this.state.three])
+                console.log("+"+this.state.betAmount[this.state.two]*2)
+                console.log("-"+this.state.betAmount[this.state.one])
             } else {
                 this.setState({
                     three: this.state.three + 1,
@@ -202,6 +222,10 @@
                     one: 0,
                     coin: this.state.coin - this.state.betAmount[this.state.three] - this.state.betAmount[this.state.two] + (this.state.betAmount[this.state.one]*2),
                 });
+
+                console.log("-"+this.state.betAmount[this.state.three])
+                console.log("-"+this.state.betAmount[this.state.two])
+                console.log("+"+this.state.betAmount[this.state.one]*2)
             }
 
             if(number < 19) {
