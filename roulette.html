@@ -88,9 +88,11 @@
         }
 
         chois(number) {
-            console.log(this.state.rouletteNumbers.push(number));
+            let temp = [];
+            temp = this.state.rouletteNumbers;
+            console.log(temp.push(number));
             this.setState({
-                rouletteNumbers: this.state.rouletteNumbers.push(number),
+                rouletteNumbers: temp,
             });
         }
 
