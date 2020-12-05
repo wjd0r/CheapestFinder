@@ -102,7 +102,6 @@
 
         chois(number) {
             let temp = this.state.rouletteNumbers;
-            console.log(temp.push(number));
             this.setState({
                 rouletteNumbers: temp,
             });
@@ -229,6 +228,9 @@
                 });
                 math = math - this.betAmount2(this.state.black) + this.betAmount2(this.state.red);
             }
+            
+            console.log(this.state.coin + " : " + math);
+
             this.setState({
                 coin: this.state.coin + math,
             });
