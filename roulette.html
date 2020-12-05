@@ -147,6 +147,7 @@
                     b: this.state.b + 1,
                     c: this.state.c + 1,
                 });
+                console.log("+"+ this.state.betAmount[this.state.a]*2 +"-"+ this.state.betAmount[this.state.b] +"-"+ this.state.betAmount[this.state.c]);
                 math = math + this.state.betAmount[this.state.a]*2 - this.state.betAmount[this.state.b] - this.state.b;
             } else if(number < 25) {
                 this.setState({
@@ -154,6 +155,7 @@
                     b: 0,
                     c: this.state.c + 1,
                 });
+                console.log("-"+ this.state.betAmount[this.state.a] +"+"+ this.state.betAmount[this.state.b]*2 +"-"+ this.state.betAmount[this.state.c]);
                 math = math - this.state.betAmount[this.state.a] + this.state.betAmount[this.state.b]*2 - this.state.betAmount[this.state.c];
             } else {
                 this.setState({
@@ -161,6 +163,7 @@
                     b: this.state.b + 1,
                     c: 0,
                 });
+                console.log("-"+ this.state.betAmount[this.state.a] +"-"+ this.state.betAmount[this.state.b]+"+"+ this.state.betAmount[this.state.c]*2);
                 math = math - this.state.betAmount[this.state.a] - this.state.betAmount[this.state.b] + this.state.betAmount[this.state.c]*2;
             }
 
