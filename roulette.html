@@ -89,7 +89,7 @@
         }
         
         betAmount2(number) {
-            return Math.pow(this.state.left - 3 < 0 ? 0 : this.state.left - 3, 2);
+            return Math.pow(this.state.left - 2 < 0 ? 0 : this.state.left - 2, 2);
         }
 
         ballCalss = (number) => {
@@ -116,7 +116,7 @@
         }
 
         limit(number) {
-            return number < 7 ? number : 0;
+            return number < 4 ? number : 0;
         }
 
         play = (number) => {
