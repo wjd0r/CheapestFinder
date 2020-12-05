@@ -173,6 +173,7 @@
                     two: this.state.two + 1,
                     one: this.state.one + 1,
                 });
+                console.log("+"+ this.state.betAmount[this.state.three]*2 +"-"+ this.state.betAmount[this.state.two]+"-"+ this.state.betAmount[this.state.one]);
                 math = math + this.state.betAmount[this.state.three]*2 - this.state.betAmount[this.state.two] - this.state.betAmount[this.state.one];
             } else if(number % 3 == 2) {
                 this.setState({
@@ -180,6 +181,7 @@
                     two: 0,
                     one: this.state.one + 1,
                 });
+                console.log("-"+ this.state.betAmount[this.state.three] +"+"+ this.state.betAmount[this.state.two]*2+"-"+ this.state.betAmount[this.state.one]);
                 math = math - this.state.betAmount[this.state.three] + this.state.betAmount[this.state.two]*2 - this.state.betAmount[this.state.one];
             } else {
                 this.setState({
@@ -187,6 +189,7 @@
                     two: this.state.two + 1,
                     one: 0,
                 });
+                console.log("-"+ this.state.betAmount[this.state.three] +"-"+ this.state.betAmount[this.state.two]+"+"+ this.state.betAmount[this.state.one]*2);
                 math = math - this.state.betAmount[this.state.three] - this.state.betAmount[this.state.two] + this.state.betAmount[this.state.one]*2;
             }
 
@@ -195,12 +198,14 @@
                     left: 0,
                     right: this.state.right + 1,
                 });
+                console.log("+"+ this.betAmount2(this.state.left) +"-"+ this.betAmount2(this.state.right));
                 math = math + this.betAmount2(this.state.left) - this.betAmount2(this.state.right);
             } else {
                 this.setState({
                     left: this.state.left + 1,
                     right: 0,
                 });
+                console.log("-"+ this.betAmount2(this.state.left) +"+"+ this.betAmount2(this.state.right));
                 math = math - this.betAmount2(this.state.left) + this.betAmount2(this.state.right);
             }
 
@@ -209,12 +214,14 @@
                     odd: this.state.odd + 1,
                     even: 0,
                 });
+                console.log("+"+ this.betAmount2(this.state.odd) +"-"+ this.betAmount2(this.state.even));
                 math = math + this.betAmount2(this.state.odd) - this.betAmount2(this.state.even);
             } else {
                 this.setState({
                     odd: 0,
                     even: this.state.even + 1,
                 });
+                console.log("-"+ this.betAmount2(this.state.odd) +"+"+ this.betAmount2(this.state.even));
                 math = math - this.betAmount2(this.state.odd) + this.betAmount2(this.state.even);
             }
 
@@ -223,12 +230,14 @@
                     red: this.state.red + 1,
                     black: 0,
                 });
+                console.log("-"+ this.betAmount2(this.state.red) +"+"+ this.betAmount2(this.state.black));
                 math = math - this.betAmount2(this.state.red) + this.betAmount2(this.state.black);
             } else {
                 this.setState({
                     red: 0,
                     black: this.state.black + 1,
                 });
+                console.log("-"+ this.betAmount2(this.state.black) +"+"+ this.betAmount2(this.state.red));
                 math = math - this.betAmount2(this.state.black) + this.betAmount2(this.state.red);
             }
             
