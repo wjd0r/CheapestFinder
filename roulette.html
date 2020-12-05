@@ -83,7 +83,14 @@
                 red: 0,
                 black: 0,
                 betAmount: [0,0,0,0,0,0,0,1,2,4,7,11,17,26,40,61,92,139,209,314,472,709,1064,1597,2396,3595,5393],
+                rouletteNumbers: [],
             };
+        }
+
+        chois(number) {
+            this.setState({
+                rouletteNumbers: this.state.rouletteNumbers.push(number),
+            });
         }
 
         play = (number) => {
@@ -181,6 +188,8 @@
                     black: this.state.black + 1,
                 });
             }
+
+            this.chois(number);
         }
 
         render() {
@@ -188,6 +197,12 @@
                 <React.Fragment>
                     <div className="col-md-12">
                         <h2>roulette</h2>
+                        
+                        {this.state.rouletteNumbers.map(()=> {
+                            return(
+                                <span className="rounded-circle badge-danger"><span style={{"lineHeight":"31px"}}>number</span></span>
+                            );
+                        })}
 
                         <table className="table table-bordered" style={{"textAlign":"center"}}>
                             <tbody>
