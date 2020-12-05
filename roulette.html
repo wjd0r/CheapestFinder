@@ -102,6 +102,7 @@
 
         chois(number) {
             let temp = this.state.rouletteNumbers;
+            temp.push(number);
             this.setState({
                 rouletteNumbers: temp,
             });
