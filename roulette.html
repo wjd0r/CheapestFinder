@@ -308,12 +308,12 @@
                                 </tr>
                                 <tr>
                                     <td></td>
-                                    <td colSpan="2" className="table-active">1~18 <span className="badge badge-secondary">{Math.pow(this.state.left-4<0?0:this.state.left-4,2)}</span></td>
-                                    <td colSpan="2" className="table-active">짝수 <span className="badge badge-secondary">{Math.pow(this.state.even-4<0?0:this.state.even-4,2)}</span></td>
-                                    <td colSpan="2" className="bg-danger"><span className="badge badge-secondary">{Math.pow(this.state.black-4<0?0:this.state.black-4,2)}</span></td>
-                                    <td colSpan="2" className="bg-dark"><span className="badge badge-secondary">{Math.pow(this.state.red-4<0?0:this.state.red-4,2)}</span></td>
-                                    <td colSpan="2" className="table-active">홀수 <span className="badge badge-secondary">{Math.pow(this.state.odd-4<0?0:this.state.odd-4,2)}</span></td>
-                                    <td colSpan="2" className="table-active">19~36 <span className="badge badge-secondary">{Math.pow(this.state.right-4<0?0:this.state.right-4,2)}</span></td>
+                                    <td colSpan="2" className="table-active">1~18 <span className="badge badge-secondary">{this.betAmount2(this.state.left)}</span></td>
+                                    <td colSpan="2" className="table-active">짝수 <span className="badge badge-secondary">{this.betAmount2(this.state.even)}</span></td>
+                                    <td colSpan="2" className="bg-danger"><span className="badge badge-secondary">{this.betAmount2(this.state.black)}</span></td>
+                                    <td colSpan="2" className="bg-dark"><span className="badge badge-secondary">{this.betAmount2(this.state.red)}</span></td>
+                                    <td colSpan="2" className="table-active">홀수 <span className="badge badge-secondary">{this.betAmount2(this.state.odd)}</span></td>
+                                    <td colSpan="2" className="table-active">19~36 <span className="badge badge-secondary">{this.betAmount2(this.state.right)}</span></td>
                                 </tr>
                             </tbody>
                         </table>
