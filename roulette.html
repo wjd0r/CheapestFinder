@@ -204,12 +204,14 @@
         }
 
         render() {
+            let reverseRouletteNumbers = this.state.rouletteNumbers;
+            reverseRouletteNumbers.reverse();
             return (
                 <React.Fragment>
                     <div className="col-md-12">
                         <h2>roulette</h2>
                         
-                        {this.state.rouletteNumbers.reverse().map(number=> {
+                        {reverseRouletteNumbers.map(number=> {
                             return (<span className={this.ballCalss(number)} style={{"textAlign":"center"}}><span style={{"lineHeight":"31px"}}>{number}</span></span>)
                         })}
 
