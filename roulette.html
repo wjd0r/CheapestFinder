@@ -149,7 +149,7 @@
                 });
                 console.log("+"+ this.state.betAmount[this.state.a]*2 +"-"+ this.state.betAmount[this.state.b] +"-"+ this.state.betAmount[this.state.c]);
                 math = math + this.state.betAmount[this.state.a]*2 - this.state.betAmount[this.state.b] - this.state.b;
-                console.log("math : " + math);
+                console.log(math);
             } else if(number < 25) {
                 this.setState({
                     a: this.state.a + 1,
@@ -158,7 +158,7 @@
                 });
                 console.log("-"+ this.state.betAmount[this.state.a] +"+"+ this.state.betAmount[this.state.b]*2 +"-"+ this.state.betAmount[this.state.c]);
                 math = math - this.state.betAmount[this.state.a] + this.state.betAmount[this.state.b]*2 - this.state.betAmount[this.state.c];
-                console.log("math : " + math);
+                console.log(math);
             } else {
                 this.setState({
                     a: this.state.a + 1,
@@ -167,7 +167,7 @@
                 });
                 console.log("-"+ this.state.betAmount[this.state.a] +"-"+ this.state.betAmount[this.state.b]+"+"+ this.state.betAmount[this.state.c]*2);
                 math = math - this.state.betAmount[this.state.a] - this.state.betAmount[this.state.b] + this.state.betAmount[this.state.c]*2;
-                console.log("math : " + math);
+                console.log(math);
             }
 
             if(number % 3 == 0) {
@@ -178,7 +178,7 @@
                 });
                 console.log("+"+ this.state.betAmount[this.state.three]*2 +"-"+ this.state.betAmount[this.state.two]+"-"+ this.state.betAmount[this.state.one]);
                 math = math + this.state.betAmount[this.state.three]*2 - this.state.betAmount[this.state.two] - this.state.betAmount[this.state.one];
-                console.log("math : " + math);
+                console.log(math);
             } else if(number % 3 == 2) {
                 this.setState({
                     three: this.state.three + 1,
@@ -187,7 +187,7 @@
                 });
                 console.log("-"+ this.state.betAmount[this.state.three] +"+"+ this.state.betAmount[this.state.two]*2+"-"+ this.state.betAmount[this.state.one]);
                 math = math - this.state.betAmount[this.state.three] + this.state.betAmount[this.state.two]*2 - this.state.betAmount[this.state.one];
-                console.log("math : " + math);
+                console.log(math);
             } else {
                 this.setState({
                     three: this.state.three + 1,
@@ -196,7 +196,7 @@
                 });
                 console.log("-"+ this.state.betAmount[this.state.three] +"-"+ this.state.betAmount[this.state.two]+"+"+ this.state.betAmount[this.state.one]*2);
                 math = math - this.state.betAmount[this.state.three] - this.state.betAmount[this.state.two] + this.state.betAmount[this.state.one]*2;
-                console.log("math : " + math);
+                console.log(math);
             }
 
             if(number < 19) {
@@ -206,7 +206,7 @@
                 });
                 console.log("+"+ this.betAmount2(this.state.left) +"-"+ this.betAmount2(this.state.right));
                 math = math + this.betAmount2(this.state.left) - this.betAmount2(this.state.right);
-                console.log("math : " + math);
+                console.log(math);
             } else {
                 this.setState({
                     left: this.state.left + 1,
@@ -214,7 +214,7 @@
                 });
                 console.log("-"+ this.betAmount2(this.state.left) +"+"+ this.betAmount2(this.state.right));
                 math = math - this.betAmount2(this.state.left) + this.betAmount2(this.state.right);
-                console.log("math : " + math);
+                console.log(math);
             }
 
             if(number % 2 == 0) {
@@ -224,7 +224,7 @@
                 });
                 console.log("+"+ this.betAmount2(this.state.odd) +"-"+ this.betAmount2(this.state.even));
                 math = math + this.betAmount2(this.state.odd) - this.betAmount2(this.state.even);
-                console.log("math : " + math);
+                console.log(math);
             } else {
                 this.setState({
                     odd: 0,
@@ -232,7 +232,8 @@
                 });
                 console.log("-"+ this.betAmount2(this.state.odd) +"+"+ this.betAmount2(this.state.even));
                 math = math - this.betAmount2(this.state.odd) + this.betAmount2(this.state.even);
-                console.log("math : " + math);
+                console.log(math);
+            }
 
             if([1,3,5,7,9,12,14,16,18,19,21,23,25,27,30,32,34,36].indexOf(number) != -1) { // 값이 없으면 -1 리턴
                 this.setState({
@@ -241,7 +242,7 @@
                 });
                 console.log("-"+ this.betAmount2(this.state.red) +"+"+ this.betAmount2(this.state.black));
                 math = math - this.betAmount2(this.state.red) + this.betAmount2(this.state.black);
-                console.log("math : " + math);
+                console.log(math);
             } else {
                 this.setState({
                     red: 0,
@@ -249,7 +250,7 @@
                 });
                 console.log("-"+ this.betAmount2(this.state.black) +"+"+ this.betAmount2(this.state.red));
                 math = math - this.betAmount2(this.state.black) + this.betAmount2(this.state.red);
-                console.log("math : " + math);
+                console.log(math);
             }
             
             console.log(this.state.coin + " : " + math);
