@@ -232,7 +232,7 @@
                     even: 0,
                 });
                 console.log("+"+ this.betAmount2(this.state.odd) +"-"+ this.betAmount2(this.state.even));
-                math = math + this.betAmount2(this.state.odd) - this.betAmount2(this.state.even);
+                math = math - this.betAmount2(this.state.odd) + this.betAmount2(this.state.even);
                 console.log(math);
             } else {
                 this.setState({
@@ -240,7 +240,7 @@
                     even: this.limit(this.state.even + 1),
                 });
                 console.log("-"+ this.betAmount2(this.state.odd) +"+"+ this.betAmount2(this.state.even));
-                math = math - this.betAmount2(this.state.odd) + this.betAmount2(this.state.even);
+                math = math + this.betAmount2(this.state.odd) - this.betAmount2(this.state.even);
                 console.log(math);
             }
 
