@@ -85,6 +85,7 @@
                 betAmount: [0,0,0,0,0,1,2,4,7,11,17,26,40,61,92,139,209,314,472,709,1064,1597,2396,3595,5393],
                 rouletteNumbers: [],
                 redBall: [1,3,5,7,9,12,14,16,18,19,21,23,25,27,30,32,34,36],
+                coin: 100,
             };
         }
         
@@ -102,11 +103,16 @@
             this.setState({
                 rouletteNumbers: temp,
             });
+
+            this.play(number);
+        }
+
+        randomChois() {
+            let randomNumber = Math.floor(Math.random() * 38) - 1;
+            this.chois(randomNumber == -1 ? 0 : randomNumber);
         }
 
         play = (number) => {
-            this.chois(number);
-
             if(number == 0) {
                 this.setState({
                     three: this.state.three + 1,
@@ -131,18 +137,21 @@
                     a: 0,
                     b: this.state.b + 1,
                     c: this.state.c + 1,
+                    coin: this.state.coin + this.state.a * 2 - this.state.b - this.state.c,
                 });
             } else if(number < 25) {
                 this.setState({
                     a: this.state.a + 1,
                     b: 0,
                     c: this.state.c + 1,
+                    coin: this.state.coin - this.state.a + this.state.b * 2 - this.state.c,
                 });
             } else {
                 this.setState({
                     a: this.state.a + 1,
                     b: this.state.b + 1,
                     c: 0,
+                    coin: this.state.coin - this.state.a - this.state.b + this.state.c * 2,
                 });
             }
 
@@ -151,18 +160,21 @@
                     three: 0,
                     two: this.state.two + 1,
                     one: this.state.one + 1,
+                    coin: this.state.coin + this.state.three * 2 - this.state.two - this.state.one,
                 });
             } else if(number % 3 == 2) {
                 this.setState({
                     three: this.state.three + 1,
                     two: 0,
                     one: this.state.one + 1,
+                    coin: this.state.coin - this.state.three + this.state.two * 2 - this.state.one,
                 });
             } else {
                 this.setState({
                     three: this.state.three + 1,
                     two: this.state.two + 1,
                     one: 0,
+                    coin: this.state.coin - this.state.three - this.state.two + this.state.one * 2,
                 });
             }
 
@@ -170,11 +182,13 @@
                 this.setState({
                     left: 0,
                     right: this.state.right + 1,
+                    coin: this.state.coin + this.state.left - this.state.right,
                 });
             } else {
                 this.setState({
                     left: this.state.left + 1,
                     right: 0,
+                    coin: this.state.coin - this.state.left + this.state.right,
                 });
             }
 
@@ -182,11 +196,13 @@
                 this.setState({
                     odd: this.state.odd + 1,
                     even: 0,
+                    coin: this.state.coin + this.state.odd - this.state.even,
                 });
             } else {
                 this.setState({
                     odd: 0,
                     even: this.state.even + 1,
+                    coin: this.state.coin - this.state.odd + this.state.even,
                 });
             }
 
@@ -194,11 +210,13 @@
                 this.setState({
                     red: this.state.red + 1,
                     black: 0,
+                    coin: this.state.coin + this.state.black - this.state.red,
                 });
             } else {
                 this.setState({
                     red: 0,
                     black: this.state.black + 1,
+                    coin: this.state.coin - this.state.black + this.state.red,
                 });
             }
         }
@@ -208,6 +226,8 @@
                 <React.Fragment>
                     <div className="col-md-12">
                         <h2>roulette</h2>
+
+                        <button onClick={this.randomChois()} className="btn btn-secondary">random chois</button>
                         
                         {this.state.rouletteNumbers.reverse().map(number=> {
                             return (<span className={this.ballCalss(number)} style={{"textAlign":"center"}}><span style={{"lineHeight":"31px"}}>{number}</span></span>)
@@ -217,51 +237,51 @@
                         <table className="table table-bordered" style={{"textAlign":"center"}}>
                             <tbody>
                                 <tr>
-                                    <td className="bg-success text-white" style={{"verticalAlign":"middle"}} onClick={() => this.play(0)}><strong>00</strong></td>
-                                    <td className="table-active" onClick={() => this.play(3)}><span className="rounded-circle badge-danger"><span style={{"lineHeight":"31px"}}>3</span></span></td>
-                                    <td className="table-active" onClick={() => this.play(6)}><span className="rounded-circle badge-dark"><span style={{"lineHeight":"31px"}}>6</span></span></td>
-                                    <td className="table-active" onClick={() => this.play(9)}><span className="rounded-circle badge-danger"><span style={{"lineHeight":"31px"}}>9</span></span></td>
-                                    <td className="table-active" onClick={() => this.play(12)}><span className="rounded-circle badge-danger"><span style={{"lineHeight":"31px"}}>12</span></span></td>
-                                    <td className="table-active" onClick={() => this.play(15)}><span className="rounded-circle badge-dark"><span style={{"lineHeight":"31px"}}>15</span></span></td>
-                                    <td className="table-active" onClick={() => this.play(18)}><span className="rounded-circle badge-danger"><span style={{"lineHeight":"31px"}}>18</span></span></td>
-                                    <td className="table-active" onClick={() => this.play(21)}><span className="rounded-circle badge-danger"><span style={{"lineHeight":"31px"}}>21</span></span></td>
-                                    <td className="table-active" onClick={() => this.play(24)}><span className="rounded-circle badge-dark"><span style={{"lineHeight":"31px"}}>24</span></span></td>
-                                    <td className="table-active" onClick={() => this.play(27)}><span className="rounded-circle badge-danger"><span style={{"lineHeight":"31px"}}>27</span></span></td>
-                                    <td className="table-active" onClick={() => this.play(30)}><span className="rounded-circle badge-danger"><span style={{"lineHeight":"31px"}}>30</span></span></td>
-                                    <td className="table-active" onClick={() => this.play(33)}><span className="rounded-circle badge-dark"><span style={{"lineHeight":"31px"}}>33</span></span></td>
-                                    <td className="table-active" onClick={() => this.play(36)}><span className="rounded-circle badge-danger"><span style={{"lineHeight":"31px"}}>36</span></span></td>
+                                    <td className="bg-success text-white" style={{"verticalAlign":"middle"}} onClick={() => this.chois(0)}><strong>00</strong></td>
+                                    <td className="table-active" onClick={() => this.chois(3)}><span className="rounded-circle badge-danger"><span style={{"lineHeight":"31px"}}>3</span></span></td>
+                                    <td className="table-active" onClick={() => this.chois(6)}><span className="rounded-circle badge-dark"><span style={{"lineHeight":"31px"}}>6</span></span></td>
+                                    <td className="table-active" onClick={() => this.chois(9)}><span className="rounded-circle badge-danger"><span style={{"lineHeight":"31px"}}>9</span></span></td>
+                                    <td className="table-active" onClick={() => this.chois(12)}><span className="rounded-circle badge-danger"><span style={{"lineHeight":"31px"}}>12</span></span></td>
+                                    <td className="table-active" onClick={() => this.chois(15)}><span className="rounded-circle badge-dark"><span style={{"lineHeight":"31px"}}>15</span></span></td>
+                                    <td className="table-active" onClick={() => this.chois(18)}><span className="rounded-circle badge-danger"><span style={{"lineHeight":"31px"}}>18</span></span></td>
+                                    <td className="table-active" onClick={() => this.chois(21)}><span className="rounded-circle badge-danger"><span style={{"lineHeight":"31px"}}>21</span></span></td>
+                                    <td className="table-active" onClick={() => this.chois(24)}><span className="rounded-circle badge-dark"><span style={{"lineHeight":"31px"}}>24</span></span></td>
+                                    <td className="table-active" onClick={() => this.chois(27)}><span className="rounded-circle badge-danger"><span style={{"lineHeight":"31px"}}>27</span></span></td>
+                                    <td className="table-active" onClick={() => this.chois(30)}><span className="rounded-circle badge-danger"><span style={{"lineHeight":"31px"}}>30</span></span></td>
+                                    <td className="table-active" onClick={() => this.chois(33)}><span className="rounded-circle badge-dark"><span style={{"lineHeight":"31px"}}>33</span></span></td>
+                                    <td className="table-active" onClick={() => this.chois(36)}><span className="rounded-circle badge-danger"><span style={{"lineHeight":"31px"}}>36</span></span></td>
                                     <td className="table-active"><span className="badge badge-secondary">{this.state.betAmount[this.state.three]}</span></td>
                                 </tr>
                                 <tr>
                                     <td></td>
-                                    <td className="table-active" onClick={() => this.play(2)}><span className="rounded-circle badge-dark"><span style={{"lineHeight":"31px"}}>2</span></span></td>
-                                    <td className="table-active" onClick={() => this.play(5)}><span className="rounded-circle badge-danger"><span style={{"lineHeight":"31px"}}>5</span></span></td>
-                                    <td className="table-active" onClick={() => this.play(8)}><span className="rounded-circle badge-dark"><span style={{"lineHeight":"31px"}}>8</span></span></td>
-                                    <td className="table-active" onClick={() => this.play(11)}><span className="rounded-circle badge-dark"><span style={{"lineHeight":"31px"}}>11</span></span></td>
-                                    <td className="table-active" onClick={() => this.play(14)}><span className="rounded-circle badge-danger"><span style={{"lineHeight":"31px"}}>14</span></span></td>
-                                    <td className="table-active" onClick={() => this.play(17)}><span className="rounded-circle badge-dark"><span style={{"lineHeight":"31px"}}>17</span></span></td>
-                                    <td className="table-active" onClick={() => this.play(20)}><span className="rounded-circle badge-dark"><span style={{"lineHeight":"31px"}}>20</span></span></td>
-                                    <td className="table-active" onClick={() => this.play(23)}><span className="rounded-circle badge-danger"><span style={{"lineHeight":"31px"}}>23</span></span></td>
-                                    <td className="table-active" onClick={() => this.play(26)}><span className="rounded-circle badge-dark"><span style={{"lineHeight":"31px"}}>26</span></span></td>
-                                    <td className="table-active" onClick={() => this.play(29)}><span className="rounded-circle badge-dark"><span style={{"lineHeight":"31px"}}>29</span></span></td>
-                                    <td className="table-active" onClick={() => this.play(32)}><span className="rounded-circle badge-danger"><span style={{"lineHeight":"31px"}}>32</span></span></td>
-                                    <td className="table-active" onClick={() => this.play(35)}><span className="rounded-circle badge-dark"><span style={{"lineHeight":"31px"}}>35</span></span></td>
+                                    <td className="table-active" onClick={() => this.chois(2)}><span className="rounded-circle badge-dark"><span style={{"lineHeight":"31px"}}>2</span></span></td>
+                                    <td className="table-active" onClick={() => this.chois(5)}><span className="rounded-circle badge-danger"><span style={{"lineHeight":"31px"}}>5</span></span></td>
+                                    <td className="table-active" onClick={() => this.chois(8)}><span className="rounded-circle badge-dark"><span style={{"lineHeight":"31px"}}>8</span></span></td>
+                                    <td className="table-active" onClick={() => this.chois(11)}><span className="rounded-circle badge-dark"><span style={{"lineHeight":"31px"}}>11</span></span></td>
+                                    <td className="table-active" onClick={() => this.chois(14)}><span className="rounded-circle badge-danger"><span style={{"lineHeight":"31px"}}>14</span></span></td>
+                                    <td className="table-active" onClick={() => this.chois(17)}><span className="rounded-circle badge-dark"><span style={{"lineHeight":"31px"}}>17</span></span></td>
+                                    <td className="table-active" onClick={() => this.chois(20)}><span className="rounded-circle badge-dark"><span style={{"lineHeight":"31px"}}>20</span></span></td>
+                                    <td className="table-active" onClick={() => this.chois(23)}><span className="rounded-circle badge-danger"><span style={{"lineHeight":"31px"}}>23</span></span></td>
+                                    <td className="table-active" onClick={() => this.chois(26)}><span className="rounded-circle badge-dark"><span style={{"lineHeight":"31px"}}>26</span></span></td>
+                                    <td className="table-active" onClick={() => this.chois(29)}><span className="rounded-circle badge-dark"><span style={{"lineHeight":"31px"}}>29</span></span></td>
+                                    <td className="table-active" onClick={() => this.chois(32)}><span className="rounded-circle badge-danger"><span style={{"lineHeight":"31px"}}>32</span></span></td>
+                                    <td className="table-active" onClick={() => this.chois(35)}><span className="rounded-circle badge-dark"><span style={{"lineHeight":"31px"}}>35</span></span></td>
                                     <td className="table-active"><span className="badge badge-secondary">{this.state.betAmount[this.state.two]}</span></td>
                                 </tr>
                                 <tr>
-                                    <td className="bg-success text-white" style={{"verticalAlign":"middle"}} onClick={() => this.play(0)}><strong>0</strong></td>
-                                    <td className="table-active" onClick={() => this.play(1)}><span className="rounded-circle badge-danger"><span style={{"lineHeight":"31px"}}>1</span></span></td>
-                                    <td className="table-active" onClick={() => this.play(4)}><span className="rounded-circle badge-dark"><span style={{"lineHeight":"31px"}}>4</span></span></td>
-                                    <td className="table-active" onClick={() => this.play(7)}><span className="rounded-circle badge-danger"><span style={{"lineHeight":"31px"}}>7</span></span></td>
-                                    <td className="table-active" onClick={() => this.play(10)}><span className="rounded-circle badge-dark"><span style={{"lineHeight":"31px"}}>10</span></span></td>
-                                    <td className="table-active" onClick={() => this.play(13)}><span className="rounded-circle badge-dark"><span style={{"lineHeight":"31px"}}>13</span></span></td>
-                                    <td className="table-active" onClick={() => this.play(16)}><span className="rounded-circle badge-danger"><span style={{"lineHeight":"31px"}}>16</span></span></td>
-                                    <td className="table-active" onClick={() => this.play(19)}><span className="rounded-circle badge-danger"><span style={{"lineHeight":"31px"}}>19</span></span></td>
-                                    <td className="table-active" onClick={() => this.play(22)}><span className="rounded-circle badge-dark"><span style={{"lineHeight":"31px"}}>22</span></span></td>
-                                    <td className="table-active" onClick={() => this.play(25)}><span className="rounded-circle badge-danger"><span style={{"lineHeight":"31px"}}>25</span></span></td>
-                                    <td className="table-active" onClick={() => this.play(28)}><span className="rounded-circle badge-dark"><span style={{"lineHeight":"31px"}}>28</span></span></td>
-                                    <td className="table-active" onClick={() => this.play(31)}><span className="rounded-circle badge-dark"><span style={{"lineHeight":"31px"}}>31</span></span></td>
-                                    <td className="table-active" onClick={() => this.play(34)}><span className="rounded-circle badge-danger"><span style={{"lineHeight":"31px"}}>34</span></span></td>
+                                    <td className="bg-success text-white" style={{"verticalAlign":"middle"}} onClick={() => this.chois(0)}><strong>0</strong></td>
+                                    <td className="table-active" onClick={() => this.chois(1)}><span className="rounded-circle badge-danger"><span style={{"lineHeight":"31px"}}>1</span></span></td>
+                                    <td className="table-active" onClick={() => this.chois(4)}><span className="rounded-circle badge-dark"><span style={{"lineHeight":"31px"}}>4</span></span></td>
+                                    <td className="table-active" onClick={() => this.chois(7)}><span className="rounded-circle badge-danger"><span style={{"lineHeight":"31px"}}>7</span></span></td>
+                                    <td className="table-active" onClick={() => this.chois(10)}><span className="rounded-circle badge-dark"><span style={{"lineHeight":"31px"}}>10</span></span></td>
+                                    <td className="table-active" onClick={() => this.chois(13)}><span className="rounded-circle badge-dark"><span style={{"lineHeight":"31px"}}>13</span></span></td>
+                                    <td className="table-active" onClick={() => this.chois(16)}><span className="rounded-circle badge-danger"><span style={{"lineHeight":"31px"}}>16</span></span></td>
+                                    <td className="table-active" onClick={() => this.chois(19)}><span className="rounded-circle badge-danger"><span style={{"lineHeight":"31px"}}>19</span></span></td>
+                                    <td className="table-active" onClick={() => this.chois(22)}><span className="rounded-circle badge-dark"><span style={{"lineHeight":"31px"}}>22</span></span></td>
+                                    <td className="table-active" onClick={() => this.chois(25)}><span className="rounded-circle badge-danger"><span style={{"lineHeight":"31px"}}>25</span></span></td>
+                                    <td className="table-active" onClick={() => this.chois(28)}><span className="rounded-circle badge-dark"><span style={{"lineHeight":"31px"}}>28</span></span></td>
+                                    <td className="table-active" onClick={() => this.chois(31)}><span className="rounded-circle badge-dark"><span style={{"lineHeight":"31px"}}>31</span></span></td>
+                                    <td className="table-active" onClick={() => this.chois(34)}><span className="rounded-circle badge-danger"><span style={{"lineHeight":"31px"}}>34</span></span></td>
                                     <td className="table-active"><span className="badge badge-secondary">{this.state.betAmount[this.state.one]}</span></td>
                                 </tr>
                                 <tr>
