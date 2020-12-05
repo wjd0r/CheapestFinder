@@ -245,7 +245,7 @@
                         <button onClick={() => this.randomChois()} className="btn btn-secondary">random chois</button>
                         
                         {this.state.rouletteNumbers.reverse().map((number, index) => {
-                            if (index > 10)
+                            if (index < 10)
                                 return (<span className={this.ballCalss(number)} style={{"textAlign":"center"}}><span style={{"lineHeight":"31px"}}>{number}</span></span>)
                         })}
                         {this.state.rouletteNumbers.reverse()}
