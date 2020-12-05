@@ -81,7 +81,7 @@
                 even: 0,
                 red: 0,
                 black: 0,
-                betAmount: [0,0,0,1,2,4,7,11,17,26,40,61,92,139,209,314,472,709,1064,1597,2396,3595,5393],
+                betAmount: [0,0,0,0,0,0,0,0,0,0,0,0,1,2,4,7,11,17,26,40,61,92,139,209,314,472,709,1064,1597,2396,3595,5393],
                 rouletteNumbers: [],
                 redBall: [1,3,5,7,9,12,14,16,18,19,21,23,25,27,30,32,34,36],
                 coin: 200,
@@ -89,7 +89,7 @@
         }
         
         betAmount2(number) {
-            return Math.pow(number - 3 < 0 ? 0 : number - 3, 2);
+            return Math.pow(number - 8 < 0 ? 0 : number - 8, 2);
         }
 
         ballCalss = (number) => {
@@ -116,7 +116,7 @@
         }
 
         limit(number) {
-            return number < 4 ? number : 0;
+            return number;
         }
 
         play = (number) => {
