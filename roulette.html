@@ -210,7 +210,7 @@
                         <h2>roulette</h2>
                         
                         {this.state.rouletteNumbers.reverse().map(number=> {
-                            return (<span className={this.ballCalss(number)}><span style={{"lineHeight":"31px"}}>{number}</span></span>)
+                            return (<span className={this.ballCalss(number)} style={{"textAlign":"center"}}><span style={{"lineHeight":"31px"}}>{number}</span></span>)
                         })}
 
                         <table className="table table-bordered" style={{"textAlign":"center"}}>
