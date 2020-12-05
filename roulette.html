@@ -229,7 +229,7 @@
 
                         <span>coin : {this.state.coin}</span>
 
-                        <button onClick={this.randomChois()} className="btn btn-secondary">random chois</button>
+                        <button onClick={() => this.randomChois()} className="btn btn-secondary">random chois</button>
                         
                         {this.state.rouletteNumbers.reverse().map(number=> {
                             return (<span className={this.ballCalss(number)} style={{"textAlign":"center"}}><span style={{"lineHeight":"31px"}}>{number}</span></span>)
