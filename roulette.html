@@ -134,9 +134,9 @@
                     black: this.state.black + 1,
                     coin: this.state.coin - this.state.betAmount[this.state.a] - this.state.betAmount[this.state.b] - this.state.betAmount[this.state.c]
                                     - this.state.betAmount[this.state.three] - this.state.betAmount[this.state.two] - this.state.betAmount[this.state.one]
-                                    - this.state.betAmount2(this.state.left) - this.state.betAmount2(this.state.right)
-                                    - this.state.betAmount2(this.state.odd) - this.state.betAmount2(this.state.even)
-                                    - this.state.betAmount2(this.state.red) - this.state.betAmount2(this.state.black),
+                                    - this.betAmount2(this.state.left) - this.betAmount2(this.state.right)
+                                    - this.betAmount2(this.state.odd) - this.betAmount2(this.state.even)
+                                    - this.betAmount2(this.state.red) - this.betAmount2(this.state.black),
                 });
                 return null;
             }
@@ -191,13 +191,13 @@
                 this.setState({
                     left: 0,
                     right: this.state.right + 1,
-                    coin: this.state.coin + this.state.betAmount2(this.state.left) - this.state.betAmount2(this.state.right),
+                    coin: this.state.coin + this.betAmount2(this.state.left) - this.betAmount2(this.state.right),
                 });
             } else {
                 this.setState({
                     left: this.state.left + 1,
                     right: 0,
-                    coin: this.state.coin - this.state.betAmount2(this.state.left) + this.state.betAmount2(this.state.right),
+                    coin: this.state.coin - this.betAmount2(this.state.left) + this.betAmount2(this.state.right),
                 });
             }
 
@@ -205,13 +205,13 @@
                 this.setState({
                     odd: this.state.odd + 1,
                     even: 0,
-                    coin: this.state.coin + this.state.betAmount2(this.state.odd) - this.state.betAmount2(this.state.even),
+                    coin: this.state.coin + this.betAmount2(this.state.odd) - this.betAmount2(this.state.even),
                 });
             } else {
                 this.setState({
                     odd: 0,
                     even: this.state.even + 1,
-                    coin: this.state.coin - this.state.betAmount2(this.state.odd) + this.state.betAmount2(this.state.even),
+                    coin: this.state.coin - this.betAmount2(this.state.odd) + this.betAmount2(this.state.even),
                 });
             }
 
@@ -219,13 +219,13 @@
                 this.setState({
                     red: this.state.red + 1,
                     black: 0,
-                    coin: this.state.coin + this.state.betAmount2(this.state.black) - this.state.betAmount2(this.state.red),
+                    coin: this.state.coin + this.betAmount2(this.state.black) - this.betAmount2(this.state.red),
                 });
             } else {
                 this.setState({
                     red: 0,
                     black: this.state.black + 1,
-                    coin: this.state.coin - this.state.betAmount2(this.state.black) + this.state.betAmount2(this.state.red),
+                    coin: this.state.coin - this.betAmount2(this.state.black) + this.betAmount2(this.state.red),
                 });
             }
         }
