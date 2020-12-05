@@ -132,12 +132,12 @@
                     a: this.limit(this.state.a + 1),
                     b: this.limit(this.state.b + 1),
                     c: this.limit(this.state.c + 1),
-                    left: this.limit(this.state.left + 1),
-                    right: this.limit(this.state.right + 1),
-                    odd: this.limit(this.state.odd + 1),
-                    even: this.limit(this.state.even + 1),
-                    red: this.limit(this.state.red + 1),
-                    black: this.limit(this.state.black + 1),
+                    //left: this.limit(this.state.left + 1),
+                    //right: this.limit(this.state.right + 1),
+                    //odd: this.limit(this.state.odd + 1),
+                    //even: this.limit(this.state.even + 1),
+                    //red: this.limit(this.state.red + 1),
+                    //black: this.limit(this.state.black + 1),
                     coin: this.state.coin - this.state.betAmount[this.state.a] - this.state.betAmount[this.state.b] - this.state.betAmount[this.state.c]
                                     - this.state.betAmount[this.state.three] - this.state.betAmount[this.state.two] - this.state.betAmount[this.state.one]
                                     - this.betAmount2(this.state.left) - this.betAmount2(this.state.right)
@@ -179,6 +179,7 @@
                 console.log(math);
             }
 
+/*
             if(number % 3 == 0) {
                 this.setState({
                     three: 0,
@@ -261,7 +262,7 @@
                 math = math - this.betAmount2(this.state.black) + this.betAmount2(this.state.red);
                 console.log(math);
             }
-            
+*/
             console.log(this.state.coin + " : " + math);
 
             this.setState({
