@@ -83,13 +83,21 @@
                 red: 0,
                 black: 0,
                 betAmount: [0,0,0,0,0,0,0,1,2,4,7,11,17,26,40,61,92,139,209,314,472,709,1064,1597,2396,3595,5393],
-                rouletteNumbers: [1,2,3],
+                rouletteNumbers: [],
+                redBall: [1,3,5,7,9,12,14,16,18,19,21,23,25,27,30,32,34,36],
             };
+        }
+        
+        ballCalss = (number) => {
+            return this.isRedBall(number) ? "rounded-circle badge-danger" : "rounded-circle badge-dark";
+        }
+
+        isRedBall(number) {
+            return [1,3,5,7,9,12,14,16,18,19,21,23,25,27,30,32,34,36].indexOf(number) != -1;
         }
 
         chois(number) {
-            let temp = [];
-            temp = this.state.rouletteNumbers;
+            let temp = this.state.rouletteNumbers;
             console.log(temp.push(number));
             this.setState({
                 rouletteNumbers: temp,
@@ -202,7 +210,7 @@
                         <h2>roulette</h2>
                         
                         {this.state.rouletteNumbers.map(number=> {
-                            return (<div>{number}</div>)
+                            return (<span className={this.ballCalss(number)}><span style={{"lineHeight":"31px"}}>{number}</span></span>)
                         })}
 
                         <table className="table table-bordered" style={{"textAlign":"center"}}>
