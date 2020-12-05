@@ -118,6 +118,22 @@
         play = (number) => {
 
             console.log("play" + number);
+
+            console.log("a" + this.state.betAmount[this.state.a]);
+            console.log("b" + this.state.betAmount[this.state.b]);
+            console.log("c" + this.state.betAmount[this.state.c]);
+            console.log("three" + this.state.betAmount[this.state.three]);
+            console.log("two" + this.state.betAmount[this.state.two]);
+            console.log("one" + this.state.betAmount[this.state.one]);
+            console.log("left" + this.betAmount2(this.state.left));
+            console.log("right" + this.betAmount2(this.state.right));
+            console.log("odd" + this.betAmount2(this.state.odd));
+            console.log("even" + this.betAmount2(this.state.even));
+            console.log("red" + this.betAmount2(this.state.red));
+            console.log("black" + this.betAmount2(this.state.black));
+
+
+
             if(number == 0) {
                 this.setState({
                     three: this.state.three + 1,
@@ -138,6 +154,7 @@
                                     - this.betAmount2(this.state.odd) - this.betAmount2(this.state.even)
                                     - this.betAmount2(this.state.red) - this.betAmount2(this.state.black),
                 });
+
                 return null;
             }
 
