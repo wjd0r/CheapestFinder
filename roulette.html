@@ -89,7 +89,7 @@
         }
         
         ballCalss = (number) => {
-            return this.isRedBall(number) ? "rounded-circle badge-danger" : "rounded-circle badge-dark";
+            return number == 0 ? "rounded-circle badge-success" : this.isRedBall(number) ? "rounded-circle badge-danger" : "rounded-circle badge-dark";
         }
 
         isRedBall(number) {
@@ -105,6 +105,8 @@
         }
 
         play = (number) => {
+            this.chois(number);
+
             if(number == 0) {
                 this.setState({
                     three: this.state.three + 1,
@@ -199,8 +201,6 @@
                     black: this.state.black + 1,
                 });
             }
-
-            this.chois(number);
         }
 
         render() {
