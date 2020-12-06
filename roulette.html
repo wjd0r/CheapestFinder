@@ -82,12 +82,24 @@
                 red: 0,
                 black: 0,
                 betAmount: [0,0,0,0,0,0,0,1,2,4,7,11,17,26,40,61,92,139,209,314,472,709,1064,1597,2396,3595,5393],
-                rouletteNumbers: [],
+                rouletteNumbers: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+                allNumbers: [],
+                ghltn: 0,
                 redBall: [1,3,5,7,9,12,14,16,18,19,21,23,25,27,30,32,34,36],
                 coin: 200,
             };
         }
         
+        allNumbersRate(number) {
+            ghltn++;
+            let temp = allNumbers;
+            temp[number] = temp[number] + ghltn;
+            this.setState({
+                allNumbers: temp,
+            });
+            allNumbers[number];
+        }
+
         betAmount2(number) {
             return Math.pow(2, number - 8 < 0 ? 0 : number - 8);
         }
@@ -290,50 +302,50 @@
                             <tbody>
                                 <tr>
                                     <td className="bg-success text-white" style={{"verticalAlign":"middle"}} onClick={() => this.chois(0)}><strong>00</strong></td>
-                                    <td className="table-active" onClick={() => this.chois(3)}><span className="rounded-circle badge-danger"><span style={{"lineHeight":"31px"}}>3</span></span></td>
-                                    <td className="table-active" onClick={() => this.chois(6)}><span className="rounded-circle badge-dark"><span style={{"lineHeight":"31px"}}>6</span></span></td>
-                                    <td className="table-active" onClick={() => this.chois(9)}><span className="rounded-circle badge-danger"><span style={{"lineHeight":"31px"}}>9</span></span></td>
-                                    <td className="table-active" onClick={() => this.chois(12)}><span className="rounded-circle badge-danger"><span style={{"lineHeight":"31px"}}>12</span></span></td>
-                                    <td className="table-active" onClick={() => this.chois(15)}><span className="rounded-circle badge-dark"><span style={{"lineHeight":"31px"}}>15</span></span></td>
-                                    <td className="table-active" onClick={() => this.chois(18)}><span className="rounded-circle badge-danger"><span style={{"lineHeight":"31px"}}>18</span></span></td>
-                                    <td className="table-active" onClick={() => this.chois(21)}><span className="rounded-circle badge-danger"><span style={{"lineHeight":"31px"}}>21</span></span></td>
-                                    <td className="table-active" onClick={() => this.chois(24)}><span className="rounded-circle badge-dark"><span style={{"lineHeight":"31px"}}>24</span></span></td>
-                                    <td className="table-active" onClick={() => this.chois(27)}><span className="rounded-circle badge-danger"><span style={{"lineHeight":"31px"}}>27</span></span></td>
-                                    <td className="table-active" onClick={() => this.chois(30)}><span className="rounded-circle badge-danger"><span style={{"lineHeight":"31px"}}>30</span></span></td>
-                                    <td className="table-active" onClick={() => this.chois(33)}><span className="rounded-circle badge-dark"><span style={{"lineHeight":"31px"}}>33</span></span></td>
-                                    <td className="table-active" onClick={() => this.chois(36)}><span className="rounded-circle badge-danger"><span style={{"lineHeight":"31px"}}>36</span></span></td>
+                                    <td className="table-active" onClick={() => this.chois(3)}><span className="rounded-circle badge-danger"><span style={{"lineHeight":"31px"}}>3</span></span><span className="badge badge-secondary">{this.state.allNumbers[3]}</span></td>
+                                    <td className="table-active" onClick={() => this.chois(6)}><span className="rounded-circle badge-dark"><span style={{"lineHeight":"31px"}}>6</span></span><span className="badge badge-secondary">{this.state.allNumbers[6]}</span></td>
+                                    <td className="table-active" onClick={() => this.chois(9)}><span className="rounded-circle badge-danger"><span style={{"lineHeight":"31px"}}>9</span></span><span className="badge badge-secondary">{this.state.allNumbers[9]}</span></td>
+                                    <td className="table-active" onClick={() => this.chois(12)}><span className="rounded-circle badge-danger"><span style={{"lineHeight":"31px"}}>12</span></span><span className="badge badge-secondary">{this.state.allNumbers[12]}</span></td>
+                                    <td className="table-active" onClick={() => this.chois(15)}><span className="rounded-circle badge-dark"><span style={{"lineHeight":"31px"}}>15</span></span><span className="badge badge-secondary">{this.state.allNumbers[15]}</span></td>
+                                    <td className="table-active" onClick={() => this.chois(18)}><span className="rounded-circle badge-danger"><span style={{"lineHeight":"31px"}}>18</span></span><span className="badge badge-secondary">{this.state.allNumbers[18]}</span></td>
+                                    <td className="table-active" onClick={() => this.chois(21)}><span className="rounded-circle badge-danger"><span style={{"lineHeight":"31px"}}>21</span></span><span className="badge badge-secondary">{this.state.allNumbers[21]}</span></td>
+                                    <td className="table-active" onClick={() => this.chois(24)}><span className="rounded-circle badge-dark"><span style={{"lineHeight":"31px"}}>24</span></span><span className="badge badge-secondary">{this.state.allNumbers[24]}</span></td>
+                                    <td className="table-active" onClick={() => this.chois(27)}><span className="rounded-circle badge-danger"><span style={{"lineHeight":"31px"}}>27</span></span><span className="badge badge-secondary">{this.state.allNumbers[27]}</span></td>
+                                    <td className="table-active" onClick={() => this.chois(30)}><span className="rounded-circle badge-danger"><span style={{"lineHeight":"31px"}}>30</span></span><span className="badge badge-secondary">{this.state.allNumbers[30]}</span></td>
+                                    <td className="table-active" onClick={() => this.chois(33)}><span className="rounded-circle badge-dark"><span style={{"lineHeight":"31px"}}>33</span></span><span className="badge badge-secondary">{this.state.allNumbers[33]}</span></td>
+                                    <td className="table-active" onClick={() => this.chois(36)}><span className="rounded-circle badge-danger"><span style={{"lineHeight":"31px"}}>36</span></span><span className="badge badge-secondary">{this.state.allNumbers[36]}</span></td>
                                     <td className="table-active"><span className="badge badge-secondary">{this.state.betAmount[this.state.three]}</span></td>
                                 </tr>
                                 <tr>
                                     <td></td>
-                                    <td className="table-active" onClick={() => this.chois(2)}><span className="rounded-circle badge-dark"><span style={{"lineHeight":"31px"}}>2</span></span></td>
-                                    <td className="table-active" onClick={() => this.chois(5)}><span className="rounded-circle badge-danger"><span style={{"lineHeight":"31px"}}>5</span></span></td>
-                                    <td className="table-active" onClick={() => this.chois(8)}><span className="rounded-circle badge-dark"><span style={{"lineHeight":"31px"}}>8</span></span></td>
-                                    <td className="table-active" onClick={() => this.chois(11)}><span className="rounded-circle badge-dark"><span style={{"lineHeight":"31px"}}>11</span></span></td>
-                                    <td className="table-active" onClick={() => this.chois(14)}><span className="rounded-circle badge-danger"><span style={{"lineHeight":"31px"}}>14</span></span></td>
-                                    <td className="table-active" onClick={() => this.chois(17)}><span className="rounded-circle badge-dark"><span style={{"lineHeight":"31px"}}>17</span></span></td>
-                                    <td className="table-active" onClick={() => this.chois(20)}><span className="rounded-circle badge-dark"><span style={{"lineHeight":"31px"}}>20</span></span></td>
-                                    <td className="table-active" onClick={() => this.chois(23)}><span className="rounded-circle badge-danger"><span style={{"lineHeight":"31px"}}>23</span></span></td>
-                                    <td className="table-active" onClick={() => this.chois(26)}><span className="rounded-circle badge-dark"><span style={{"lineHeight":"31px"}}>26</span></span></td>
-                                    <td className="table-active" onClick={() => this.chois(29)}><span className="rounded-circle badge-dark"><span style={{"lineHeight":"31px"}}>29</span></span></td>
-                                    <td className="table-active" onClick={() => this.chois(32)}><span className="rounded-circle badge-danger"><span style={{"lineHeight":"31px"}}>32</span></span></td>
-                                    <td className="table-active" onClick={() => this.chois(35)}><span className="rounded-circle badge-dark"><span style={{"lineHeight":"31px"}}>35</span></span></td>
+                                    <td className="table-active" onClick={() => this.chois(2)}><span className="rounded-circle badge-dark"><span style={{"lineHeight":"31px"}}>2</span></span><span className="badge badge-secondary">{this.state.allNumbers[2]}</span></td>
+                                    <td className="table-active" onClick={() => this.chois(5)}><span className="rounded-circle badge-danger"><span style={{"lineHeight":"31px"}}>5</span></span><span className="badge badge-secondary">{this.state.allNumbers[5]}</span></td>
+                                    <td className="table-active" onClick={() => this.chois(8)}><span className="rounded-circle badge-dark"><span style={{"lineHeight":"31px"}}>8</span></span><span className="badge badge-secondary">{this.state.allNumbers[8]}</span></td>
+                                    <td className="table-active" onClick={() => this.chois(11)}><span className="rounded-circle badge-dark"><span style={{"lineHeight":"31px"}}>11</span></span><span className="badge badge-secondary">{this.state.allNumbers[11]}</span></td>
+                                    <td className="table-active" onClick={() => this.chois(14)}><span className="rounded-circle badge-danger"><span style={{"lineHeight":"31px"}}>14</span></span><span className="badge badge-secondary">{this.state.allNumbers[14]}</span></td>
+                                    <td className="table-active" onClick={() => this.chois(17)}><span className="rounded-circle badge-dark"><span style={{"lineHeight":"31px"}}>17</span></span><span className="badge badge-secondary">{this.state.allNumbers[17]}</span></td>
+                                    <td className="table-active" onClick={() => this.chois(20)}><span className="rounded-circle badge-dark"><span style={{"lineHeight":"31px"}}>20</span></span><span className="badge badge-secondary">{this.state.allNumbers[20]}</span></td>
+                                    <td className="table-active" onClick={() => this.chois(23)}><span className="rounded-circle badge-danger"><span style={{"lineHeight":"31px"}}>23</span></span><span className="badge badge-secondary">{this.state.allNumbers[23]}</span></td>
+                                    <td className="table-active" onClick={() => this.chois(26)}><span className="rounded-circle badge-dark"><span style={{"lineHeight":"31px"}}>26</span></span><span className="badge badge-secondary">{this.state.allNumbers[26]}</span></td>
+                                    <td className="table-active" onClick={() => this.chois(29)}><span className="rounded-circle badge-dark"><span style={{"lineHeight":"31px"}}>29</span></span><span className="badge badge-secondary">{this.state.allNumbers[29]}</span></td>
+                                    <td className="table-active" onClick={() => this.chois(32)}><span className="rounded-circle badge-danger"><span style={{"lineHeight":"31px"}}>32</span></span><span className="badge badge-secondary">{this.state.allNumbers[32]}</span></td>
+                                    <td className="table-active" onClick={() => this.chois(35)}><span className="rounded-circle badge-dark"><span style={{"lineHeight":"31px"}}>35</span></span><span className="badge badge-secondary">{this.state.allNumbers[35]}</span></td>
                                     <td className="table-active"><span className="badge badge-secondary">{this.state.betAmount[this.state.two]}</span></td>
                                 </tr>
                                 <tr>
                                     <td className="bg-success text-white" style={{"verticalAlign":"middle"}} onClick={() => this.chois(0)}><strong>0</strong></td>
-                                    <td className="table-active" onClick={() => this.chois(1)}><span className="rounded-circle badge-danger"><span style={{"lineHeight":"31px"}}>1</span></span></td>
-                                    <td className="table-active" onClick={() => this.chois(4)}><span className="rounded-circle badge-dark"><span style={{"lineHeight":"31px"}}>4</span></span></td>
-                                    <td className="table-active" onClick={() => this.chois(7)}><span className="rounded-circle badge-danger"><span style={{"lineHeight":"31px"}}>7</span></span></td>
-                                    <td className="table-active" onClick={() => this.chois(10)}><span className="rounded-circle badge-dark"><span style={{"lineHeight":"31px"}}>10</span></span></td>
-                                    <td className="table-active" onClick={() => this.chois(13)}><span className="rounded-circle badge-dark"><span style={{"lineHeight":"31px"}}>13</span></span></td>
-                                    <td className="table-active" onClick={() => this.chois(16)}><span className="rounded-circle badge-danger"><span style={{"lineHeight":"31px"}}>16</span></span></td>
-                                    <td className="table-active" onClick={() => this.chois(19)}><span className="rounded-circle badge-danger"><span style={{"lineHeight":"31px"}}>19</span></span></td>
-                                    <td className="table-active" onClick={() => this.chois(22)}><span className="rounded-circle badge-dark"><span style={{"lineHeight":"31px"}}>22</span></span></td>
-                                    <td className="table-active" onClick={() => this.chois(25)}><span className="rounded-circle badge-danger"><span style={{"lineHeight":"31px"}}>25</span></span></td>
-                                    <td className="table-active" onClick={() => this.chois(28)}><span className="rounded-circle badge-dark"><span style={{"lineHeight":"31px"}}>28</span></span></td>
-                                    <td className="table-active" onClick={() => this.chois(31)}><span className="rounded-circle badge-dark"><span style={{"lineHeight":"31px"}}>31</span></span></td>
-                                    <td className="table-active" onClick={() => this.chois(34)}><span className="rounded-circle badge-danger"><span style={{"lineHeight":"31px"}}>34</span></span></td>
+                                    <td className="table-active" onClick={() => this.chois(1)}><span className="rounded-circle badge-danger"><span style={{"lineHeight":"31px"}}>1</span></span><span className="badge badge-secondary">{this.state.allNumbers[1]}</span></td>
+                                    <td className="table-active" onClick={() => this.chois(4)}><span className="rounded-circle badge-dark"><span style={{"lineHeight":"31px"}}>4</span></span><span className="badge badge-secondary">{this.state.allNumbers[4]}</span></td>
+                                    <td className="table-active" onClick={() => this.chois(7)}><span className="rounded-circle badge-danger"><span style={{"lineHeight":"31px"}}>7</span></span><span className="badge badge-secondary">{this.state.allNumbers[7]}</span></td>
+                                    <td className="table-active" onClick={() => this.chois(10)}><span className="rounded-circle badge-dark"><span style={{"lineHeight":"31px"}}>10</span></span><span className="badge badge-secondary">{this.state.allNumbers[10]}</span></td>
+                                    <td className="table-active" onClick={() => this.chois(13)}><span className="rounded-circle badge-dark"><span style={{"lineHeight":"31px"}}>13</span></span><span className="badge badge-secondary">{this.state.allNumbers[13]}</span></td>
+                                    <td className="table-active" onClick={() => this.chois(16)}><span className="rounded-circle badge-danger"><span style={{"lineHeight":"31px"}}>16</span></span><span className="badge badge-secondary">{this.state.allNumbers[16]}</span></td>
+                                    <td className="table-active" onClick={() => this.chois(19)}><span className="rounded-circle badge-danger"><span style={{"lineHeight":"31px"}}>19</span></span><span className="badge badge-secondary">{this.state.allNumbers[19]}</span></td>
+                                    <td className="table-active" onClick={() => this.chois(22)}><span className="rounded-circle badge-dark"><span style={{"lineHeight":"31px"}}>22</span></span><span className="badge badge-secondary">{this.state.allNumbers[22]}</span></td>
+                                    <td className="table-active" onClick={() => this.chois(25)}><span className="rounded-circle badge-danger"><span style={{"lineHeight":"31px"}}>25</span></span><span className="badge badge-secondary">{this.state.allNumbers[25]}</span></td>
+                                    <td className="table-active" onClick={() => this.chois(28)}><span className="rounded-circle badge-dark"><span style={{"lineHeight":"31px"}}>28</span></span><span className="badge badge-secondary">{this.state.allNumbers[28]}</span></td>
+                                    <td className="table-active" onClick={() => this.chois(31)}><span className="rounded-circle badge-dark"><span style={{"lineHeight":"31px"}}>31</span></span><span className="badge badge-secondary">{this.state.allNumbers[31]}</span></td>
+                                    <td className="table-active" onClick={() => this.chois(34)}><span className="rounded-circle badge-danger"><span style={{"lineHeight":"31px"}}>34</span></span><span className="badge badge-secondary">{this.state.allNumbers[34]}</span></td>
                                     <td className="table-active"><span className="badge badge-secondary">{this.state.betAmount[this.state.one]}</span></td>
                                 </tr>
                                 <tr>
