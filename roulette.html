@@ -92,7 +92,7 @@
         
         allNumbersRate(number) {
             this.state.ghltn++;
-            let temp = allNumbers;
+            let temp = this.state.allNumbers;
             temp[number] = temp[number] + this.state.ghltn;
             this.setState({
                 allNumbers: temp,
