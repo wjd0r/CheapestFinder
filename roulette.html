@@ -101,10 +101,10 @@
 
         getAllNumberRate(number){
             let all_nusuc = 0;
-            allNumbers.map(nusuc_number => {
+            this.state.allNumbers.map(nusuc_number => {
                 all_nusuc += nusuc_number;
             });
-            return 100-allNumbers[number]/all_nusuc*100;
+            return 100-this.state.allNumbers[number]/all_nusuc*100;
         }
 
         betAmount2(number) {
