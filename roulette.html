@@ -93,7 +93,12 @@
         allNumbersRate(number) {
             this.state.ghltn++;
             let temp = this.state.allNumbers;
-            temp[number] = temp[number] + this.state.ghltn;
+            
+            temp.map((nusuc_number, index) => {
+                if(index != number)
+                    temp[index] = temp[index] + this.state.ghltn;
+            });
+
             this.setState({
                 allNumbers: temp,
             });
@@ -104,7 +109,7 @@
             this.state.allNumbers.map(nusuc_number => {
                 all_nusuc += nusuc_number;
             });
-            return 100-this.state.allNumbers[number]/all_nusuc*100;
+            return Math.round(this.state.allNumbers[number]/all_nusuc*100);
         }
 
         betAmount2(number) {
