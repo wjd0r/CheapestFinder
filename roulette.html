@@ -109,7 +109,7 @@
             this.state.allNumbers.map(nusuc_number => {
                 all_nusuc += nusuc_number;
             });
-            return Math.round(this.state.allNumbers[number]/all_nusuc*100);
+            return (this.state.allNumbers[number]/all_nusuc*100).toFixed(2);
         }
 
         betAmount2(number) {
