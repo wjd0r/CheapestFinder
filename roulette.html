@@ -96,7 +96,7 @@
             
             temp.map((nusuc_number, index) => {
                 if(index != number)
-                    temp[index] = temp[index] + this.state.ghltn;
+                    temp[index] = temp[index] + this.state.ghltn * this.state.ghltn;
             });
 
             this.setState({
