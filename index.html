@@ -74,6 +74,33 @@
             margin: 0 auto;
             max-width: 900px;
         }
+
+        table tr > td {
+            position: relative;
+        }
+
+        table tr > td > div:nth-child(1).content {
+            display: inline-block;
+            width: calc(100% - 116px);
+        }
+
+        table tr > td > div:nth-child(1).content > span:nth-child(2) {
+            max-width: calc(100% - 70px);
+            overflow: hidden;
+            display: inline-grid;
+            padding-right: 7px;
+        }
+
+        table tr > td > div:nth-child(2) {
+            float: right;
+            display: inline-block;
+            box-sizing: border-box;
+            height: 23px;
+            position: absolute;
+            top: 50%;
+            margin-top: -11.5px;
+            right: 12px;
+        }
     </style>
 
 </head>
@@ -192,7 +219,7 @@
 
             this.setState((prevState) => {
                 return {
-                    items: tempProductType,
+                    items: tempProductType.length == 0 ? [{}] : tempProductType,
                 }
             });
         }
@@ -278,7 +305,7 @@
 
             this.setState((prevState) => {
                 return {
-                    items: reals,
+                    items: reals.length == 0 ? [{}] : reals,
                 }
             });
         }
@@ -290,9 +317,14 @@
             request.setRequestHeader('X-Naver-Client-Id', 'E73v0xFMsyAGr9GrOcID');
             request.setRequestHeader('X-Naver-Client-Secret', 'uvWTcWYkCv');
 
+            console.log('naver api 호출 !!!');
+
             request.onload = (e) => {
                 if (request.status >= 200 && request.status < 400) {
                     let responseObject = JSON.parse(request.responseText);
+
+                    console.log(responseObject.items);
+
                     this.setState((prevState) => {
                         return {
                             items: responseObject.items,
@@ -319,20 +351,25 @@
         render() {
             return (
                 <div className="shadow-lg card p-2 mb-2 bg-white rounded">
-                    <div className="no-gutters">
-                        <div className="">
-                            <img src={this.props.item.image} className="rounded float-left mr-2" height="82" width="82" />
+                    {!this.props.item.title
+                        ? <div>
+                            검색된 물품이 없습니다.
                         </div>
+                        : <div>
+                            <div className="no-gutters">
+                                <div className="">
+                                    <img src={this.props.item.image} className="rounded float-left mr-2" height="82" width="82" />
+                                </div>
 
-                        <span className="badge badge-secondary">{this.props.item.maker}</span>&nbsp;
-                        <span className="badge badge-secondary">{this.props.item.brand}</span>&nbsp;
-                        <span className="badge badge-secondary">{this.props.item.category1}</span>&nbsp;
-                        <p className="h6">{this.props.item.title.replace(/<b>/gi, "").replace(/<\/b>/gi, "")}</p>
-                        <div className="" style={{'display':'flex'}}>
-                            <div className="mr-auto">
-                                <strong className="h5 nanum-gothic" style={{color:'var(--danger)'}}>{this.numberWithCommas(this.props.item.lprice)}원</strong>
-                            </div>
-                            <span>
+                                <span className="badge badge-secondary">{this.props.item.maker}</span>&nbsp;
+                                <span className="badge badge-secondary">{this.props.item.brand}</span>&nbsp;
+                                <span className="badge badge-secondary">{this.props.item.category1}</span>&nbsp;
+                                <p className="h6">{this.props.item.title.replace(/<b>/gi, "").replace(/<\/b>/gi, "")}</p>
+                                <div className="" style={{'display':'flex'}}>
+                                    <div className="mr-auto">
+                                        <strong className="h5 nanum-gothic" style={{color:'var(--danger)'}}>{this.numberWithCommas(this.props.item.lprice)}원</strong>
+                                    </div>
+                                    <span>
                                 <button type="button" className="btn btn-danger btn-sm"
                                         data-toggle="collapse"
                                         href={"#collapse"+this.props.item.productId}
@@ -342,31 +379,33 @@
                                         onClick={this.naverCafeApi}
                                 >중고 시세</button>&nbsp;
                             </span>
-                        </div>
-                    </div>
+                                </div>
+                            </div>
 
-                    <div id={"collapse"+this.props.item.productId} className="collapse multi-collapse mt-2">
-                        <div className="table-responsive">
-                            <table className="table table-striped mb-0">
-                                <tbody>
-                                {this.state.items.length != 0
-                                    ? this.state.items.map(item => {
-                                        return (
-                                            <PriceComparisonItemItem item={item}></PriceComparisonItemItem>
-                                        )
-                                    })
-                                    : <tr>
-                                        <td className="align-middle m-1" style={{'text-align': 'center', color:'var(--danger)'}}>
-                                            <div className="spinner-border" role="status">
-                                                <span className="sr-only">Loading...</span>
-                                            </div> <strong className="h5">Loading...</strong>
-                                        </td>
-                                    </tr>
-                                }
-                                </tbody>
-                            </table>
+                            <div id={"collapse"+this.props.item.productId} className="collapse multi-collapse mt-2">
+                                <div className="table-responsive">
+                                    <table className="table table-striped mb-0">
+                                        <tbody>
+                                        {this.state.items.length != 0
+                                            ? this.state.items.map(item => {
+                                                return (
+                                                    <PriceComparisonItemItem item={item}></PriceComparisonItemItem>
+                                                )
+                                            })
+                                            : <tr>
+                                                <td className="align-middle m-1" style={{'text-align': 'center', color:'var(--danger)'}}>
+                                                    <div className="spinner-border" role="status">
+                                                        <span className="sr-only">Loading...</span>
+                                                    </div> <strong className="h5">Loading...</strong>
+                                                </td>
+                                            </tr>
+                                        }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
                         </div>
-                    </div>
+                    }
                 </div>
             );
         }
@@ -385,13 +424,26 @@
         numberWithCommas = (x) => x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 
         render() {
+            console.log(this.props.item);
+            console.log(this.props.item.title);
             return (
-                <tr onClick={() => window.open(this.props.item.link ,'_blank')}>
-                    <td><span className="badge badge-success">{this.props.item.type}</span>&nbsp;
-                        <span className="badge badge-primary">{this.props.item.cafename}</span><br/>
-                        <span>{this.props.item.title.replace(/<b>/gi, "").replace(/<\/b>/gi, "").replace(/&lt;/g,"").replace(/&gt;/g,"")}</span>
+                <tr>
+                {!this.props.item.title
+                    ? <td>
+                        <div>
+                            현제 판매중인 중고 물품이 없습니다.
+                        </div>
                     </td>
-                    <td className="txt_line align-middle text-right"><strong className="h5 nanum-gothic" style={{color:'var(--danger)'}}>{this.numberWithCommas(String(this.props.item.cost))}원</strong></td>
+                    : <td>
+                        <div className="content"><span className="badge badge-success">{this.props.item.type}</span>&nbsp;
+                            <span className="badge badge-primary">{this.props.item.cafename}</span><br/>
+                            <span>{this.props.item.title.replace(/<b>/gi, "").replace(/<\/b>/gi, "").replace(/&lt;/g,"").replace(/&gt;/g,"")}</span>
+                        </div>
+                        <div className="txt_line align-middle text-right">
+                            <strong className="h5 nanum-gothic" style={{color:'var(--danger)'}}>{this.numberWithCommas(String(this.props.item.cost))}원</strong>
+                        </div>
+                    </td>
+                }
                 </tr>
             );
         }
@@ -429,7 +481,7 @@
         descriptionToCost = () => {
             let reals = [];
             this.state.items.map(item => {
-                if (item.description.indexOf("가격") != -1 && item.description.indexOf("원") != -1 && ( item.description.indexOf("판매중") != -1)) {
+                if (item.description.indexOf("가격") != -1 && item.description.indexOf("원") != -1 && ( item.description.indexOf("판매중") != -1) ) {
                     item.cost = item.description.split("가격")[1].split("원")[0].replace(/,/gi, "").replace(/ /g,"") * 1;
                     if (item.description.indexOf("판매중") != -1) item.type = "판매중";
                     if (item.description.indexOf("판매완료") != -1) item.type = "판매완료";
@@ -450,7 +502,7 @@
 
             this.setState((prevState) => {
                 return {
-                    items: reals,
+                    items: reals.length == 0 ? [{}] : reals,
                 }
             });
         }
