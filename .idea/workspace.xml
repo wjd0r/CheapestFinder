@@ -38,8 +38,8 @@
       <file leaf-file-name="index.html" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="193">
-              <caret line="575" column="76" lean-forward="true" selection-start-line="575" selection-start-column="76" selection-end-line="575" selection-end-column="76" />
+            <state relative-caret-position="155">
+              <caret line="301" column="15" lean-forward="true" selection-start-line="301" selection-start-column="15" selection-end-line="301" selection-end-column="15" />
               <folding />
             </state>
           </provider>
@@ -339,7 +339,7 @@
       <workItem from="1619661172931" duration="11797000" />
       <workItem from="1619679885531" duration="1512000" />
       <workItem from="1620292165636" duration="93000" />
-      <workItem from="1620347422631" duration="1000000" />
+      <workItem from="1620347422631" duration="1246000" />
     </task>
     <task id="LOCAL-00001" summary="검색된 물품이 없는 경우 로딩 없애고, 물품이 없다고 표시 및 css 수정">
       <created>1619677365393</created>
@@ -355,11 +355,18 @@
       <option name="project" value="LOCAL" />
       <updated>1620292215191</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="검색된 물품이 없는 경우 로딩 없애고, 물품이 없다고 표시 및 css 수정">
+      <created>1620348432054</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1620348432054</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="14402000" />
+    <option name="totallyTimeSpent" value="14648000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="1912" y="-8" width="1936" height="1176" extended-state="6" />
@@ -508,8 +515,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/index.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="193">
-          <caret line="575" column="76" lean-forward="true" selection-start-line="575" selection-start-column="76" selection-end-line="575" selection-end-column="76" />
+        <state relative-caret-position="155">
+          <caret line="301" column="15" lean-forward="true" selection-start-line="301" selection-start-column="15" selection-end-line="301" selection-end-column="15" />
           <folding />
         </state>
       </provider>
