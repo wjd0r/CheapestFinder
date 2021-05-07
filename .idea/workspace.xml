@@ -38,8 +38,8 @@
       <file leaf-file-name="index.html" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="250">
-              <caret line="312" column="30" lean-forward="true" selection-start-line="312" selection-start-column="30" selection-end-line="312" selection-end-column="30" />
+            <state relative-caret-position="193">
+              <caret line="575" column="76" lean-forward="true" selection-start-line="575" selection-start-column="76" selection-end-line="575" selection-end-column="76" />
               <folding />
             </state>
           </provider>
@@ -78,7 +78,13 @@
       <find>txt_line align-middle text-right</find>
       <find>badge badge-primary</find>
       <find>yg01</find>
+      <find>https://git.heroku.com/yg01.git</find>
+      <find>:3000</find>
+      <find>:8080</find>
     </findStrings>
+    <replaceStrings>
+      <replace>:8080</replace>
+    </replaceStrings>
   </component>
   <component name="Git.Pull.Settings">
     <option name="BRANCH" value="master" />
@@ -129,6 +135,8 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scratches" />
+      <pane id="PackagesPane" />
       <pane id="AndroidView" />
       <pane id="ProjectPane">
         <subPane>
@@ -141,9 +149,7 @@
           <select />
         </subPane>
       </pane>
-      <pane id="PackagesPane" />
       <pane id="Scope" />
-      <pane id="Scratches" />
     </panes>
   </component>
   <component name="ProjectViewState">
@@ -332,7 +338,8 @@
       <workItem from="1607318913865" duration="134000" />
       <workItem from="1619661172931" duration="11797000" />
       <workItem from="1619679885531" duration="1512000" />
-      <workItem from="1620292165636" duration="38000" />
+      <workItem from="1620292165636" duration="93000" />
+      <workItem from="1620347422631" duration="1000000" />
     </task>
     <task id="LOCAL-00001" summary="검색된 물품이 없는 경우 로딩 없애고, 물품이 없다고 표시 및 css 수정">
       <created>1619677365393</created>
@@ -341,11 +348,18 @@
       <option name="project" value="LOCAL" />
       <updated>1619677365393</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="검색된 물품이 없는 경우 로딩 없애고, 물품이 없다고 표시 및 css 수정">
+      <created>1620292215191</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1620292215191</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="13347000" />
+    <option name="totallyTimeSpent" value="14402000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="1912" y="-8" width="1936" height="1176" extended-state="6" />
@@ -358,11 +372,11 @@
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32916266" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.12100213" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.122068234" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Docker" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -463,6 +477,14 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/naverc5fbd203a4af8d516906d29a1361ec0b.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -486,8 +508,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/index.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="250">
-          <caret line="312" column="30" lean-forward="true" selection-start-line="312" selection-start-column="30" selection-end-line="312" selection-end-column="30" />
+        <state relative-caret-position="193">
+          <caret line="575" column="76" lean-forward="true" selection-start-line="575" selection-start-column="76" selection-end-line="575" selection-end-column="76" />
           <folding />
         </state>
       </provider>
