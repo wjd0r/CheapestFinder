@@ -227,7 +227,7 @@
         naverShopApi = (query) => new Promise(function(resolve, reject) {
             let request = new XMLHttpRequest();
 
-            request.open('GET', 'http://3.21.35.236:3000/https://openapi.naver.com/v1/search/shop?query=' + query + '&display=100', true);
+            request.open('GET', 'http://3.21.35.236:8080/https://openapi.naver.com/v1/search/shop?query=' + query + '&display=100', true);
             request.setRequestHeader('X-Naver-Client-Id', 'E73v0xFMsyAGr9GrOcID');
             request.setRequestHeader('X-Naver-Client-Secret', 'uvWTcWYkCv');
 
@@ -313,7 +313,7 @@
         naverCafeApi = () => {
             let request = new XMLHttpRequest();
 
-            request.open('GET', 'http://3.21.35.236:3000/https://openapi.naver.com/v1/search/cafearticle?query=' + this.props.item.title.replace(/<b>/gi, "").replace(/<\/b>/gi, "") + '&display=100&start=1&sort=sim', true);
+            request.open('GET', 'http://3.21.35.236:8080/https://openapi.naver.com/v1/search/cafearticle?query=' + this.props.item.title.replace(/<b>/gi, "").replace(/<\/b>/gi, "") + '&display=100&start=1&sort=sim', true);
             request.setRequestHeader('X-Naver-Client-Id', 'E73v0xFMsyAGr9GrOcID');
             request.setRequestHeader('X-Naver-Client-Secret', 'uvWTcWYkCv');
 
@@ -574,7 +574,7 @@
         getData2 = (query, start) => new Promise(function(resolve, reject) {
             let request = new XMLHttpRequest();
 
-            request.open('GET', 'http://3.21.35.236:3000/https://openapi.naver.com/v1/search/cafearticle?query=' + query + '&display=100&start=' + start + '&sort=sim', true);
+            request.open('GET', 'http://3.21.35.236:8080/https://openapi.naver.com/v1/search/cafearticle?query=' + query + '&display=100&start=' + start + '&sort=sim', true);
             request.setRequestHeader('X-Naver-Client-Id', 'E73v0xFMsyAGr9GrOcID');
             request.setRequestHeader('X-Naver-Client-Secret', 'uvWTcWYkCv');
 
