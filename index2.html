@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>Title</title>
+
+    <script crossorigin src="./js/react.development.js"></script>
+    <script crossorigin src="./js/react-dom.development.js"></script>
+    <script crossorigin src="./js/babel.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@2.0.0/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/p5@0.6.0/lib/p5.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/p5@0.6.0/lib/addons/p5.dom.js"></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <link rel="stylesheet" href="./css/bootstrap.css">
+    <link rel="stylesheet" href="./css/bootstrap-grid.css">
+    <link rel="stylesheet" href="./css/bootstrap-reboot.css">
+
+</head>
+<body>
+
+<div id="root"></div>
+
+<script type="text/babel">
+
+    class A extends React.Component {
+        constructor(props) {
+            super(props);
+
+            this.state = {
+                stocks: [],
+                learnignRate: 0.000000000001,
+                optimizer: tf.train.sgd(this.learnignRate),
+                m1: tf.variable(tf.scalar(Math.random(1))),
+                m2: tf.variable(tf.scalar(Math.random(1))),
+                m3: tf.variable(tf.scalar(Math.random(1))),
+                m4: tf.variable(tf.scalar(Math.random(1))),
+                m5: tf.variable(tf.scalar(Math.random(1))),
+                b: tf.variable(tf.scalar(Math.random(1))),
+            };
+
+            this.getData();
+        }
+
+        // y 구하기
+        predict = (x2, x3, x4, x5) => {
+            const xs2 = tf.tensor(x2);
+            const xs3 = tf.tensor(x3);
+            const xs4 = tf.tensor(x4);
+            const xs5 = tf.tensor(x5);
+
+            const mx2 = xs2.mul(m2);
+            const mx3 = xs3.mul(m3);
+            const mx4 = xs4.mul(m4);
+            const mx5 = xs5.mul(m5);
+
+            const ys = mx2.add(mx3).add(mx4).add(mx5).add(b);
+
+            return ys;
+        }
+
+        // 오차 구하기
+        loss = (pred, labels) => pred.sub(labels).square().mean();
+
+        // start
+        start = () => {
+            tf.tidy(() => {
+                //for(let i = 0; i < 10; i++) {
+                const ys = tf.tensor(y_vals); // 진짜 y
+                this.optimizer.minimize(() => this.loss(this.predict(x2_vals, x3_vals, x4_vals, x5_vals), ys));
+                //}
+            });
+
+            this.restart(rows);
+        }
+
+        restart = (rows) => {
+            let 소숫점예상가 = Number(String(this.predict(parseFloat(rows[0].저가),parseFloat(rows[0].고가),parseFloat(rows[0].종가),parseFloat(rows[0].시가))).replace('Tensor','').replace(/a/gi,""));
+            let gap = Math.abs(소숫점예상가 - 예상가);
+
+            if(gap > 0.1) {
+                let learning_magnification = 1; // 러닝 배율
+                if(gap > 1) {
+                    learning_magnification = 1.01;
+                } else if(gap <= 1) {
+                    learning_magnification = 0.99;
+                }
+
+                예상가 = t.value;
+
+                this.setState((prevState) => {
+                    return {
+                        learnignRate: learnignRate * learning_magnification,
+                    }
+                });
+
+                this.optimizer = tf.train.sgd(learnignRate);
+                this.start(type);
+            }
+        }
+
+        getCurrentDate = (_year = 0) => {
+            let date = new Date();
+            date.setFullYear(date.getFullYear() - _year);
+
+            let year = date.getFullYear().toString();
+            let month = date.getMonth() + 1;
+            month = month < 10 ? '0' + month.toString() : month.toString();
+            let day = date.getDate();
+            day = day < 10 ? '0' + day.toString() : day.toString();
+            return year + month + day ;
+        }
+
+        getData = () => {
+            let request = new XMLHttpRequest();
+
+            request.open('GET', 'https://yg01.herokuapp.com/http://data.krx.co.kr/comm/bldAttendant/getJsonData.cmd?' +
+                'bld=dbms/MDC/STAT/standard/MDCSTAT01701&' +
+                'tboxisuCd_finder_stkisu0_3=005930/삼성전자&' +
+                'isuCd=KR7005930003&' +
+                'isuCd2=KR7005930003&' +
+                'codeNmisuCd_finder_stkisu0_3=삼성전자&' +
+                'param1isuCd_finder_stkisu0_3=ALL&' +
+                'strtDd=' + this.getCurrentDate(1) + '&' +
+                'endDd=' + this.getCurrentDate() + '&' +
+                'share=1&money=1&' +
+                'csvxls_isNo=false', true);
+            request.onload = (e) => {
+                if (request.status >= 200 && request.status < 400) {
+                    let responseObject = JSON.parse(request.responseText);
+                    this.setState((prevState) => {
+                        return {
+                            stocks: responseObject.output,
+                        }
+                    });
+                } else {
+                    console.log('We reached our target server, but it returned an error');
+                    console.log('Possibly handle the error by changing your state.');
+                }
+            };
+
+            request.onerror = () => {
+                console.log('There was a connection error of some sort.');
+                console.log('Possibly handle the error by changing your state.');
+            };
+
+            request.send();
+        }
+
+        render() {
+            return (
+                <table className="table">
+                    <thead>
+                        <tr>
+                            <th>일자</th>
+                            <th>종가</th>
+                            <th>대비</th>
+                            <th>등락률</th>
+                            <th>거래대금</th>
+                            <th>거래량</th>
+                            <th>상장주식수</th>
+                            <th>시가총액</th>
+                            <th>고가</th>
+                            <th>저가</th>
+                            <th>시가</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {this.state.stocks.map((stock, index) => {
+                            return (
+                                <tr key="{index}">
+                                    <td>{stock.TRD_DD}</td>
+                                    <td>{stock.TDD_CLSPRC}</td>
+                                    <td>{stock.CMPPREVDD_PRC}</td>
+                                    <td>{stock.FLUC_RT}</td>
+                                    <td>{stock.ACC_TRDVAL}</td>
+                                    <td>{stock.ACC_TRDVOL}</td>
+                                    <td>{stock.LIST_SHRS}</td>
+                                    <td>{stock.MKTCAP}</td>
+                                    <td>{stock.TDD_HGPRC}</td>
+                                    <td>{stock.TDD_LWPRC}</td>
+                                    <td>{stock.TDD_OPNPRC}</td>
+                                </tr>
+                            )
+                        })}
+                    </tbody>
+                </table>
+            );
+        }
+    }
+
+</script>
+
+<script type="text/babel">
+    ReactDOM.render(<A />, document.querySelector('#root'));
+</script>
+</body>
+</html>
