@@ -41,9 +41,35 @@
                 m4: tf.variable(tf.scalar(Math.random(1))),
                 m5: tf.variable(tf.scalar(Math.random(1))),
                 b: tf.variable(tf.scalar(Math.random(1))),
+                y: 0,
+                x1s: [],
+                x2s: [],
+                x3s: [],
+                x4s: [],
+                ys: [],
             };
 
             this.getData();
+        }
+
+        tensorinit = () => {
+
+            this.setState((prevState) => {
+                return {
+                    x1s: prevState.stocks.map(value => value.TDD_LWPRC), // 저가
+                    x2s: prevState.stocks.map(value => value.TDD_HGPRC), //고가
+                    x3s: prevState.stocks.map(value => value.TDD_CLSPRC), //종가
+                    x4s: prevState.stocks.map(value => value.TDD_OPNPRC), //시가
+                    ys: prevState.stocks.map(value => value.TDD_OPNPRC), //금일시가
+                }
+            });
+
+            this.state.x1s.shift(); // 처음  요소 삭제
+            this.state.x2s.shift(); // 처음  요소 삭제
+            this.state.x3s.shift(); // 처음  요소 삭제
+            this.state.x4s.shift(); // 처음  요소 삭제
+            this.state.ys.pop(); // 마지막 요소 삭제
+            this.start(); // 계산 시작
         }
 
         // y 구하기
@@ -53,10 +79,10 @@
             const xs4 = tf.tensor(x4);
             const xs5 = tf.tensor(x5);
 
-            const mx2 = xs2.mul(m2);
-            const mx3 = xs3.mul(m3);
-            const mx4 = xs4.mul(m4);
-            const mx5 = xs5.mul(m5);
+            const mx2 = xs2.mul(this.state.m2);
+            const mx3 = xs3.mul(this.state.m3);
+            const mx4 = xs4.mul(this.state.m4);
+            const mx5 = xs5.mul(this.state.m5);
 
             const ys = mx2.add(mx3).add(mx4).add(mx5).add(b);
 
@@ -70,8 +96,8 @@
         start = () => {
             tf.tidy(() => {
                 //for(let i = 0; i < 10; i++) {
-                const ys = tf.tensor(y_vals); // 진짜 y
-                this.optimizer.minimize(() => this.loss(this.predict(x2_vals, x3_vals, x4_vals, x5_vals), ys));
+                const ys = tf.tensor(this.state.ys); // 진짜 y
+                this.state.optimizer.minimize(() => this.loss(this.predict(this.state.x1s, this.state.x2s, this.state.x3s, this.state.x4s), ys));
                 //}
             });
 
@@ -80,7 +106,7 @@
 
         restart = (rows) => {
             let 소숫점예상가 = Number(String(this.predict(parseFloat(rows[0].저가),parseFloat(rows[0].고가),parseFloat(rows[0].종가),parseFloat(rows[0].시가))).replace('Tensor','').replace(/a/gi,""));
-            let gap = Math.abs(소숫점예상가 - 예상가);
+            let gap = Math.abs(소숫점예상가 - this.state.y);
 
             if(gap > 0.1) {
                 let learning_magnification = 1; // 러닝 배율
@@ -90,16 +116,15 @@
                     learning_magnification = 0.99;
                 }
 
-                예상가 = t.value;
-
                 this.setState((prevState) => {
                     return {
-                        learnignRate: learnignRate * learning_magnification,
+                        learnignRate: prevState.learnignRate * learning_magnification,
+                        y: t.value,
+                        optimizer: tf.train.sgd(prevState.learnignRate),
                     }
                 });
 
-                this.optimizer = tf.train.sgd(learnignRate);
-                this.start(type);
+                this.start();
             }
         }
 
@@ -137,6 +162,7 @@
                             stocks: responseObject.output,
                         }
                     });
+                    this.tensorinit();
                 } else {
                     console.log('We reached our target server, but it returned an error');
                     console.log('Possibly handle the error by changing your state.');
@@ -152,7 +178,8 @@
         }
 
         render() {
-            return (
+            return (<div>
+                <p>{this.state.y}</p>
                 <table className="table">
                     <thead>
                         <tr>
@@ -189,7 +216,7 @@
                         })}
                     </tbody>
                 </table>
-            );
+            </div>);
         }
     }
 
