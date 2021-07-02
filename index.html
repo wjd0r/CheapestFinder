@@ -607,6 +607,7 @@
                     <PriceComparisonTop searchCallback={this.searchCallback}></PriceComparisonTop>
 
                     <div style={{padding: '0.5rem 1rem'}}>
+                        <p>{Number.MAX_SAFE_INTEGER}</p>
                         {this.state.newItems != 0
                             ? this.state.newItems.map(item => {
                                 return (
