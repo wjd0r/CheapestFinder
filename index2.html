@@ -26,7 +26,6 @@
 <div id="root"></div>
 
 <script type="text/babel">
-
     class A extends React.Component {
         constructor(props) {
             super(props);
@@ -34,12 +33,11 @@
             this.state = {
                 stocks: [],
                 learnignRate: 0.000000000001,
-                optimizer: tf.train.sgd(this.learnignRate),
+                optimizer: tf.train.sgd(0.000000000001),
                 m1: tf.variable(tf.scalar(Math.random(1))),
                 m2: tf.variable(tf.scalar(Math.random(1))),
                 m3: tf.variable(tf.scalar(Math.random(1))),
                 m4: tf.variable(tf.scalar(Math.random(1))),
-                m5: tf.variable(tf.scalar(Math.random(1))),
                 b: tf.variable(tf.scalar(Math.random(1))),
                 y: 0,
                 x1s: [],
@@ -52,15 +50,15 @@
             this.getData();
         }
 
+        // 학습할 데이터를 각각의 배열에 담기
         tensorinit = () => {
-
             this.setState((prevState) => {
                 return {
-                    x1s: prevState.stocks.map(value => parseInt(value.TDD_LWPRC)), // 저가
-                    x2s: prevState.stocks.map(value => parseInt(value.TDD_HGPRC)), //고가
-                    x3s: prevState.stocks.map(value => parseInt(value.TDD_CLSPRC)), //종가
-                    x4s: prevState.stocks.map(value => parseInt(value.TDD_OPNPRC)), //시가
-                    ys: prevState.stocks.map(value => parseInt(value.TDD_OPNPRC)), //금일시가
+                    x1s: prevState.stocks.map(value => parseInt(value.TDD_LWPRC.replace(/,/g , ''))), // 저가
+                    x2s: prevState.stocks.map(value => parseInt(value.TDD_HGPRC.replace(/,/g , ''))), //고가
+                    x3s: prevState.stocks.map(value => parseInt(value.TDD_CLSPRC.replace(/,/g , ''))), //종가
+                    x4s: prevState.stocks.map(value => parseInt(value.TDD_OPNPRC.replace(/,/g , ''))), //시가
+                    ys: prevState.stocks.map(value => parseInt(value.TDD_OPNPRC.replace(/,/g , ''))), //금일시가
                 }
             });
 
@@ -79,16 +77,6 @@
             const xs3 = tf.tensor(x3);
             const xs4 = tf.tensor(x4);
 
-            console.log("xs1 : "+ xs1);
-            console.log("xs2 : "+ xs2);
-            console.log("xs3 : "+ xs3);
-            console.log("xs4 : "+ xs4);
-
-            console.log("this.state.m1 : "+this.state.m1);
-            console.log("this.state.m2 : "+this.state.m2);
-            console.log("this.state.m3 : "+this.state.m3);
-            console.log("this.state.m4 : "+this.state.m4);
-
             const mx1 = xs1.mul(this.state.m1);
             const mx2 = xs2.mul(this.state.m2);
             const mx3 = xs3.mul(this.state.m3);
@@ -102,7 +90,7 @@
         // pred 예측한 값이랑 labels 실제값이랑 차이
         loss = (pred, labels) => pred.sub(labels).square().mean();
 
-        // start
+        // 학습시작 ( 미니마이져를 하면서 m 값 조절 )
         start = () => {
             tf.tidy(() => {
                 //for(let i = 0; i < 10; i++) {
@@ -114,9 +102,10 @@
             this.restart();
         }
 
+        // 예측 알고리즘에 대입하여 gap 에 따라 러닝배율 조절
         restart = () => {
-            let 소숫점예상가 = Number(String(this.predict(parseFloat(this.state.x1s[0]),parseFloat(this.state.x2s[0]),parseFloat(this.state.x3s[0]),parseFloat(this.state.x4s[0]))).replace('Tensor','').replace(/a/gi,""));
-            let gap = Math.abs(소숫점예상가 - this.state.y);
+            let predict_y = Number(String(this.predict(parseFloat(this.state.x1s[0]),parseFloat(this.state.x2s[0]),parseFloat(this.state.x3s[0]),parseFloat(this.state.x4s[0]))).replace('Tensor','').replace(/a/gi,""));
+            let gap = Math.abs(predict_y - this.state.y);
 
             if(gap > 0.1) {
                 let learning_magnification = 1; // 러닝 배율
@@ -129,12 +118,13 @@
                 this.setState((prevState) => {
                     return {
                         learnignRate: prevState.learnignRate * learning_magnification,
-                        y: t.value,
-                        optimizer: tf.train.sgd(prevState.learnignRate),
+                        y: predict_y,
+                        optimizer: tf.train.sgd(this.state.learnignRate),
                     }
                 });
 
-                this.start();
+                setTimeout(() => this.start(), 1);
+                //this.start();
             }
         }
 
