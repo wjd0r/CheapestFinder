@@ -144,7 +144,6 @@
                 console.log("y : " + this.state.y);
 
                 setTimeout(() => this.start(), 1);
-                //this.start();
             } else if(this.state.run2 == 0) {
                 this.setState((prevState) => {
                     return {
@@ -185,7 +184,6 @@
                             allstocks: responseObject.OutBlock_1,
                         }
                     });
-                    this.tensorinit();
                 } else {
                     console.log('We reached our target server, but it returned an error');
                     console.log('Possibly handle the error by changing your state.');
