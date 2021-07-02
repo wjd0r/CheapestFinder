@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>Title</title>
+
+    <script crossorigin src="./js/react.development.js"></script>
+    <script crossorigin src="./js/react-dom.development.js"></script>
+    <script crossorigin src="./js/babel.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@2.0.0/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/p5@0.6.0/lib/p5.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/p5@0.6.0/lib/addons/p5.dom.js"></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <link rel="stylesheet" href="./css/bootstrap.css">
+    <link rel="stylesheet" href="./css/bootstrap-grid.css">
+    <link rel="stylesheet" href="./css/bootstrap-reboot.css">
+
+</head>
+<body>
+
+<div id="root"></div>
+
+<script type="text/babel">
+    class A extends React.Component {
+        constructor(props) {
+            super(props);
+
+            this.state = {
+                stocks: [],
+                learnignRate: 0.0000000000000001,
+                optimizer: tf.train.sgd(0.0000000000000001),
+                m1: tf.variable(tf.scalar(Math.random(1))),
+                m2: tf.variable(tf.scalar(Math.random(1))),
+                m3: tf.variable(tf.scalar(Math.random(1))),
+                m4: tf.variable(tf.scalar(Math.random(1))),
+                b: tf.variable(tf.scalar(Math.random(1))),
+                y: 0,
+                y2: 0,
+                x1s: [],
+                x2s: [],
+                x3s: [],
+                x4s: [],
+                ys: [],
+                run2: 0,
+            };
+
+            this.getData();
+        }
+
+        // 학습할 데이터를 각각의 배열에 담기
+        tensorinit = () => {
+            this.setState((prevState) => {
+                return {
+                    x1s: prevState.stocks.map(value => parseInt(value.MMEND_CLSPRC.replace(/,/g , ''))), // 종가
+                    x2s: prevState.stocks.map(value => parseInt(value.HGST_CLSPRC.replace(/,/g , ''))), // 최고가
+                    x3s: prevState.stocks.map(value => parseInt(value.LWST_CLSPRC.replace(/,/g , ''))), // 최저가
+                    x4s: prevState.stocks.map(value => parseInt(value.AVG_ACC_TRDVOL.replace(/,/g , ''))), // 일평균
+                    ys: prevState.stocks.map(value => parseInt(this.state.run2 ? value.LWST_CLSPRC.replace(/,/g , '') : value.HGST_CLSPRC.replace(/,/g , ''))), // 최고가 : 최저
+                }
+            });
+
+            this.state.x1s.shift(); // 처음  요소 삭제
+            this.state.x2s.shift(); // 처음  요소 삭제
+            this.state.x3s.shift(); // 처음  요소 삭제
+            this.state.x4s.shift(); // 처음  요소 삭제
+            this.state.ys.shift(); // 처음 요소 삭제
+
+            this.state.x1s.shift(); // 처음  요소 삭제
+            this.state.x2s.shift(); // 처음  요소 삭제
+            this.state.x3s.shift(); // 처음  요소 삭제
+            this.state.x4s.shift(); // 처음  요소 삭제
+            this.state.ys.pop(); // 마지막 요소 삭제
+
+            this.start(); // 계산 시작
+        }
+
+        // y 구하는 예측 식
+        predict = (x1, x2, x3, x4) => {
+            const xs1 = tf.tensor(x1);
+            const xs2 = tf.tensor(x2);
+            const xs3 = tf.tensor(x3);
+            const xs4 = tf.tensor(x4);
+
+            const mx1 = xs1.mul(this.state.m1);
+            const mx2 = xs2.mul(this.state.m2);
+            const mx3 = xs3.mul(this.state.m3);
+            const mx4 = xs4.mul(this.state.m4);
+
+            const ys = mx1.add(mx2).add(mx3).add(mx4).add(this.state.b);
+
+            return ys;
+        }
+
+        // pred 예측한 값이랑 labels 실제값이랑 차이
+        loss = (pred, labels) => pred.sub(labels).square().mean();
+
+        // 학습시작 ( 미니마이져를 하면서 m 값 조절 )
+        start = () => {
+            tf.tidy(() => {
+                for(let i = 0; i < 100; i++) {
+                    const ys = tf.tensor(this.state.ys); // 진짜 y
+                    this.state.optimizer.minimize(() => this.loss(this.predict(this.state.x1s, this.state.x2s, this.state.x3s, this.state.x4s), ys));
+                }
+            });
+
+            this.restart();
+        }
+
+        // 예측 알고리즘에 대입하여 gap 에 따라 러닝배율 조절
+        restart = () => {
+            let predict_y = Number(String(this.predict(parseFloat(this.state.x1s[0]),parseFloat(this.state.x2s[0]),parseFloat(this.state.x3s[0]),parseFloat(this.state.x4s[0]))).replace('Tensor','').replace(/a/gi,""));
+            let gap = Math.abs(predict_y - (this.state.run2 == 2 ? this.state.y2 : this.state.y));
+
+            if(gap > 0.001) {
+                let learning_magnification = 1; // 러닝 배율
+                if(gap > 1) {
+                    learning_magnification = 1.002;
+                } else if(gap <= 1) {
+                    learning_magnification = 0.998;
+                }
+
+                this.setState((prevState) => {
+                    if(this.state.run2 == 2) {
+                        return {
+                            learnignRate: prevState.learnignRate * learning_magnification,
+                            y2: predict_y,
+                            optimizer: tf.train.sgd(this.state.learnignRate),
+                        }
+                    } else {
+                        return {
+                            learnignRate: prevState.learnignRate * learning_magnification,
+                            y: predict_y,
+                            optimizer: tf.train.sgd(this.state.learnignRate),
+                        }
+                    }
+                });
+
+                console.log("y : " + this.state.y);
+
+                setTimeout(() => this.start(), 1);
+                //this.start();
+            } else if(this.state.run2 == 0) {
+                this.setState((prevState) => {
+                    return {
+                        run2: 2,
+                    }
+                });
+
+                this.tensorinit();
+            }
+        }
+
+        getCurrentDate = (_year = 0) => {
+            let date = new Date();
+            date.setFullYear(date.getFullYear() - _year);
+
+            let year = date.getFullYear().toString();
+            let month = date.getMonth() + 1;
+            month = month < 10 ? '0' + month.toString() : month.toString();
+            //let day = date.getDate();
+            //day = day < 10 ? '0' + day.toString() : day.toString();
+            return year + month;
+        }
+
+        dateToKo = (str) => {
+            return str.substring(0,4) + '년 ' + str.substring(5,6) + '월';
+        }
+
+        getData = () => {
+            let request = new XMLHttpRequest();
+
+            request.open('GET', 'https://yg01.herokuapp.com/http://data.krx.co.kr/comm/bldAttendant/getJsonData.cmd?' +
+                'bld=dbms/MDC/STAT/standard/MDCSTAT01801&' +
+                'tboxisuCd_finder_stkisu0_0=005930/삼성전자&' +
+                'isuCd=KR7005930003&' +
+                'isuCd2=KR7005930003&' +
+                'codeNmisuCd_finder_stkisu0_0=삼성전자&' +
+                'param1isuCd_finder_stkisu0_0=ALL&' +
+                'strtYy=2020&' +
+                'strtMm=07&' +
+                'endYy=2021&' +
+                'endMm=07&' +
+                'strtYymm=' + this.getCurrentDate(5) + '&' +
+                'endYymm=' + this.getCurrentDate() + '&' +
+                'share=1&' +
+                'money=1&' +
+                'csvxls_isNo=false', true);
+            request.onload = (e) => {
+                if (request.status >= 200 && request.status < 400) {
+                    let responseObject = JSON.parse(request.responseText);
+                    this.setState((prevState) => {
+                        return {
+                            stocks: responseObject.OutBlock_1,
+                        }
+                    });
+                    this.tensorinit();
+                } else {
+                    console.log('We reached our target server, but it returned an error');
+                    console.log('Possibly handle the error by changing your state.');
+                }
+            };
+
+            request.onerror = () => {
+                console.log('There was a connection error of some sort.');
+                console.log('Possibly handle the error by changing your state.');
+            };
+
+            request.send();
+        }
+
+        render() {
+            return (<div>
+                <p>{this.dateToKo(this.getCurrentDate())} 최고가 예측 : {this.state.y}</p>
+                <p>{this.dateToKo(this.getCurrentDate())} 최저가 예측 : {this.state.y2}</p>
+                <table className="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th rowSpan="2">연월</th>
+                            <th rowSpan="2">종가</th>
+                            <th rowSpan="2">최고가</th>
+                            <th rowSpan="2">최저가</th>
+                            <th colSpan="2">거래량</th>
+                            <th colSpan="2">거래대금</th>
+                        </tr>
+                        <tr>
+                            <th>합계</th>
+                            <th>일평균</th>
+                            <th>합계</th>
+                            <th>일평균</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {this.state.stocks.map((stock, index) => {
+                            return (
+                                <tr key="{index}">
+                                    <td>{stock.TRD_DD}</td>
+                                    <td>{stock.MMEND_CLSPRC}</td>
+                                    <td>{stock.HGST_CLSPRC}</td>
+                                    <td>{stock.LWST_CLSPRC}</td>
+                                    <td>{stock.MM_ACC_TRDVOL}</td>
+                                    <td>{stock.AVG_ACC_TRDVOL}</td>
+                                    <td>{stock.MM_ACC_TRDVAL}</td>
+                                    <td>{stock.AVG_ACC_TRDVAL}</td>
+                                </tr>
+                            )
+                        })}
+                    </tbody>
+                </table>
+            </div>);
+        }
+    }
+
+</script>
+
+<script type="text/babel">
+    ReactDOM.render(<A />, document.querySelector('#root'));
+</script>
+</body>
+</html>
