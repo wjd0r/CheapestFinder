@@ -31,6 +31,7 @@
             super(props);
 
             this.state = {
+                allstocks: [],
                 stocks: [],
                 learnignRate: 0.0000000000000001,
                 optimizer: tf.train.sgd(0.0000000000000001),
@@ -49,7 +50,7 @@
                 run2: 0,
             };
 
-            this.getData();
+            this.getAllStock();
         }
 
         // 학습할 데이터를 각각의 배열에 담기
@@ -102,7 +103,7 @@
         // 학습시작 ( 미니마이져를 하면서 m 값 조절 )
         start = () => {
             tf.tidy(() => {
-                for(let i = 0; i < 100; i++) {
+                for(let i = 0; i < 10; i++) {
                     const ys = tf.tensor(this.state.ys); // 진짜 y
                     this.state.optimizer.minimize(() => this.loss(this.predict(this.state.x1s, this.state.x2s, this.state.x3s, this.state.x4s), ys));
                 }
@@ -171,31 +172,17 @@
             return str.substring(0,4) + '년 ' + str.substring(5,6) + '월';
         }
 
-        getData = () => {
+        // 전종목 기본정보
+        getAllStock = () => {
             let request = new XMLHttpRequest();
 
-            request.open('GET', 'https://yg01.herokuapp.com/http://data.krx.co.kr/comm/bldAttendant/getJsonData.cmd?' +
-                'bld=dbms/MDC/STAT/standard/MDCSTAT01801&' +
-                'tboxisuCd_finder_stkisu0_0=005930/삼성전자&' +
-                'isuCd=KR7005930003&' +
-                'isuCd2=KR7005930003&' +
-                'codeNmisuCd_finder_stkisu0_0=삼성전자&' +
-                'param1isuCd_finder_stkisu0_0=ALL&' +
-                'strtYy=2020&' +
-                'strtMm=07&' +
-                'endYy=2021&' +
-                'endMm=07&' +
-                'strtYymm=' + this.getCurrentDate(5) + '&' +
-                'endYymm=' + this.getCurrentDate() + '&' +
-                'share=1&' +
-                'money=1&' +
-                'csvxls_isNo=false', true);
+            request.open('GET', 'https://yg01.herokuapp.com/http://data.krx.co.kr/comm/bldAttendant/getJsonData.cmd?bld=dbms/MDC/STAT/standard/MDCSTAT01901&mktId=ALL', true);
             request.onload = (e) => {
                 if (request.status >= 200 && request.status < 400) {
                     let responseObject = JSON.parse(request.responseText);
                     this.setState((prevState) => {
                         return {
-                            stocks: responseObject.OutBlock_1,
+                            allstocks: responseObject.OutBlock_1,
                         }
                     });
                     this.tensorinit();
@@ -213,8 +200,49 @@
             request.send();
         }
 
+        // 개별종목 시세추이 (월)
+        getData = (isuCd) => {
+            let request = new XMLHttpRequest();
+
+            request.open('GET', 'https://yg01.herokuapp.com/http://data.krx.co.kr/comm/bldAttendant/getJsonData.cmd?' +
+                'bld=dbms/MDC/STAT/standard/MDCSTAT01801&' +
+                'isuCd='+isuCd+'&' +
+                'strtYymm=' + this.getCurrentDate(5) + '&' +
+                'endYymm=' + this.getCurrentDate() + '&', true);
+            request.onload = (e) => {
+                if (request.status >= 200 && request.status < 400) {
+                    let responseObject = JSON.parse(request.responseText);
+                    this.setState((prevState) => {
+                        return {
+                            stocks: responseObject.OutBlock_1,
+                        }
+                    });
+                    setTimeout(() => this.tensorinit(), 100);
+                } else {
+                    console.log('We reached our target server, but it returned an error');
+                    console.log('Possibly handle the error by changing your state.');
+                }
+            };
+
+            request.onerror = () => {
+                console.log('There was a connection error of some sort.');
+                console.log('Possibly handle the error by changing your state.');
+            };
+
+            request.send();
+        }
+
+        onChange = (e) => this.getData(e.target.value);
+
         render() {
             return (<div>
+                <select onChange={this.onChange}>
+                    {this.state.allstocks.map((stock) => {
+                        return (
+                            <option value={stock.ISU_CD}>{stock.ISU_NM}</option>
+                        )
+                    })}
+                </select>
                 <p>{this.dateToKo(this.getCurrentDate())} 최고가 예측 : {this.state.y}</p>
                 <p>{this.dateToKo(this.getCurrentDate())} 최저가 예측 : {this.state.y2}</p>
                 <table className="table table-bordered table-striped">
