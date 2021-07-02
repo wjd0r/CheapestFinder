@@ -56,11 +56,11 @@
 
             this.setState((prevState) => {
                 return {
-                    x1s: prevState.stocks.map(value => value.TDD_LWPRC), // 저가
-                    x2s: prevState.stocks.map(value => value.TDD_HGPRC), //고가
-                    x3s: prevState.stocks.map(value => value.TDD_CLSPRC), //종가
-                    x4s: prevState.stocks.map(value => value.TDD_OPNPRC), //시가
-                    ys: prevState.stocks.map(value => value.TDD_OPNPRC), //금일시가
+                    x1s: prevState.stocks.map(value => parseInt(value.TDD_LWPRC)), // 저가
+                    x2s: prevState.stocks.map(value => parseInt(value.TDD_HGPRC)), //고가
+                    x3s: prevState.stocks.map(value => parseInt(value.TDD_CLSPRC)), //종가
+                    x4s: prevState.stocks.map(value => parseInt(value.TDD_OPNPRC)), //시가
+                    ys: prevState.stocks.map(value => parseInt(value.TDD_OPNPRC)), //금일시가
                 }
             });
 
@@ -72,24 +72,34 @@
             this.start(); // 계산 시작
         }
 
-        // y 구하기
-        predict = (x2, x3, x4, x5) => {
+        // y 구하는 예측 식
+        predict = (x1, x2, x3, x4) => {
+            const xs1 = tf.tensor(x1);
             const xs2 = tf.tensor(x2);
             const xs3 = tf.tensor(x3);
             const xs4 = tf.tensor(x4);
-            const xs5 = tf.tensor(x5);
 
+            console.log("xs1 : "+ xs1);
+            console.log("xs2 : "+ xs2);
+            console.log("xs3 : "+ xs3);
+            console.log("xs4 : "+ xs4);
+
+            console.log("this.state.m1 : "+this.state.m1);
+            console.log("this.state.m2 : "+this.state.m2);
+            console.log("this.state.m3 : "+this.state.m3);
+            console.log("this.state.m4 : "+this.state.m4);
+
+            const mx1 = xs1.mul(this.state.m1);
             const mx2 = xs2.mul(this.state.m2);
             const mx3 = xs3.mul(this.state.m3);
             const mx4 = xs4.mul(this.state.m4);
-            const mx5 = xs5.mul(this.state.m5);
 
-            const ys = mx2.add(mx3).add(mx4).add(mx5).add(b);
+            const ys = mx1.add(mx2).add(mx3).add(mx4).add(this.state.b);
 
             return ys;
         }
 
-        // 오차 구하기
+        // pred 예측한 값이랑 labels 실제값이랑 차이
         loss = (pred, labels) => pred.sub(labels).square().mean();
 
         // start
@@ -101,11 +111,11 @@
                 //}
             });
 
-            this.restart(rows);
+            this.restart();
         }
 
-        restart = (rows) => {
-            let 소숫점예상가 = Number(String(this.predict(parseFloat(rows[0].저가),parseFloat(rows[0].고가),parseFloat(rows[0].종가),parseFloat(rows[0].시가))).replace('Tensor','').replace(/a/gi,""));
+        restart = () => {
+            let 소숫점예상가 = Number(String(this.predict(parseFloat(this.state.x1s[0]),parseFloat(this.state.x2s[0]),parseFloat(this.state.x3s[0]),parseFloat(this.state.x4s[0]))).replace('Tensor','').replace(/a/gi,""));
             let gap = Math.abs(소숫점예상가 - this.state.y);
 
             if(gap > 0.1) {
