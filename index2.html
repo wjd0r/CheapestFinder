@@ -32,8 +32,8 @@
 
             this.state = {
                 stocks: [],
-                learnignRate: 0.000000000001,
-                optimizer: tf.train.sgd(0.000000000001),
+                learnignRate: 0.00000000000001,
+                optimizer: tf.train.sgd(0.00000000000001),
                 m1: tf.variable(tf.scalar(Math.random(1))),
                 m2: tf.variable(tf.scalar(Math.random(1))),
                 m3: tf.variable(tf.scalar(Math.random(1))),
@@ -58,7 +58,7 @@
                     x2s: prevState.stocks.map(value => parseInt(value.TDD_HGPRC.replace(/,/g , ''))), //고가
                     x3s: prevState.stocks.map(value => parseInt(value.TDD_CLSPRC.replace(/,/g , ''))), //종가
                     x4s: prevState.stocks.map(value => parseInt(value.TDD_OPNPRC.replace(/,/g , ''))), //시가
-                    ys: prevState.stocks.map(value => parseInt(value.TDD_OPNPRC.replace(/,/g , ''))), //금일시가
+                    ys: prevState.stocks.map(value => parseInt(value.TDD_OPNPRC.replace(/,/g , ''))), //등략률
                 }
             });
 
@@ -93,10 +93,10 @@
         // 학습시작 ( 미니마이져를 하면서 m 값 조절 )
         start = () => {
             tf.tidy(() => {
-                //for(let i = 0; i < 10; i++) {
-                const ys = tf.tensor(this.state.ys); // 진짜 y
-                this.state.optimizer.minimize(() => this.loss(this.predict(this.state.x1s, this.state.x2s, this.state.x3s, this.state.x4s), ys));
-                //}
+                for(let i = 0; i < 10; i++) {
+                    const ys = tf.tensor(this.state.ys); // 진짜 y
+                    this.state.optimizer.minimize(() => this.loss(this.predict(this.state.x1s, this.state.x2s, this.state.x3s, this.state.x4s), ys));
+                }
             });
 
             this.restart();
@@ -107,10 +107,10 @@
             let predict_y = Number(String(this.predict(parseFloat(this.state.x1s[0]),parseFloat(this.state.x2s[0]),parseFloat(this.state.x3s[0]),parseFloat(this.state.x4s[0]))).replace('Tensor','').replace(/a/gi,""));
             let gap = Math.abs(predict_y - this.state.y);
 
-            if(gap > 0.1) {
+            if(gap > 0.001) {
                 let learning_magnification = 1; // 러닝 배율
                 if(gap > 1) {
-                    learning_magnification = 1.01;
+                    learning_magnification = 1.0;
                 } else if(gap <= 1) {
                     learning_magnification = 0.99;
                 }
