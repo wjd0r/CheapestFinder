@@ -73,14 +73,14 @@
                 }
             });
 
-            this.state.x1s.shift(); // 처음  요소 삭제
-            this.state.x2s.shift(); // 처음  요소 삭제
-            this.state.x3s.shift(); // 처음  요소 삭제
+            //this.state.x1s.shift(); // 처음  요소 삭제
+            //this.state.x2s.shift(); // 처음  요소 삭제
+            //this.state.x3s.shift(); // 처음  요소 삭제
             //this.state.x4s.shift(); // 처음  요소 삭제
             //this.state.x5s.shift(); // 처음  요소 삭제
             //this.state.x6s.shift(); // 처음 요소 삭제
             //this.state.x7s.shift(); // 처음 요소 삭제
-            this.state.ys.shift(); // 처음 요소 삭제
+            //this.state.ys.shift(); // 처음 요소 삭제
 
             this.state.x1s.shift(); // 처음  요소 삭제
             this.state.x2s.shift(); // 처음  요소 삭제
@@ -305,7 +305,10 @@
                             stocks: responseObject.OutBlock_1,
                         }
                     });
-                    setTimeout(() => this.tensorinit(), 100);
+                    setTimeout(() => {
+                        this.state.stocks.shift();
+                        this.tensorinit();
+                    }, 100);
                 } else {
                     console.log('We reached our target server, but it returned an error');
                     console.log('Possibly handle the error by changing your state.');
