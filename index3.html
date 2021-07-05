@@ -23,7 +23,7 @@
     <style>
         .max-width-1280 {
             margin: 0 auto;
-            max-width: 1280px;
+            max-width: 960px;
         }
     </style>
 </head>
@@ -180,18 +180,18 @@
                     }
                 });
 
-                console.log("mingap : " + this.state.mingap);
-                console.log("gap (predict_y - ys) : " + gap);
-                console.log("gap2 (mingap - gao) : " + gap2);
+                //console.log("mingap : " + this.state.mingap);
+                //console.log("gap (predict_y - ys) : " + gap);
+                //console.log("gap2 (mingap - gao) : " + gap2);
                 //console.log(predict_y + " - " + this.state.ys[0] + " = " + gap);
 
 
-                console.log("predict_y (학습데이터의 예측값 값) : " + Number(String(this.predict(x1,x2,x3)).replace('Tensor','').replace(/a/gi,"")));
-                console.log("ys (학습데이터의 실제 값 값) : " + this.state.ys[0]);
+                //console.log("predict_y (학습데이터의 예측값 값) : " + Number(String(this.predict(x1,x2,x3)).replace('Tensor','').replace(/a/gi,"")));
+                //console.log("ys (학습데이터의 실제 값 값) : " + this.state.ys[0]);
 
-                console.log("y (예측해보는 값) : " + Number(String(this.predict(x1,x2,x3)).replace('Tensor','').replace(/a/gi,"")));
+                //console.log("y (예측해보는 값) : " + Number(String(this.predict(x1,x2,x3)).replace('Tensor','').replace(/a/gi,"")));
 
-                console.log("==========================");
+                //console.log("==========================");
                 //console.log("learnignRate : " + this.state.learnignRate);
 
                 setTimeout(() => this.start(), 1);
@@ -357,8 +357,8 @@
                                 </div>
                             </div>
                             <div className="col-sm-6">
-                                <div>이번달 최고가 예측 <strong className="h5" style={{color:'var(--danger)'}}>{this.state.y}</strong></div>
-                                <div>이번달 최저가 예측 <strong className="h5">{this.state.y2}</strong></div>
+                                <div>이번달 최고가 예측 <strong className="h5" style={{color:'var(--danger)'}}>{Math.round(this.state.y)}원</strong></div>
+                                <div>이번달 최저가 예측 <strong className="h5">{Math.round(this.state.y2)}원</strong></div>
                                 <div className="d-grid gap-2 d-md-flex justify-content-md-end">
                                     <button type="button" className="btn btn-danger btn-sm"
                                             data-toggle="collapse"
