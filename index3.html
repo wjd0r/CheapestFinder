@@ -20,41 +20,58 @@
     <link rel="stylesheet" href="./css/bootstrap-grid.css">
     <link rel="stylesheet" href="./css/bootstrap-reboot.css">
 
+    <style>
+        .max-width-1280 {
+            margin: 0 auto;
+            max-width: 1280px;
+        }
+    </style>
 </head>
 <body>
 
 <div id="root"></div>
 
 <script type="text/babel">
-    class A extends React.Component {
+    class B extends React.Component {
         constructor(props) {
             super(props);
-
             this.state = {
-                allstocks: [],
+                // 예측
                 stocks: [],
                 learnignRate: 0.0000000000000001,
                 optimizer: tf.train.sgd(0.0000000000000001),
                 m1: tf.variable(tf.scalar(Math.random(1))),
                 m2: tf.variable(tf.scalar(Math.random(1))),
                 m3: tf.variable(tf.scalar(Math.random(1))),
-                //m4: tf.variable(tf.scalar(Math.random(1))),
                 b: tf.variable(tf.scalar(Math.random(1))),
                 y: 0,
                 y2: 0,
                 x1s: [],
                 x2s: [],
                 x3s: [],
-                //x4s: [],
                 ys: [],
                 run2: 0,
                 mingap: 99999999999,
                 learning_magnification: 1,
                 compute: 0,
-            };
 
-            this.getAllStock();
+                // 기본정보
+                TRD_DD: '',
+                TDD_CLSPRC: '',
+                FLUC_TP_CD: '',
+                CMPPREVDD_PRC: '',
+                FLUC_RT: '',
+                TDD_OPNPRC: '',
+                TDD_HGPRC: '',
+                TDD_LWPRC: '',
+                ACC_TRDVOL: '',
+                ACC_TRDVAL: '',
+                MKTCAP: '',
+                LIST_SHRS: ''
+            };
         }
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         // 학습할 데이터를 각각의 배열에 담기
         tensorinit = () => {
@@ -63,34 +80,13 @@
                     x1s: prevState.stocks.map(value => parseInt(value.MMEND_CLSPRC.replace(/,/g , ''))), // 과거 종가
                     x2s: prevState.stocks.map(value => parseInt(value.HGST_CLSPRC.replace(/,/g , ''))), // 과거 최고가
                     x3s: prevState.stocks.map(value => parseInt(value.LWST_CLSPRC.replace(/,/g , ''))), // 과거 최저가
-                    //x4s: prevState.stocks.map(value => parseInt(value.AVG_ACC_TRDVOL.replace(/,/g , ''))), // 과거 일평균 거래량
-                    //x5s: prevState.stocks.map(value => parseInt(value.AVG_ACC_TRDVAL.replace(/,/g , ''))), // 과거 일평균 거래대금
-
-                    //x6s: prevState.stocks.map(value => parseInt(value.AVG_ACC_TRDVOL.replace(/,/g , ''))), // 현재 일평균 거래량
-                    //x7s: prevState.stocks.map(value => parseInt(value.AVG_ACC_TRDVAL.replace(/,/g , ''))), // 현재 일평균 거래대금
-
                     ys: prevState.stocks.map(value => parseInt(this.state.run2 ? value.LWST_CLSPRC.replace(/,/g , '') : value.HGST_CLSPRC.replace(/,/g , ''))), // 최고가 : 최저
                 }
             });
 
-            //this.state.x1s.shift(); // 처음  요소 삭제
-            //this.state.x2s.shift(); // 처음  요소 삭제
-            //this.state.x3s.shift(); // 처음  요소 삭제
-            //this.state.x4s.shift(); // 처음  요소 삭제
-            //this.state.x5s.shift(); // 처음  요소 삭제
-            //this.state.x6s.shift(); // 처음 요소 삭제
-            //this.state.x7s.shift(); // 처음 요소 삭제
-            //this.state.ys.shift(); // 처음 요소 삭제
-
             this.state.x1s.shift(); // 처음  요소 삭제
             this.state.x2s.shift(); // 처음  요소 삭제
             this.state.x3s.shift(); // 처음  요소 삭제
-            //this.state.x4s.shift(); // 처음  요소 삭제
-            //this.state.x5s.shift(); // 처음  요소 삭제
-
-            //this.state.x6s.pop(); // 처음  요소 삭제
-            //this.state.x7s.pop(); // 처음  요소 삭제
-
             this.state.ys.pop(); // 마지막 요소 삭제
 
             this.start(); // 계산 시작
@@ -101,12 +97,10 @@
             const xs1 = tf.tensor(x1);
             const xs2 = tf.tensor(x2);
             const xs3 = tf.tensor(x3);
-            //const xs4 = tf.tensor(x4);
 
             const mx1 = xs1.mul(this.state.m1);
             const mx2 = xs2.mul(this.state.m2);
             const mx3 = xs3.mul(this.state.m3);
-            //const mx4 = xs4.mul(this.state.m4);
 
             const ys = mx1.add(mx2).add(mx3).add(this.state.b);
 
@@ -243,6 +237,56 @@
             }
         }
 
+        // 개별종목 시세추이 (월)
+        getData = () => {
+            let request = new XMLHttpRequest();
+
+            request.open('GET', 'https://yg01.herokuapp.com/http://data.krx.co.kr/comm/bldAttendant/getJsonData.cmd?' +
+                'bld=dbms/MDC/STAT/standard/MDCSTAT01801&' +
+                'isuCd='+this.props.stock.ISU_CD+'&' +
+                'strtYymm=' + this.getCurrentDate2(5) + '&' +
+                'endYymm=' + this.getCurrentDate2() + '&', true);
+            request.onload = (e) => {
+                if (request.status >= 200 && request.status < 400) {
+                    let responseObject = JSON.parse(request.responseText);
+                    this.setState((prevState) => {
+                        return {
+                            stocks: responseObject.OutBlock_1,
+                        }
+                    });
+                    setTimeout(() => {
+                        this.state.stocks.shift();
+                        this.tensorinit();
+                    }, 100);
+                } else {
+                    console.log('We reached our target server, but it returned an error');
+                    console.log('Possibly handle the error by changing your state.');
+                }
+            };
+
+            request.onerror = () => {
+                console.log('There was a connection error of some sort.');
+                console.log('Possibly handle the error by changing your state.');
+            };
+
+            request.send();
+        }
+
+        // 오늘 기준으로 년도 변경
+        getCurrentDate2 = (_year = 0) => {
+            let date = new Date();
+            date.setFullYear(date.getFullYear() - _year);
+
+            let year = date.getFullYear().toString();
+            let month = date.getMonth() + 1;
+            month = month < 10 ? '0' + month.toString() : month.toString();
+            let day = date.getDate();
+            day = day < 10 ? '0' + day.toString() : day.toString();
+            return year + month + day;
+        }
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
         // 오늘 기준으로 년도 변경
         getCurrentDate = (_year = 0) => {
             let date = new Date();
@@ -251,14 +295,96 @@
             let year = date.getFullYear().toString();
             let month = date.getMonth() + 1;
             month = month < 10 ? '0' + month.toString() : month.toString();
-            //let day = date.getDate();
-            //day = day < 10 ? '0' + day.toString() : day.toString();
-            return year + month;
+            let day = date.getDate();
+            day = day < 10 ? '0' + day.toString() : day.toString();
+            return year + month + day;
         }
 
-        // 날짜를 년 월로 표기
-        dateToKo = (str) => {
-            return str.substring(0,4) + '년 ' + str.substring(5,6) + '월';
+        // 개별 종목 시세 추이
+        getAllStock = () => {
+            let request = new XMLHttpRequest();
+
+            request.open('GET', 'https://yg01.herokuapp.com/http://data.krx.co.kr/comm/bldAttendant/getJsonData.cmd?' +
+                'bld=dbms/MDC/STAT/standard/MDCSTAT01701' +
+                '&isuCd=' + this.props.stock.ISU_CD +
+                '&strtDd=' + this.getCurrentDate() +
+                '&endDd=' + this.getCurrentDate(), true);
+            request.onload = (e) => {
+                if (request.status >= 200 && request.status < 400) {
+                    let responseObject = JSON.parse(request.responseText);
+                    this.setState((prevState) => {
+                        return {
+                            TRD_DD: responseObject.output[0].TRD_DD,
+                            TDD_CLSPRC: responseObject.output[0].TDD_CLSPRC,
+                            FLUC_TP_CD: responseObject.output[0].FLUC_TP_CD,
+                            CMPPREVDD_PRC: responseObject.output[0].CMPPREVDD_PRC,
+                            FLUC_RT: responseObject.output[0].FLUC_RT,
+                            TDD_OPNPRC: responseObject.output[0].TDD_OPNPRC,
+                            TDD_HGPRC: responseObject.output[0].TDD_HGPRC,
+                            TDD_LWPRC: responseObject.output[0].TDD_LWPRC,
+                            ACC_TRDVOL: responseObject.output[0].ACC_TRDVOL,
+                            ACC_TRDVAL: responseObject.output[0].ACC_TRDVAL,
+                            MKTCAP: responseObject.output[0].MKTCAP,
+                            LIST_SHRS: responseObject.output[0].LIST_SHRS,
+                        }
+                    });
+                } else {
+                    console.log('We reached our target server, but it returned an error');
+                    console.log('Possibly handle the error by changing your state.');
+                }
+            };
+
+            request.onerror = () => {
+                console.log('There was a connection error of some sort.');
+                console.log('Possibly handle the error by changing your state.');
+            };
+
+            request.send();
+        }
+
+        render() {
+            return (<React.Fragment>
+                <div className="shadow-lg card mb-2 bg-white rounded" onClick={this.getAllStock}>
+                    <div className="card-body">
+                        <div className="row">
+                            <div className="col-sm-6">
+                                <span className="badge badge-secondary">{this.props.stock.ISU_SRT_CD}</span>&nbsp;
+                                <span className="badge badge-secondary">{this.props.stock.MKT_TP_NM}</span>
+                                <p className="h6">{this.props.stock.ISU_NM}</p>
+                                <div>
+                                    시가 <strong className="h5" style={{color:'var(--danger)'}}>{this.state.TDD_OPNPRC}</strong>&nbsp;&nbsp;
+                                    거래량 <strong className="h5">{this.state.ACC_TRDVOL}</strong>
+                                </div>
+                            </div>
+                            <div className="col-sm-6">
+                                <div>이번달 최고가 예측 <strong className="h5" style={{color:'var(--danger)'}}>{this.state.y}</strong></div>
+                                <div>이번달 최저가 예측 <strong className="h5">{this.state.y2}</strong></div>
+                                <div className="d-grid gap-2 d-md-flex justify-content-md-end">
+                                    <button type="button" className="btn btn-danger btn-sm"
+                                            data-toggle="collapse"
+                                            role="button"
+                                            aria-expanded="false"
+                                            onClick={this.getData}
+                                    >예측</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </React.Fragment>);
+        }
+    }
+
+
+    class A extends React.Component {
+        constructor(props) {
+            super(props);
+
+            this.state = {
+                allstocks: [],
+            };
+
+            this.getAllStock();
         }
 
         // 전종목 기본정보
@@ -288,120 +414,24 @@
             request.send();
         }
 
-        // 개별종목 시세추이 (월)
-        getData = (isuCd) => {
-            let request = new XMLHttpRequest();
 
-            request.open('GET', 'https://yg01.herokuapp.com/http://data.krx.co.kr/comm/bldAttendant/getJsonData.cmd?' +
-                'bld=dbms/MDC/STAT/standard/MDCSTAT01801&' +
-                'isuCd='+isuCd+'&' +
-                'strtYymm=' + this.getCurrentDate(5) + '&' +
-                'endYymm=' + this.getCurrentDate() + '&', true);
-            request.onload = (e) => {
-                if (request.status >= 200 && request.status < 400) {
-                    let responseObject = JSON.parse(request.responseText);
-                    this.setState((prevState) => {
-                        return {
-                            stocks: responseObject.OutBlock_1,
-                        }
-                    });
-                    setTimeout(() => {
-                        this.state.stocks.shift();
-                        this.tensorinit();
-                    }, 100);
-                } else {
-                    console.log('We reached our target server, but it returned an error');
-                    console.log('Possibly handle the error by changing your state.');
-                }
-            };
-
-            request.onerror = () => {
-                console.log('There was a connection error of some sort.');
-                console.log('Possibly handle the error by changing your state.');
-            };
-
-            request.send();
-        }
-
-        onChange = (e) => {
-            // 셀렉트 박스 변경시 완전히 초기화
-            this.setState((prevState) => {
-                return {
-                    stocks: [],
-                    learnignRate: 0.0000000000000001,
-                    optimizer: tf.train.sgd(0.0000000000000001),
-                    y: 0,
-                    y2: 0,
-                    m1: tf.variable(tf.scalar(Math.random(1))),
-                    m2: tf.variable(tf.scalar(Math.random(1))),
-                    m3: tf.variable(tf.scalar(Math.random(1))),
-                    b: tf.variable(tf.scalar(Math.random(1))),
-                    x1s: [],
-                    x2s: [],
-                    x3s: [],
-                    ys: [],
-                    run2: 0,
-                    mingap: 99999999999,
-                    compute: 0,
-                }
-            });
-
-            this.getData(e.target.value);
-        }
 
         render() {
-            return (<div>
-                <select onChange={this.onChange}>
-                    {this.state.allstocks.map((stock, idx) => {
-                        return (
-                            <option value={stock.ISU_CD} key={idx}>{stock.ISU_NM}</option>
-                        )
-                    })}
-                </select>
-                <p>{this.dateToKo(this.getCurrentDate())} 최고가 예측 : {this.state.y}</p>
-                <p>{this.dateToKo(this.getCurrentDate())} 최저가 예측 : {this.state.y2}</p>
-                <table className="table table-bordered table-striped">
-                    <thead>
-                        <tr>
-                            <th rowSpan="2">연월(TRD_DD)</th>
-                            <th rowSpan="2">종가(MMEND_CLSPRC)</th>
-                            <th rowSpan="2">최고가(HGST_CLSPRC)</th>
-                            <th rowSpan="2">최저가(LWST_CLSPRC)</th>
-                            <th colSpan="2">거래량</th>
-                            <th colSpan="2">거래대금</th>
-                        </tr>
-                        <tr>
-                            <th>합계(MM_ACC_TRDVOL)</th>
-                            <th>일평균(AVG_ACC_TRDVOL)</th>
-                            <th>합계(MM_ACC_TRDVAL)</th>
-                            <th>일평균(AVG_ACC_TRDVAL)</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {this.state.stocks.map((stock, idx) => {
-                            return (
-                                <tr key={idx}>
-                                    <td>{stock.TRD_DD}</td>
-                                    <td>{stock.MMEND_CLSPRC}</td>
-                                    <td>{stock.HGST_CLSPRC}</td>
-                                    <td>{stock.LWST_CLSPRC}</td>
-                                    <td>{stock.MM_ACC_TRDVOL}</td>
-                                    <td>{stock.AVG_ACC_TRDVOL}</td>
-                                    <td>{stock.MM_ACC_TRDVAL}</td>
-                                    <td>{stock.AVG_ACC_TRDVAL}</td>
-                                </tr>
-                            )
-                        })}
-                    </tbody>
-                </table>
-            </div>);
+            return (<React.Fragment>
+                <h1>주식 예측하기</h1>
+                {this.state.allstocks.map((stock, idx) => {
+                    return (
+                        <B stock={stock} key={idx}/>
+                    )
+                })}
+            </React.Fragment>);
         }
     }
 
 </script>
 
 <script type="text/babel">
-    ReactDOM.render(<A />, document.querySelector('#root'));
+    ReactDOM.render(<div className="max-width-1280"><A/></div>, document.querySelector('#root'));
 </script>
 </body>
 </html>
