@@ -287,6 +287,8 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+        numberWithCommas = (x) => return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
         // 오늘 기준으로 년도 변경
         getCurrentDate = (_year = 0) => {
             let date = new Date();
@@ -357,8 +359,8 @@
                                 </div>
                             </div>
                             <div className="col-sm-6">
-                                <div>이번달 최고가 예측 <strong className="h5" style={{color:'var(--danger)'}}>{Math.round(this.state.y)}원</strong></div>
-                                <div>이번달 최저가 예측 <strong className="h5">{Math.round(this.state.y2)}원</strong></div>
+                                <div>이번달 최고가 예측 <strong className="h5" style={{color:'var(--danger)'}}>{this.numberWithCommas(Math.round(this.state.y))}원</strong></div>
+                                <div>이번달 최저가 예측 <strong className="h5">{this.numberWithCommas(Math.round(this.state.y2))}원</strong></div>
                                 <div className="d-grid gap-2 d-md-flex justify-content-md-end">
                                     <button type="button" className="btn btn-danger btn-sm"
                                             data-toggle="collapse"
