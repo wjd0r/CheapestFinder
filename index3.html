@@ -314,22 +314,26 @@
             request.onload = (e) => {
                 if (request.status >= 200 && request.status < 400) {
                     let responseObject = JSON.parse(request.responseText);
-                    this.setState((prevState) => {
-                        return {
-                            TRD_DD: responseObject.output[0].TRD_DD,
-                            TDD_CLSPRC: responseObject.output[0].TDD_CLSPRC,
-                            FLUC_TP_CD: responseObject.output[0].FLUC_TP_CD,
-                            CMPPREVDD_PRC: responseObject.output[0].CMPPREVDD_PRC,
-                            FLUC_RT: responseObject.output[0].FLUC_RT,
-                            TDD_OPNPRC: responseObject.output[0].TDD_OPNPRC,
-                            TDD_HGPRC: responseObject.output[0].TDD_HGPRC,
-                            TDD_LWPRC: responseObject.output[0].TDD_LWPRC,
-                            ACC_TRDVOL: responseObject.output[0].ACC_TRDVOL,
-                            ACC_TRDVAL: responseObject.output[0].ACC_TRDVAL,
-                            MKTCAP: responseObject.output[0].MKTCAP,
-                            LIST_SHRS: responseObject.output[0].LIST_SHRS,
-                        }
-                    });
+                    if(responseObject.output.length > 0) {
+                        this.setState((prevState) => {
+                            return {
+                                TRD_DD: responseObject.output[0].TRD_DD,
+                                TDD_CLSPRC: responseObject.output[0].TDD_CLSPRC,
+                                FLUC_TP_CD: responseObject.output[0].FLUC_TP_CD,
+                                CMPPREVDD_PRC: responseObject.output[0].CMPPREVDD_PRC,
+                                FLUC_RT: responseObject.output[0].FLUC_RT,
+                                TDD_OPNPRC: responseObject.output[0].TDD_OPNPRC,
+                                TDD_HGPRC: responseObject.output[0].TDD_HGPRC,
+                                TDD_LWPRC: responseObject.output[0].TDD_LWPRC,
+                                ACC_TRDVOL: responseObject.output[0].ACC_TRDVOL,
+                                ACC_TRDVAL: responseObject.output[0].ACC_TRDVAL,
+                                MKTCAP: responseObject.output[0].MKTCAP,
+                                LIST_SHRS: responseObject.output[0].LIST_SHRS,
+                            }
+                        });
+                    } else {
+
+                    }
                 } else {
                     console.log('We reached our target server, but it returned an error');
                     console.log('Possibly handle the error by changing your state.');
