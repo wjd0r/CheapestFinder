@@ -179,13 +179,15 @@
         }
 
         render() {
-            return (<React.Fragment>
-                <div className="nav-itme">
-                    <div className="link">
-                        {this.props.stock.ISU_ABBRV}
+            return (
+                <React.Fragment>
+                    <div className="nav-itme">
+                        <div className="link">
+                            {this.props.stock.ISU_ABBRV}
+                        </div>
                     </div>
-                </div>
-            </React.Fragment>);
+                </React.Fragment>
+            );
         }
     }
 
@@ -222,10 +224,14 @@
                 reject();
             };
             request.send();
-        }
+        });
 
         render() {
             return (<React.Fragment>
+                <div className="nav-itme">
+                    <div className="link">
+                    </div>
+                </div>
             </React.Fragment>);
         }
     }
