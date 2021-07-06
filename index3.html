@@ -16,14 +16,97 @@
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
+    <script src="js/partial.js"></script>
+    <script src="js/_.js"></script>
+
     <link rel="stylesheet" href="./css/bootstrap.css">
     <link rel="stylesheet" href="./css/bootstrap-grid.css">
     <link rel="stylesheet" href="./css/bootstrap-reboot.css">
 
     <style>
-        .max-width-1280 {
-            margin: 0 auto;
-            max-width: 960px;
+        input {
+            box-shadow: -25px 0 4px 0 rgba(255, 255, 255, .85);
+            overflow: visible;
+            position: relative;
+            z-index: 20;
+            height: 32px;
+            border-radius: 4px;
+            background-color: #f4f4f4;
+            box-sizing: border-box;
+            float: initial;
+            border: 0;
+            padding-left: 10px;
+        }
+        input:focus, textarea:focus, select:focus, button:focus {
+            outline:none;
+        }
+
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 55px;
+            background-color: #fff;
+            border-bottom: 1px solid #e0e0e0;
+            z-index: 9999;
+        }
+        .nav {
+            position: fixed;
+            top: 56px;
+            left: 0;
+            bottom: 0;
+            width: 240px;
+            border-right: 1px solid #eee;
+            overflow: auto;
+            height: auto;
+        }
+        .nav .search-bar{
+            display: block;
+            overflow: hidden;
+            position: relative;
+            bottom: auto;
+            right: auto;
+            padding: 14px 19px 0 20px;
+        }
+        .nav-panel {
+            margin: 3px 21px 0 19px;
+            padding: 14px 0 0;
+            border-top: 0 none;
+            margin-top: 0;
+            width: fit-content;
+            overflow-y: initial;
+        }
+        .nav-panel > .panel {
+            white-space: initial;
+            display: inline-block;
+            flex-wrap: wrap;
+        }
+        .nav-itme {
+            overflow: hidden;
+            position: relative;
+            height: 21px;
+            line-height: 21px;
+            cursor: pointer;
+            display: block;
+            padding: auto;
+            padding: 0 0 8px 0;
+        }
+        .nav-itme .link:hover {
+            font-weight: bold;
+            border-bottom: 4px solid #fee500;
+        }
+        .article {
+            overflow: scroll;
+            width: calc(100vw - 241px);
+            height: calc(100vh - 56px);
+            box-sizing: border-box;
+            position: fixed;
+            top: 56px;
+            left: 241px;
+        }
+        .btn {
+            margin: .51rem .55rem;
         }
     </style>
 </head>
@@ -32,7 +115,127 @@
 <div id="root"></div>
 
 <script type="text/babel">
-    class B extends React.Component {
+    class HEADERS extends React.Component {
+        constructor(props) {
+            super(props);
+            this.state = {
+            };
+        }
+
+        render() {
+            return (<React.Fragment>
+                <div className="header">
+                    <button type="button" className="btn btn-danger align-items-md-center">무료 주식 예측 사이트</button>
+                </div>
+            </React.Fragment>);
+        }
+    }
+
+    class NAVS extends React.Component {
+        constructor(props) {
+            super(props);
+            this.state = {
+                stocks: [],
+            };
+
+            //this.init();
+        }
+
+        onChange = (e) => {
+            this.setState({
+                stocks: _filter(this.props.stocks, function(stock) {
+                    return stock.ISU_ABBRV.includes(e.target.value);
+                }),
+            });
+        }
+
+        render() {
+            return (<React.Fragment>
+                <div className="nav">
+                    <div className="search-bar">
+                        <input type="text" placeholder="종목 검색" onChange={this.onChange}/>
+                    </div>
+                    <div className="nav-panel">
+                        <div className="panel">
+                            {this.state.stocks.length != 0 ?
+                                this.state.stocks.map((stock, idx) => {
+                                    return (
+                                        <NAV stock={stock} key={idx}/>
+                                    )
+                                }) : null
+                            }
+                        </div>
+                    </div>
+                </div>
+            </React.Fragment>);
+        }
+    }
+
+    class NAV extends React.Component {
+        constructor(props) {
+            super(props);
+            this.state = {
+            };
+        }
+
+        render() {
+            return (<React.Fragment>
+                <div className="nav-itme">
+                    <div className="link">
+                        {this.props.stock.ISU_ABBRV}
+                    </div>
+                </div>
+            </React.Fragment>);
+        }
+    }
+
+    class ARTICLE2 extends React.Component {
+        constructor(props) {
+            super(props);
+            this.state = {
+            };
+        }
+
+        // 종합정보
+        // 개요
+        // 재무정보
+        get재무 = async (e) => {
+            await this.getData().then((responseObject) => {
+
+            });
+        }
+
+        getData = (bld, isuCd,ddTp) => new Promise(function(resolve, reject) {
+            let request = new XMLHttpRequest();
+
+            request.open('GET', 'https://yg01.herokuapp.com/http://data.krx.co.kr/comm/bldAttendant/getJsonData.cmd?' +
+                'bld=' + bld +
+                isuCd != null ? '&isuCd=' + isuCd : '' +
+                ddTp != null ? '&ddTp=' + ddTp : '', true);
+            request.onload = (e) => {
+                if (request.status >= 200 && request.status < 400) {
+                    let responseObject = JSON.parse(request.responseText);
+                    resolve(responseObject);
+                }
+            };
+            request.onerror = () => {
+                reject();
+            };
+            request.send();
+        }
+
+        render() {
+            return (<React.Fragment>
+                <div className="nav-itme">
+                    <div className="link">
+                        {this.props.stock.ISU_ABBRV}
+                    </div>
+                </div>
+            </React.Fragment>);
+        }
+    }
+
+    class ARTICLE extends React.Component {
         constructor(props) {
             super(props);
             this.state = {
@@ -424,12 +627,15 @@
 
         render() {
             return (<React.Fragment>
-                <h1>주식 예측하기</h1>
-                {this.state.allstocks.map((stock, idx) => {
-                    return (
-                        <B stock={stock} key={idx}/>
-                    )
-                })}
+                <HEADERS/>
+                <NAVS stocks={this.state.allstocks}/>
+                <div className="article">
+                    {this.state.allstocks.map((stock, idx) => {
+                        return (
+                            <ARTICLE stock={stock} key={idx}/>
+                        )
+                    })}
+                </div>
             </React.Fragment>);
         }
     }
@@ -437,7 +643,7 @@
 </script>
 
 <script type="text/babel">
-    ReactDOM.render(<div className="max-width-1280"><A/></div>, document.querySelector('#root'));
+    ReactDOM.render(<A/>, document.querySelector('#root'));
 </script>
 </body>
 </html>
