@@ -143,7 +143,7 @@
 
         onChange = (e) => {
             this.setState({
-                stocks: _filter(this.props.stocks, function(stock) {
+                stocks: _.filter(this.props.stocks, function(stock) {
                     return stock.ISU_ABBRV.includes(e.target.value);
                 }),
             });
