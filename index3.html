@@ -52,6 +52,7 @@
             z-index: 9999;
         }
         .nav {
+            display: block;
             position: fixed;
             top: 56px;
             left: 0;
@@ -160,9 +161,13 @@
                             {this.state.stocks.length != 0 ?
                                 this.state.stocks.map((stock, idx) => {
                                     return (
-                                        <NAV stock={stock} key={idx}/>
+                                        <NAV stock={stock} key={idx} setStock={this.props.setStock}/>
                                     )
-                                }) : null
+                                }) : this.props.stocks.map((stock, idx) => {
+                                    return (
+                                        <NAV stock={stock} key={idx} setStock={this.props.setStock}/>
+                                    )
+                                })
                             }
                         </div>
                     </div>
@@ -178,10 +183,14 @@
             };
         }
 
+        onClick = () => {
+            this.props.setStock(this.props.stock);
+        }
+
         render() {
             return (
                 <React.Fragment>
-                    <div className="nav-itme">
+                    <div className="nav-itme" onClick={() => this.onClick()}>
                         <div className="link">
                             {this.props.stock.ISU_ABBRV}
                         </div>
@@ -195,15 +204,46 @@
         constructor(props) {
             super(props);
             this.state = {
+                general: {},
+                outline: {},
+                finance: {},
             };
+
+            this.mount();
+        }
+
+        mount = () => {
+            this.props.mount( (isu_cd) => this.getDataStart(isu_cd) );
+        }
+
+        getDataStart = (isu_cd) => {
+            this.getGeneral(isu_cd);
+            this.getOutline(isu_cd);
+            this.getFinance(isu_cd);
         }
 
         // 종합정보
+        getGeneral = async (isuCd) => {
+            await this.getData('dbms/MDC/STAT/standard/MDCSTAT02101', isuCd, null).then((responseObject) => {
+                this.setState({
+                    general: responseObject,
+                });
+            });
+        }
         // 개요
+        getOutline = async (isuCd) => {
+            await this.getData('dbms/MDC/STAT/standard/MDCSTAT02103', isuCd, null).then((responseObject) => {
+                this.setState({
+                    outline: responseObject,
+                });
+            });
+        }
         // 재무정보
-        get재무 = async (e) => {
-            await this.getData().then((responseObject) => {
-
+        getFinance = async (isuCd) => {
+            await this.getData('dbms/MDC/STAT/standard/MDCSTAT02104', isuCd, null).then((responseObject) => {
+                this.setState({
+                    finance: responseObject,
+                });
             });
         }
 
@@ -212,8 +252,8 @@
 
             request.open('GET', 'https://yg01.herokuapp.com/http://data.krx.co.kr/comm/bldAttendant/getJsonData.cmd?' +
                 'bld=' + bld +
-                isuCd != null ? '&isuCd=' + isuCd : '' +
-                ddTp != null ? '&ddTp=' + ddTp : '', true);
+                (isuCd != null ? '&isuCd=' + isuCd : '') +
+                (ddTp != null ? '&ddTp=' + ddTp : ''), true);
             request.onload = (e) => {
                 if (request.status >= 200 && request.status < 400) {
                     let responseObject = JSON.parse(request.responseText);
@@ -228,9 +268,28 @@
 
         render() {
             return (<React.Fragment>
-                <div className="nav-itme">
-                    <div className="link">
-                    </div>
+                <div>
+                    종합정보
+                </div>
+                <div>
+                    {this.state.general != null ?
+                        return (
+                            <NAV stock={stock} key={idx} setStock={this.props.setStock}/>
+                        ) : return
+                        (
+
+                        )
+                    }
+                </div>
+                <div>
+                    개요
+                </div>
+                <div>
+                </div>
+                <div>
+                    재무정보
+                </div>
+                <div>
                 </div>
             </React.Fragment>);
         }
@@ -592,9 +651,25 @@
 
             this.state = {
                 allstocks: [],
+                stock: {},
+                childFunc: {},
             };
 
+
             this.getAllStock();
+        }
+
+        setStock = (stock) => {
+            this.setState(prevState => {
+                return {
+                    stock: stock,
+                }
+            });
+            this.childFunc(stock.ISU_CD);
+        }
+
+        mount = (childFunc) => {
+            this.childFunc = childFunc;
         }
 
         // 전종목 기본정보
@@ -629,13 +704,9 @@
         render() {
             return (<React.Fragment>
                 <HEADERS/>
-                <NAVS stocks={this.state.allstocks}/>
+                <NAVS stocks={this.state.allstocks} setStock={this.setStock}/>
                 <div className="article">
-                    {this.state.allstocks.map((stock, idx) => {
-                        return (
-                            <ARTICLE stock={stock} key={idx}/>
-                        )
-                    })}
+                    <ARTICLE2 stock={this.state.stock} mount={this.mount}/>
                 </div>
             </React.Fragment>);
         }
