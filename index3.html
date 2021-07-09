@@ -24,8 +24,24 @@
     <link rel="stylesheet" href="./css/bootstrap-reboot.css">
 
     <style>
+
+        /* 좌측 선택 #2d3e63 */
+        /* 배경색 선택 #f3f3f3 */
+        /* 파란색 버튼 #337ab7 */
+        /* 선택된 버튼 #286090 */
+        th {
+            background-color: #eee;
+            font-size: 14px;
+            color: #555;
+            font-weight: 400;
+            padding: 5px 10px;
+        }
+        td {
+            font-size: 14px;
+            padding: 5px 10px;
+        }
+
         input {
-            box-shadow: -25px 0 4px 0 rgba(255, 255, 255, .85);
             overflow: visible;
             position: relative;
             z-index: 20;
@@ -41,26 +57,19 @@
             outline:none;
         }
 
-        .header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 55px;
-            background-color: #fff;
-            border-bottom: 1px solid #e0e0e0;
-            z-index: 9999;
-        }
         .nav {
             display: block;
             position: fixed;
-            top: 56px;
+            top: 0;
             left: 0;
             bottom: 0;
             width: 240px;
             border-right: 1px solid #eee;
             overflow: auto;
             height: auto;
+            background-color: #30426a;
+            color: #b2bfdc;
+            font-weight: bold;
         }
         .nav .search-bar{
             display: block;
@@ -103,11 +112,51 @@
             height: calc(100vh - 56px);
             box-sizing: border-box;
             position: fixed;
-            top: 56px;
+            top: 0;
             left: 241px;
+        }
+        .article-title {
+            height: 60px;
+            background: #fff;
+            padding-left: 15px;
+        }
+        .article-title-1 {
+            padding-top: 7px;
+            font-size: 17px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .article-title-2 {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            font-size: 10px;
+        }
+        .article-content {
+            background-color: #f3f3f3;
+            padding: 15px;
+        }
+        .article-content-box {
+            padding: 25px;
+            box-shadow: 0 1px 1px rgba(0,0,0,.05);
+            background: #fff;
+            border: 1px solid transparent;
+            border-radius: 2px;
+            border-color: #e9e9e9;
+        }
+        .container_name {
+            text-align: left;
+            font-size: .9em;
+            font-weight: bold;
         }
         .btn {
             margin: .51rem .55rem;
+        }
+        .table {
+            border-collapse: collapse;
+        }
+        .table-bordered th, .table-bordered td {
+            border: 1px solid #ccc;
         }
     </style>
 </head>
@@ -116,22 +165,6 @@
 <div id="root"></div>
 
 <script type="text/babel">
-    class HEADERS extends React.Component {
-        constructor(props) {
-            super(props);
-            this.state = {
-            };
-        }
-
-        render() {
-            return (<React.Fragment>
-                <div className="header">
-                    <button type="button" className="btn btn-danger align-items-md-center">무료 주식 예측 사이트</button>
-                </div>
-            </React.Fragment>);
-        }
-    }
-
     class NAVS extends React.Component {
         constructor(props) {
             super(props);
@@ -266,30 +299,80 @@
             request.send();
         });
 
+        renderWhdgkqwjdqh = () => {
+            if (this.state.general != null)
+                return (
+                    <div>
+                        <table className='table table-bordered'>
+                            <tbody>
+                            <tr>
+                                <th colSpan='2'>시가</th>
+                                <td>{this.state.general.TDD_OPNPRC}</td>
+                                <th>거래량(주)</th>
+                                <td>{this.state.general.ACC_TRDVOL}</td>
+                            </tr>
+                            <tr>
+                                <th colSpan='2'>고가</th>
+                                <td>{this.state.general.TDD_HGPRC}</td>
+                                <th>거래대금(원)</th>
+                                <td>{this.state.general.ACC_TRDVAL}</td>
+                            </tr>
+                            <tr>
+                                <th colSpan='2'>저가</th>
+                                <td>{this.state.general.TDD_LWPRC}</td>
+                                <th>시가총액(백만원)</th>
+                                <td>{this.state.general.MKTCAP}</td>
+                            </tr>
+                            <tr>
+                                <th rowSpan='2'>52주(종가)</th>
+                                <th>최고</th>
+                                <td>{this.state.general.WK52_HGST_PRC}</td>
+                                <th>외국인비율</th>
+                                <td>{this.state.general.FORN_RTO}</td>
+                            </tr>
+                            <tr>
+                                <th>최저</th>
+                                <td>{this.state.general.WK52_LWST_PRC}</td>
+                                <th>PER/PBR</th>
+                                <td>{this.state.general.PER}/{this.state.general.PBR}</td>
+                            </tr>
+                            <tr>
+                                <th colSpan='2'>대용가</th>
+                                <td>{this.state.general.SB_PRC}</td>
+                                <th>배당수익률</th>
+                                <td>{this.state.general.DIV_YD}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                );
+        }
+
         render() {
             return (<React.Fragment>
-                <div>
-                    종합정보
+                <div className="article-title">
+                    <div className="article-title-1">{this.state.general.ISU_NM}({this.state.general.ISU_SRT_CD}) | {this.state.general.MKT_NM}<br/></div>
+                    <div className="article-title-2">{this.state.general.PRSNT_PRC} ▼{this.state.general.CMPPREVDD_PRC} ({this.state.general.FLUC_RT}%)</div>
                 </div>
-                <div>
-                    {this.state.general != null ?
-                        return (
-                            <NAV stock={stock} key={idx} setStock={this.props.setStock}/>
-                        ) : return
-                        (
-
-                        )
-                    }
-                </div>
-                <div>
-                    개요
-                </div>
-                <div>
-                </div>
-                <div>
-                    재무정보
-                </div>
-                <div>
+                <div className="article-content">
+                    <div className="article-content-box">
+                        <div>
+                            <p className="container_name">종합정보</p>
+                        </div>
+                        <div>
+                            {this.renderWhdgkqwjdqh()}
+                        </div>
+                        <div>
+                            개요
+                        </div>
+                        <div>
+                        </div>
+                        <div>
+                            재무정보
+                        </div>
+                        <div>
+                        </div>
+                    </div>
                 </div>
             </React.Fragment>);
         }
@@ -703,7 +786,6 @@
 
         render() {
             return (<React.Fragment>
-                <HEADERS/>
                 <NAVS stocks={this.state.allstocks} setStock={this.setStock}/>
                 <div className="article">
                     <ARTICLE2 stock={this.state.stock} mount={this.mount}/>
