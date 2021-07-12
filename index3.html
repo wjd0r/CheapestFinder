@@ -315,15 +315,6 @@
             request.send();
         });
 
-        renderAi = () => {
-            return (
-                <div>
-                    <button className="btn btn-sm btn-danger">Remove</button>
-                    <button className="btn btn-sm btn-primary">Add stack</button>
-                </div>
-            )
-        }
-
         renderGeneral = () => {
             if (this.state.general != null)
                 return (
@@ -524,7 +515,37 @@
         constructor(props) {
             super(props);
             this.state = {
+                stocks: [],
+                learnignRate: 0.0000000000000001,
+                optimizer: tf.train.sgd(0.0000000000000001),
+                m1: tf.variable(tf.scalar(Math.random(1))),
+                m2: tf.variable(tf.scalar(Math.random(1))),
+                m3: tf.variable(tf.scalar(Math.random(1))),
+                b: tf.variable(tf.scalar(Math.random(1))),
+                y: 0,
+                y2: 0,
+                x1s: [],
+                x2s: [],
+                x3s: [],
+                ys: [],
+                run2: 0,
+                mingap: 99999999999,
+                learning_magnification: 1,
+                compute: 0,
 
+                // 기본정보
+                TRD_DD: '',
+                TDD_CLSPRC: '',
+                FLUC_TP_CD: '',
+                CMPPREVDD_PRC: '',
+                FLUC_RT: '',
+                TDD_OPNPRC: '',
+                TDD_HGPRC: '',
+                TDD_LWPRC: '',
+                ACC_TRDVOL: '',
+                ACC_TRDVAL: '',
+                MKTCAP: '',
+                LIST_SHRS: ''
             }
         }
 
@@ -714,6 +735,15 @@
             let day = date.getDate();
             day = day < 10 ? '0' + day.toString() : day.toString();
             return year + month + day;
+        }
+
+        render() {
+            return (
+                <React.Fragment>
+                    <button className="btn btn-sm btn-danger">Remove</button>
+                    <button className="btn btn-sm btn-primary">Add stack</button>
+                </React.Fragment>
+            )
         }
     }
 
