@@ -109,7 +109,7 @@
         .article {
             overflow: scroll;
             width: calc(100vw - 241px);
-            height: calc(100vh - 56px);
+            height: 100vh;
             box-sizing: border-box;
             position: fixed;
             top: 0;
@@ -134,7 +134,10 @@
         }
         .article-content {
             background-color: #f3f3f3;
-            padding: 15px;
+            padding: 0 15px 15px 15px;
+        }
+        .article-content:nth-child(2) {
+            padding: 15px !important;
         }
         .article-content-box {
             padding: 25px;
@@ -154,9 +157,22 @@
         }
         .table {
             border-collapse: collapse;
+            margin-bottom: 0;
         }
         .table-bordered th, .table-bordered td {
             border: 1px solid #ccc;
+        }
+        .btn {
+            margin: 0;
+        }
+        .btn-primary {
+            background-color: #337ab7;
+            border-color: #2e6da4;
+        }
+        .btn-primary:hover {
+            color: #fff;
+            background-color: #286090;
+            border-color: #204d74;
         }
     </style>
 </head>
@@ -283,7 +299,7 @@
         getData = (bld, isuCd,ddTp) => new Promise(function(resolve, reject) {
             let request = new XMLHttpRequest();
 
-            request.open('GET', 'https://yg01.herokuapp.com/http://data.krx.co.kr/comm/bldAttendant/getJsonData.cmd?' +
+            request.open('GET', 'https://yg-01-01.herokuapp.com/http://data.krx.co.kr/comm/bldAttendant/getJsonData.cmd?' +
                 'bld=' + bld +
                 (isuCd != null ? '&isuCd=' + isuCd : '') +
                 (ddTp != null ? '&ddTp=' + ddTp : ''), true);
@@ -299,48 +315,116 @@
             request.send();
         });
 
-        renderWhdgkqwjdqh = () => {
+        renderAi = () => {
+            return (
+                <div>
+                    <button className="btn btn-sm btn-danger">Remove</button>
+                    <button className="btn btn-sm btn-primary">Add stack</button>
+                </div>
+            )
+        }
+
+        renderGeneral = () => {
             if (this.state.general != null)
                 return (
                     <div>
                         <table className='table table-bordered'>
                             <tbody>
+                                <tr>
+                                    <th colSpan='2'>시가</th>
+                                    <td>{this.state.general.TDD_OPNPRC}</td>
+                                    <th>거래량(주)</th>
+                                    <td>{this.state.general.ACC_TRDVOL}</td>
+                                </tr>
+                                <tr>
+                                    <th colSpan='2'>고가</th>
+                                    <td>{this.state.general.TDD_HGPRC}</td>
+                                    <th>거래대금(원)</th>
+                                    <td>{this.state.general.ACC_TRDVAL}</td>
+                                </tr>
+                                <tr>
+                                    <th colSpan='2'>저가</th>
+                                    <td>{this.state.general.TDD_LWPRC}</td>
+                                    <th>시가총액(백만원)</th>
+                                    <td>{this.state.general.MKTCAP}</td>
+                                </tr>
+                                <tr>
+                                    <th rowSpan='2'>52주(종가)</th>
+                                    <th>최고</th>
+                                    <td>{this.state.general.WK52_HGST_PRC}</td>
+                                    <th>외국인비율</th>
+                                    <td>{this.state.general.FORN_RTO}</td>
+                                </tr>
+                                <tr>
+                                    <th>최저</th>
+                                    <td>{this.state.general.WK52_LWST_PRC}</td>
+                                    <th>PER/PBR</th>
+                                    <td>{this.state.general.PER}/{this.state.general.PBR}</td>
+                                </tr>
+                                <tr>
+                                    <th colSpan='2'>대용가</th>
+                                    <td>{this.state.general.SB_PRC}</td>
+                                    <th>배당수익률</th>
+                                    <td>{this.state.general.DIV_YD}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                );
+        }
+        renderOutline = () => {
+            if (this.state.outline != null)
+                return (
+                    <div>
+                        <table className='table table-bordered'>
+                            <tbody>
                             <tr>
-                                <th colSpan='2'>시가</th>
-                                <td>{this.state.general.TDD_OPNPRC}</td>
-                                <th>거래량(주)</th>
-                                <td>{this.state.general.ACC_TRDVOL}</td>
+                                <th>한글명</th>
+                                <td>{this.state.outline.ISU_NM}</td>
+                                <th>영문명</th>
+                                <td>{this.state.outline.ISU_ENG_NM}</td>
                             </tr>
                             <tr>
-                                <th colSpan='2'>고가</th>
-                                <td>{this.state.general.TDD_HGPRC}</td>
-                                <th>거래대금(원)</th>
-                                <td>{this.state.general.ACC_TRDVAL}</td>
+                                <th>표준코드</th>
+                                <td>{this.state.outline.ISU_CD}</td>
+                                <th>종목코드</th>
+                                <td>{this.state.outline.ISU_SRT_CD}</td>
                             </tr>
                             <tr>
-                                <th colSpan='2'>저가</th>
-                                <td>{this.state.general.TDD_LWPRC}</td>
-                                <th>시가총액(백만원)</th>
-                                <td>{this.state.general.MKTCAP}</td>
+                                <th>액면가</th>
+                                <td>{this.state.outline.PARVAL}</td>
+                                <th>결산월</th>
+                                <td>{this.state.outline.ACNTCLS_MM}</td>
                             </tr>
                             <tr>
-                                <th rowSpan='2'>52주(종가)</th>
-                                <th>최고</th>
-                                <td>{this.state.general.WK52_HGST_PRC}</td>
-                                <th>외국인비율</th>
-                                <td>{this.state.general.FORN_RTO}</td>
+                                <th>상장주식수(주)</th>
+                                <td>{this.state.outline.LIST_SHRS}</td>
+                                <th>소속부</th>
+                                <td>{this.state.outline.SECT_NM}</td>
                             </tr>
                             <tr>
-                                <th>최저</th>
-                                <td>{this.state.general.WK52_LWST_PRC}</td>
-                                <th>PER/PBR</th>
-                                <td>{this.state.general.PER}/{this.state.general.PBR}</td>
+                                <th>상장일</th>
+                                <td>{this.state.outline.LIST_DD}</td>
+                                <th>설립일</th>
+                                <td>{this.state.outline.FOUND_DD}}</td>
                             </tr>
                             <tr>
-                                <th colSpan='2'>대용가</th>
-                                <td>{this.state.general.SB_PRC}</td>
-                                <th>배당수익률</th>
-                                <td>{this.state.general.DIV_YD}</td>
+                                <th>업종명</th>
+                                <td>{this.state.outline.IND_NM}</td>
+                                <th>대표이사</th>
+                                <td>{this.state.outline.CEO}</td>
+                            </tr>
+                            <tr>
+                                <th>주소</th>
+                                <td colSpan="3">{this.state.outline.ADDR}</td>
+                            </tr>
+                            <tr>
+                                <th>전화번호</th>
+                                <td colSpan="3">{this.state.outline.CORP_TEL_NO}</td>
+                            </tr>
+                            <tr>
+                                <th>홈페이지</th>
+                                <td colSpan="3">{this.state.outline.HPAGE}</td>
                             </tr>
                             </tbody>
                         </table>
@@ -348,6 +432,47 @@
                 );
         }
 
+        renderFinance = () => {
+            if (this.state.finance != null)
+                return (
+                    <div>
+                        <table className='table table-bordered'>
+                            <tbody>
+                            <tr>
+                                <th>자산총계</th>
+                                <td>{this.state.finance.ASST_TOTAMT}</td>
+                                <th>매출액(수익)</th>
+                                <td>{this.state.finance.SALES}</td>
+                            </tr>
+                            <tr>
+                                <th>부채총계</th>
+                                <td>{this.state.finance.DEBT_TOTAMT}</td>
+                                <th>영업이익</th>
+                                <td>{this.state.finance.OPERPROFT_AMT}</td>
+                            </tr>
+                            <tr>
+                                <th>자본금</th>
+                                <td>{this.state.finance.CAP}</td>
+                                <th>당기순이익</th>
+                                <td>{this.state.finance.NETINCM}</td>
+                            </tr>
+                            <tr>
+                                <th>자본총계</th>
+                                <td>{this.state.finance.CAP_GRNDTOT}</td>
+                                <th></th>
+                                <td></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                );
+        }
+
+        //////////////////
+
+
+
+//////////////////////
         render() {
             return (<React.Fragment>
                 <div className="article-title">
@@ -357,24 +482,238 @@
                 <div className="article-content">
                     <div className="article-content-box">
                         <div>
+                            {this.renderAi()}
+                        </div>
+                    </div>
+                </div>
+                <div className="article-content">
+                    <div className="article-content-box">
+                        <div>
                             <p className="container_name">종합정보</p>
                         </div>
                         <div>
-                            {this.renderWhdgkqwjdqh()}
+                            {this.renderGeneral()}
                         </div>
-                        <div>
+                    </div>
+                </div>
+                <div className="article-content">
+                    <div className="article-content-box">
+                        <p className="container_name">
                             개요
-                        </div>
+                        </p>
                         <div>
+                            {this.renderOutline()}
                         </div>
-                        <div>
+                    </div>
+                </div>
+                <div className="article-content">
+                    <div className="article-content-box">
+                        <p className="container_name">
                             재무정보
-                        </div>
+                        </p>
                         <div>
+                            {this.renderFinance()}
                         </div>
                     </div>
                 </div>
             </React.Fragment>);
+        }
+    }
+
+    class TENSORFLOW extends React.Component {
+        constructor(props) {
+            super(props);
+            this.state = {
+
+            }
+        }
+
+        // 학습할 데이터를 각각의 배열에 담기
+        tensorinit = () => {
+            this.setState((prevState) => {
+                return {
+                    x1s: prevState.stocks.map(value => parseInt(value.MMEND_CLSPRC.replace(/,/g , ''))), // 과거 종가
+                    x2s: prevState.stocks.map(value => parseInt(value.HGST_CLSPRC.replace(/,/g , ''))), // 과거 최고가
+                    x3s: prevState.stocks.map(value => parseInt(value.LWST_CLSPRC.replace(/,/g , ''))), // 과거 최저가
+                    ys: prevState.stocks.map(value => parseInt(this.state.run2 ? value.LWST_CLSPRC.replace(/,/g , '') : value.HGST_CLSPRC.replace(/,/g , ''))), // 최고가 : 최저
+                }
+            });
+
+            this.state.x1s.shift(); // 처음  요소 삭제
+            this.state.x2s.shift(); // 처음  요소 삭제
+            this.state.x3s.shift(); // 처음  요소 삭제
+            this.state.ys.pop(); // 마지막 요소 삭제
+
+            this.start(); // 계산 시작
+        }
+
+        // y 구하는 예측 식
+        predict = (x1, x2, x3) => {
+            const xs1 = tf.tensor(x1);
+            const xs2 = tf.tensor(x2);
+            const xs3 = tf.tensor(x3);
+
+            const mx1 = xs1.mul(this.state.m1);
+            const mx2 = xs2.mul(this.state.m2);
+            const mx3 = xs3.mul(this.state.m3);
+
+            const ys = mx1.add(mx2).add(mx3).add(this.state.b);
+
+            return ys;
+        }
+
+        // pred 예측한 값이랑 labels 실제값이랑 차이
+        loss = (pred, labels) => pred.sub(labels).square().mean();
+
+        // 학습시작 ( 미니마이져를 하면서 m 값 조절 )
+        start = () => {
+            tf.tidy(() => {
+                for(let i = 0; i < 10; i++) {
+                    const ys = tf.tensor(this.state.ys); // 진짜 y
+                    this.state.optimizer.minimize(() => this.loss(this.predict(this.state.x1s, this.state.x2s, this.state.x3s), ys));
+                }
+            });
+
+            this.restart();
+        }
+
+        // 예측 알고리즘에 대입하여 gap 에 따라 러닝배율 조절
+        restart = () => {
+            // predict_y : 학습데이터의 예측값
+            // ys : 학습데이터의 실제 값
+            // y : 실제 데이터를 넣어 예측해보는 값
+
+            let predict_y = Number(String(this.predict(parseFloat(this.state.x1s[0]),parseFloat(this.state.x2s[0]),parseFloat(this.state.x3s[0]))).replace('Tensor','').replace(/a/gi,""));
+            let gap = Math.abs(predict_y - this.state.ys[0]);
+
+            let x1 = parseFloat(this.state.stocks[1].MMEND_CLSPRC.replace(/,/g, '')); // 예측해야 될 데이터
+            let x2 = parseFloat(this.state.stocks[1].HGST_CLSPRC.replace(/,/g, '')); // 예측해야 될 데이터
+            let x3 = parseFloat(this.state.stocks[1].LWST_CLSPRC.replace(/,/g, '')); // 예측해야 될 데이터
+
+            if(this.state.mingap > gap) {
+                let gap2 = Math.abs(this.state.mingap - gap);
+
+                this.setState((prevState) => {
+                    let t = 1;
+                    if(gap > 1000) {
+                        t = 1.4;
+                    } else if(gap > 100) {
+                        t = 1.3;
+                    } else if(gap > 10) {
+                        t = 1.2;
+                    } else if(gap > 1) {
+                        t = 1.1;
+                    } else if(gap > 0.1) {
+                        t = 1;
+                    }
+                    return {
+                        learning_magnification: t,
+                    }
+                });
+
+                // 실시간 데이터 변경
+                this.setState((prevState) => {
+                    if(this.state.run2 == 2) {
+                        return {
+                            mingap: prevState.mingap < gap ? prevState.mingap : gap,
+                            learnignRate: prevState.learnignRate * this.state.learning_magnification,
+                            // 진짜 예측
+                            y2: Number(String(this.predict(x1,x2,x3)).replace('Tensor','').replace(/a/gi,"")),
+                            optimizer: tf.train.sgd(this.state.learnignRate),
+                            compute: prevState.compute+1,
+                        }
+                    } else {
+                        return {
+                            mingap: prevState.mingap < gap ? prevState.mingap : gap,
+                            learnignRate: prevState.learnignRate * this.state.learning_magnification,
+                            y: Number(String(this.predict(x1,x2,x3)).replace('Tensor','').replace(/a/gi,"")),
+                            optimizer: tf.train.sgd(this.state.learnignRate),
+                            compute: prevState.compute+1,
+                        }
+                    }
+                });
+
+                setTimeout(() => this.start(), 1);
+            } else if (this.state.compute < 5) {
+                // 혹시 너무 빨리 끝났다면 다시 계산
+                this.setState((prevState) => {
+                    return {
+                        learnignRate: prevState.learnignRate * 10,
+                        optimizer: tf.train.sgd(prevState.learnignRate * 10),
+                        m1: tf.variable(tf.scalar(Math.random(1))),
+                        m2: tf.variable(tf.scalar(Math.random(1))),
+                        m3: tf.variable(tf.scalar(Math.random(1))),
+                        b: tf.variable(tf.scalar(Math.random(1))),
+                        run2: prevState.run2,
+                        mingap: 99999999999,
+                        compute: 0,
+                    }
+                });
+
+                setTimeout(() => this.start(), 1);
+
+            } else if(this.state.run2 == 0) {
+                // 최고가 계산후
+                this.setState((prevState) => {
+                    return {
+                        learnignRate: 0.0000000000000001,
+                        optimizer: tf.train.sgd(0.0000000000000001),
+                        m1: tf.variable(tf.scalar(Math.random(1))),
+                        m2: tf.variable(tf.scalar(Math.random(1))),
+                        m3: tf.variable(tf.scalar(Math.random(1))),
+                        b: tf.variable(tf.scalar(Math.random(1))),
+                        x1s: [],
+                        x2s: [],
+                        x3s: [],
+                        ys: [],
+                        run2: 2,
+                        mingap: 99999999999,
+                        compute: 0,
+                    }
+                });
+                this.tensorinit();
+            }
+        }
+
+        // 개별종목 시세추이 (월)
+        getData = () => {
+            let request = new XMLHttpRequest();
+
+            request.open('GET', 'https://yg-01-01.herokuapp.com/http://data.krx.co.kr/comm/bldAttendant/getJsonData.cmd?' +
+                'bld=dbms/MDC/STAT/standard/MDCSTAT01801&' +
+                'isuCd='+this.props.stock.ISU_CD+'&' +
+                'strtYymm=' + this.getCurrentDate2(5) + '&' +
+                'endYymm=' + this.getCurrentDate2() + '&', true);
+            request.onload = (e) => {
+                if (request.status >= 200 && request.status < 400) {
+                    let responseObject = JSON.parse(request.responseText);
+                    this.setState((prevState) => {
+                        return {
+                            stocks: responseObject.OutBlock_1,
+                        }
+                    });
+                    setTimeout(() => {
+                        this.state.stocks.shift();
+                        this.tensorinit();
+                    }, 100);
+                }
+            };
+
+            request.onerror = () => {};
+            request.send();
+        }
+
+        // 오늘 기준으로 년도 변경
+        getCurrentDate2 = (_year = 0) => {
+            let date = new Date();
+            date.setFullYear(date.getFullYear() - _year);
+
+            let year = date.getFullYear().toString();
+            let month = date.getMonth() + 1;
+            month = month < 10 ? '0' + month.toString() : month.toString();
+            let day = date.getDate();
+            day = day < 10 ? '0' + day.toString() : day.toString();
+            return year + month + day;
         }
     }
 
@@ -587,7 +926,7 @@
         getData = () => {
             let request = new XMLHttpRequest();
 
-            request.open('GET', 'https://yg01.herokuapp.com/http://data.krx.co.kr/comm/bldAttendant/getJsonData.cmd?' +
+            request.open('GET', 'https://yg-01-01.herokuapp.com/http://data.krx.co.kr/comm/bldAttendant/getJsonData.cmd?' +
                 'bld=dbms/MDC/STAT/standard/MDCSTAT01801&' +
                 'isuCd='+this.props.stock.ISU_CD+'&' +
                 'strtYymm=' + this.getCurrentDate2(5) + '&' +
@@ -652,7 +991,7 @@
         getAllStock = () => {
             let request = new XMLHttpRequest();
 
-            request.open('GET', 'https://yg01.herokuapp.com/http://data.krx.co.kr/comm/bldAttendant/getJsonData.cmd?' +
+            request.open('GET', 'https://yg-01-01.herokuapp.com/http://data.krx.co.kr/comm/bldAttendant/getJsonData.cmd?' +
                 'bld=dbms/MDC/STAT/standard/MDCSTAT01701' +
                 '&isuCd=' + this.props.stock.ISU_CD +
                 '&strtDd=' + this.getCurrentDate() +
@@ -759,7 +1098,7 @@
         getAllStock = () => {
             let request = new XMLHttpRequest();
 
-            request.open('GET', 'https://yg01.herokuapp.com/http://data.krx.co.kr/comm/bldAttendant/getJsonData.cmd?bld=dbms/MDC/STAT/standard/MDCSTAT01901&mktId=ALL', true);
+            request.open('GET', 'https://yg-01-01.herokuapp.com/http://data.krx.co.kr/comm/bldAttendant/getJsonData.cmd?bld=dbms/MDC/STAT/standard/MDCSTAT01901&mktId=ALL', true);
             request.onload = (e) => {
                 if (request.status >= 200 && request.status < 400) {
                     let responseObject = JSON.parse(request.responseText);
