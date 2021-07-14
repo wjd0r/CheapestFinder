@@ -14,6 +14,16 @@
     <script src="https://cdn.jsdelivr.net/npm/p5@0.6.0/lib/p5.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/p5@0.6.0/lib/addons/p5.dom.js"></script>
 
+    <script src="https://www.gstatic.com/firebasejs/8.3.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.3.1/firebase-analytics.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.3.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.3.1/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.3.1/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.3.1/firebase-storage.js"></script>
+
+    <script type="text/javascript" src="./js/firebase.setting.js"></script>
+    <script type="text/javascript" src="./js/firebase.dml.js"></script>
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
     <script src="js/partial.js"></script>
@@ -183,579 +193,22 @@
 <div id="root"></div>
 
 <script type="text/babel">
-    class NAVS extends React.Component {
-        constructor(props) {
-            super(props);
-            this.state = {
-                stocks: [],
-            };
-
-            //this.init();
-        }
-
-        onChange = (e) => {
-            this.setState({
-                stocks: _.filter(this.props.stocks, function(stock) {
-                    return stock.ISU_ABBRV.includes(e.target.value);
-                }),
-            });
-        }
-
-        render() {
-            return (<React.Fragment>
-                <div className="nav">
-                    <div className="search-bar">
-                        <input type="text" placeholder="종목 검색" onChange={this.onChange}/>
-                    </div>
-                    <div className="nav-panel">
-                        <div className="panel">
-                            {this.state.stocks.length != 0 ?
-                                this.state.stocks.map((stock, idx) => {
-                                    return (
-                                        <NAV stock={stock} key={idx} setStock={this.props.setStock}/>
-                                    )
-                                }) : this.props.stocks.map((stock, idx) => {
-                                    return (
-                                        <NAV stock={stock} key={idx} setStock={this.props.setStock}/>
-                                    )
-                                })
-                            }
-                        </div>
-                    </div>
-                </div>
-            </React.Fragment>);
-        }
-    }
-
-    class NAV extends React.Component {
-        constructor(props) {
-            super(props);
-            this.state = {
-            };
-        }
-
-        onClick = () => {
-            this.props.setStock(this.props.stock);
-        }
-
-        render() {
-            return (
-                <React.Fragment>
-                    <div className="nav-itme" onClick={() => this.onClick()}>
-                        <div className="link">
-                            {this.props.stock.ISU_ABBRV}
-                        </div>
-                    </div>
-                </React.Fragment>
-            );
-        }
-    }
-
-    class ARTICLE2 extends React.Component {
-        constructor(props) {
-            super(props);
-            this.state = {
-                general: {},
-                outline: {},
-                finance: {},
-            };
-
-            this.mount();
-        }
-
-        mount = () => {
-            this.props.mount( (isu_cd) => this.getDataStart(isu_cd) );
-        }
-
-        getDataStart = (isu_cd) => {
-            this.getGeneral(isu_cd);
-            this.getOutline(isu_cd);
-            this.getFinance(isu_cd);
-        }
-
-        // 종합정보
-        getGeneral = async (isuCd) => {
-            await this.getData('dbms/MDC/STAT/standard/MDCSTAT02101', isuCd, null).then((responseObject) => {
-                this.setState({
-                    general: responseObject,
-                });
-            });
-        }
-        // 개요
-        getOutline = async (isuCd) => {
-            await this.getData('dbms/MDC/STAT/standard/MDCSTAT02103', isuCd, null).then((responseObject) => {
-                this.setState({
-                    outline: responseObject,
-                });
-            });
-        }
-        // 재무정보
-        getFinance = async (isuCd) => {
-            await this.getData('dbms/MDC/STAT/standard/MDCSTAT02104', isuCd, null).then((responseObject) => {
-                this.setState({
-                    finance: responseObject,
-                });
-            });
-        }
-
-        getData = (bld, isuCd,ddTp) => new Promise(function(resolve, reject) {
-            let request = new XMLHttpRequest();
-
-            request.open('GET', 'https://yg-01-01.herokuapp.com/http://data.krx.co.kr/comm/bldAttendant/getJsonData.cmd?' +
-                'bld=' + bld +
-                (isuCd != null ? '&isuCd=' + isuCd : '') +
-                (ddTp != null ? '&ddTp=' + ddTp : ''), true);
-            request.onload = (e) => {
-                if (request.status >= 200 && request.status < 400) {
-                    let responseObject = JSON.parse(request.responseText);
-                    resolve(responseObject);
-                }
-            };
-            request.onerror = () => {
-                reject();
-            };
-            request.send();
-        });
-
-        renderGeneral = () => {
-            if (this.state.general != null)
-                return (
-                    <div>
-                        <table className='table table-bordered'>
-                            <tbody>
-                                <tr>
-                                    <th colSpan='2'>시가</th>
-                                    <td>{this.state.general.TDD_OPNPRC}</td>
-                                    <th>거래량(주)</th>
-                                    <td>{this.state.general.ACC_TRDVOL}</td>
-                                </tr>
-                                <tr>
-                                    <th colSpan='2'>고가</th>
-                                    <td>{this.state.general.TDD_HGPRC}</td>
-                                    <th>거래대금(원)</th>
-                                    <td>{this.state.general.ACC_TRDVAL}</td>
-                                </tr>
-                                <tr>
-                                    <th colSpan='2'>저가</th>
-                                    <td>{this.state.general.TDD_LWPRC}</td>
-                                    <th>시가총액(백만원)</th>
-                                    <td>{this.state.general.MKTCAP}</td>
-                                </tr>
-                                <tr>
-                                    <th rowSpan='2'>52주(종가)</th>
-                                    <th>최고</th>
-                                    <td>{this.state.general.WK52_HGST_PRC}</td>
-                                    <th>외국인비율</th>
-                                    <td>{this.state.general.FORN_RTO}</td>
-                                </tr>
-                                <tr>
-                                    <th>최저</th>
-                                    <td>{this.state.general.WK52_LWST_PRC}</td>
-                                    <th>PER/PBR</th>
-                                    <td>{this.state.general.PER}/{this.state.general.PBR}</td>
-                                </tr>
-                                <tr>
-                                    <th colSpan='2'>대용가</th>
-                                    <td>{this.state.general.SB_PRC}</td>
-                                    <th>배당수익률</th>
-                                    <td>{this.state.general.DIV_YD}</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                );
-        }
-        renderOutline = () => {
-            if (this.state.outline != null)
-                return (
-                    <div>
-                        <table className='table table-bordered'>
-                            <tbody>
-                            <tr>
-                                <th>한글명</th>
-                                <td>{this.state.outline.ISU_NM}</td>
-                                <th>영문명</th>
-                                <td>{this.state.outline.ISU_ENG_NM}</td>
-                            </tr>
-                            <tr>
-                                <th>표준코드</th>
-                                <td>{this.state.outline.ISU_CD}</td>
-                                <th>종목코드</th>
-                                <td>{this.state.outline.ISU_SRT_CD}</td>
-                            </tr>
-                            <tr>
-                                <th>액면가</th>
-                                <td>{this.state.outline.PARVAL}</td>
-                                <th>결산월</th>
-                                <td>{this.state.outline.ACNTCLS_MM}</td>
-                            </tr>
-                            <tr>
-                                <th>상장주식수(주)</th>
-                                <td>{this.state.outline.LIST_SHRS}</td>
-                                <th>소속부</th>
-                                <td>{this.state.outline.SECT_NM}</td>
-                            </tr>
-                            <tr>
-                                <th>상장일</th>
-                                <td>{this.state.outline.LIST_DD}</td>
-                                <th>설립일</th>
-                                <td>{this.state.outline.FOUND_DD}}</td>
-                            </tr>
-                            <tr>
-                                <th>업종명</th>
-                                <td>{this.state.outline.IND_NM}</td>
-                                <th>대표이사</th>
-                                <td>{this.state.outline.CEO}</td>
-                            </tr>
-                            <tr>
-                                <th>주소</th>
-                                <td colSpan="3">{this.state.outline.ADDR}</td>
-                            </tr>
-                            <tr>
-                                <th>전화번호</th>
-                                <td colSpan="3">{this.state.outline.CORP_TEL_NO}</td>
-                            </tr>
-                            <tr>
-                                <th>홈페이지</th>
-                                <td colSpan="3">{this.state.outline.HPAGE}</td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                );
-        }
-
-        renderFinance = () => {
-            if (this.state.finance != null)
-                return (
-                    <div>
-                        <table className='table table-bordered'>
-                            <tbody>
-                            <tr>
-                                <th>자산총계</th>
-                                <td>{this.state.finance.ASST_TOTAMT}</td>
-                                <th>매출액(수익)</th>
-                                <td>{this.state.finance.SALES}</td>
-                            </tr>
-                            <tr>
-                                <th>부채총계</th>
-                                <td>{this.state.finance.DEBT_TOTAMT}</td>
-                                <th>영업이익</th>
-                                <td>{this.state.finance.OPERPROFT_AMT}</td>
-                            </tr>
-                            <tr>
-                                <th>자본금</th>
-                                <td>{this.state.finance.CAP}</td>
-                                <th>당기순이익</th>
-                                <td>{this.state.finance.NETINCM}</td>
-                            </tr>
-                            <tr>
-                                <th>자본총계</th>
-                                <td>{this.state.finance.CAP_GRNDTOT}</td>
-                                <th></th>
-                                <td></td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                );
-        }
-
-        //////////////////
-
-
-
-//////////////////////
-        render() {
-            return (<React.Fragment>
-                <div className="article-title">
-                    <div className="article-title-1">{this.state.general.ISU_NM}({this.state.general.ISU_SRT_CD}) | {this.state.general.MKT_NM}<br/></div>
-                    <div className="article-title-2">{this.state.general.PRSNT_PRC} ▼{this.state.general.CMPPREVDD_PRC} ({this.state.general.FLUC_RT}%)</div>
-                </div>
-                <div className="article-content">
-                    <div className="article-content-box">
-                        <div>
-                            {this.renderAi()}
-                        </div>
-                    </div>
-                </div>
-                <div className="article-content">
-                    <div className="article-content-box">
-                        <div>
-                            <p className="container_name">종합정보</p>
-                        </div>
-                        <div>
-                            {this.renderGeneral()}
-                        </div>
-                    </div>
-                </div>
-                <div className="article-content">
-                    <div className="article-content-box">
-                        <p className="container_name">
-                            개요
-                        </p>
-                        <div>
-                            {this.renderOutline()}
-                        </div>
-                    </div>
-                </div>
-                <div className="article-content">
-                    <div className="article-content-box">
-                        <p className="container_name">
-                            재무정보
-                        </p>
-                        <div>
-                            {this.renderFinance()}
-                        </div>
-                    </div>
-                </div>
-            </React.Fragment>);
-        }
-    }
-
-    class TENSORFLOW extends React.Component {
-        constructor(props) {
-            super(props);
-            this.state = {
-                stocks: [],
-                learnignRate: 0.0000000000000001,
-                optimizer: tf.train.sgd(0.0000000000000001),
-                m1: tf.variable(tf.scalar(Math.random(1))),
-                m2: tf.variable(tf.scalar(Math.random(1))),
-                m3: tf.variable(tf.scalar(Math.random(1))),
-                b: tf.variable(tf.scalar(Math.random(1))),
-                y: 0,
-                y2: 0,
-                x1s: [],
-                x2s: [],
-                x3s: [],
-                ys: [],
-                run2: 0,
-                mingap: 99999999999,
-                learning_magnification: 1,
-                compute: 0,
-
-                // 기본정보
-                TRD_DD: '',
-                TDD_CLSPRC: '',
-                FLUC_TP_CD: '',
-                CMPPREVDD_PRC: '',
-                FLUC_RT: '',
-                TDD_OPNPRC: '',
-                TDD_HGPRC: '',
-                TDD_LWPRC: '',
-                ACC_TRDVOL: '',
-                ACC_TRDVAL: '',
-                MKTCAP: '',
-                LIST_SHRS: ''
-            }
-        }
-
-        // 학습할 데이터를 각각의 배열에 담기
-        tensorinit = () => {
-            this.setState((prevState) => {
-                return {
-                    x1s: prevState.stocks.map(value => parseInt(value.MMEND_CLSPRC.replace(/,/g , ''))), // 과거 종가
-                    x2s: prevState.stocks.map(value => parseInt(value.HGST_CLSPRC.replace(/,/g , ''))), // 과거 최고가
-                    x3s: prevState.stocks.map(value => parseInt(value.LWST_CLSPRC.replace(/,/g , ''))), // 과거 최저가
-                    ys: prevState.stocks.map(value => parseInt(this.state.run2 ? value.LWST_CLSPRC.replace(/,/g , '') : value.HGST_CLSPRC.replace(/,/g , ''))), // 최고가 : 최저
-                }
-            });
-
-            this.state.x1s.shift(); // 처음  요소 삭제
-            this.state.x2s.shift(); // 처음  요소 삭제
-            this.state.x3s.shift(); // 처음  요소 삭제
-            this.state.ys.pop(); // 마지막 요소 삭제
-
-            this.start(); // 계산 시작
-        }
-
-        // y 구하는 예측 식
-        predict = (x1, x2, x3) => {
-            const xs1 = tf.tensor(x1);
-            const xs2 = tf.tensor(x2);
-            const xs3 = tf.tensor(x3);
-
-            const mx1 = xs1.mul(this.state.m1);
-            const mx2 = xs2.mul(this.state.m2);
-            const mx3 = xs3.mul(this.state.m3);
-
-            const ys = mx1.add(mx2).add(mx3).add(this.state.b);
-
-            return ys;
-        }
-
-        // pred 예측한 값이랑 labels 실제값이랑 차이
-        loss = (pred, labels) => pred.sub(labels).square().mean();
-
-        // 학습시작 ( 미니마이져를 하면서 m 값 조절 )
-        start = () => {
-            tf.tidy(() => {
-                for(let i = 0; i < 10; i++) {
-                    const ys = tf.tensor(this.state.ys); // 진짜 y
-                    this.state.optimizer.minimize(() => this.loss(this.predict(this.state.x1s, this.state.x2s, this.state.x3s), ys));
-                }
-            });
-
-            this.restart();
-        }
-
-        // 예측 알고리즘에 대입하여 gap 에 따라 러닝배율 조절
-        restart = () => {
-            // predict_y : 학습데이터의 예측값
-            // ys : 학습데이터의 실제 값
-            // y : 실제 데이터를 넣어 예측해보는 값
-
-            let predict_y = Number(String(this.predict(parseFloat(this.state.x1s[0]),parseFloat(this.state.x2s[0]),parseFloat(this.state.x3s[0]))).replace('Tensor','').replace(/a/gi,""));
-            let gap = Math.abs(predict_y - this.state.ys[0]);
-
-            let x1 = parseFloat(this.state.stocks[1].MMEND_CLSPRC.replace(/,/g, '')); // 예측해야 될 데이터
-            let x2 = parseFloat(this.state.stocks[1].HGST_CLSPRC.replace(/,/g, '')); // 예측해야 될 데이터
-            let x3 = parseFloat(this.state.stocks[1].LWST_CLSPRC.replace(/,/g, '')); // 예측해야 될 데이터
-
-            if(this.state.mingap > gap) {
-                let gap2 = Math.abs(this.state.mingap - gap);
-
-                this.setState((prevState) => {
-                    let t = 1;
-                    if(gap > 1000) {
-                        t = 1.4;
-                    } else if(gap > 100) {
-                        t = 1.3;
-                    } else if(gap > 10) {
-                        t = 1.2;
-                    } else if(gap > 1) {
-                        t = 1.1;
-                    } else if(gap > 0.1) {
-                        t = 1;
-                    }
-                    return {
-                        learning_magnification: t,
-                    }
-                });
-
-                // 실시간 데이터 변경
-                this.setState((prevState) => {
-                    if(this.state.run2 == 2) {
-                        return {
-                            mingap: prevState.mingap < gap ? prevState.mingap : gap,
-                            learnignRate: prevState.learnignRate * this.state.learning_magnification,
-                            // 진짜 예측
-                            y2: Number(String(this.predict(x1,x2,x3)).replace('Tensor','').replace(/a/gi,"")),
-                            optimizer: tf.train.sgd(this.state.learnignRate),
-                            compute: prevState.compute+1,
-                        }
-                    } else {
-                        return {
-                            mingap: prevState.mingap < gap ? prevState.mingap : gap,
-                            learnignRate: prevState.learnignRate * this.state.learning_magnification,
-                            y: Number(String(this.predict(x1,x2,x3)).replace('Tensor','').replace(/a/gi,"")),
-                            optimizer: tf.train.sgd(this.state.learnignRate),
-                            compute: prevState.compute+1,
-                        }
-                    }
-                });
-
-                setTimeout(() => this.start(), 1);
-            } else if (this.state.compute < 5) {
-                // 혹시 너무 빨리 끝났다면 다시 계산
-                this.setState((prevState) => {
-                    return {
-                        learnignRate: prevState.learnignRate * 10,
-                        optimizer: tf.train.sgd(prevState.learnignRate * 10),
-                        m1: tf.variable(tf.scalar(Math.random(1))),
-                        m2: tf.variable(tf.scalar(Math.random(1))),
-                        m3: tf.variable(tf.scalar(Math.random(1))),
-                        b: tf.variable(tf.scalar(Math.random(1))),
-                        run2: prevState.run2,
-                        mingap: 99999999999,
-                        compute: 0,
-                    }
-                });
-
-                setTimeout(() => this.start(), 1);
-
-            } else if(this.state.run2 == 0) {
-                // 최고가 계산후
-                this.setState((prevState) => {
-                    return {
-                        learnignRate: 0.0000000000000001,
-                        optimizer: tf.train.sgd(0.0000000000000001),
-                        m1: tf.variable(tf.scalar(Math.random(1))),
-                        m2: tf.variable(tf.scalar(Math.random(1))),
-                        m3: tf.variable(tf.scalar(Math.random(1))),
-                        b: tf.variable(tf.scalar(Math.random(1))),
-                        x1s: [],
-                        x2s: [],
-                        x3s: [],
-                        ys: [],
-                        run2: 2,
-                        mingap: 99999999999,
-                        compute: 0,
-                    }
-                });
-                this.tensorinit();
-            }
-        }
-
-        // 개별종목 시세추이 (월)
-        getData = () => {
-            let request = new XMLHttpRequest();
-
-            request.open('GET', 'https://yg-01-01.herokuapp.com/http://data.krx.co.kr/comm/bldAttendant/getJsonData.cmd?' +
-                'bld=dbms/MDC/STAT/standard/MDCSTAT01801&' +
-                'isuCd='+this.props.stock.ISU_CD+'&' +
-                'strtYymm=' + this.getCurrentDate2(5) + '&' +
-                'endYymm=' + this.getCurrentDate2() + '&', true);
-            request.onload = (e) => {
-                if (request.status >= 200 && request.status < 400) {
-                    let responseObject = JSON.parse(request.responseText);
-                    this.setState((prevState) => {
-                        return {
-                            stocks: responseObject.OutBlock_1,
-                        }
-                    });
-                    setTimeout(() => {
-                        this.state.stocks.shift();
-                        this.tensorinit();
-                    }, 100);
-                }
-            };
-
-            request.onerror = () => {};
-            request.send();
-        }
-
-        // 오늘 기준으로 년도 변경
-        getCurrentDate2 = (_year = 0) => {
-            let date = new Date();
-            date.setFullYear(date.getFullYear() - _year);
-
-            let year = date.getFullYear().toString();
-            let month = date.getMonth() + 1;
-            month = month < 10 ? '0' + month.toString() : month.toString();
-            let day = date.getDate();
-            day = day < 10 ? '0' + day.toString() : day.toString();
-            return year + month + day;
-        }
-
-        render() {
-            return (
-                <React.Fragment>
-                    <button className="btn btn-sm btn-danger">Remove</button>
-                    <button className="btn btn-sm btn-primary">Add stack</button>
-                </React.Fragment>
-            )
-        }
-    }
-
     class STOCKS extends React.Component {
         constructor(props) {
             super(props);
             this.state = {
                 stocks: [],
+                run: 'n',
             }
         }
+
+        setRun = () => {
+            this.setState(prevState => ({
+                run: prevState.run == 'y' ? 'n' : 'y',
+            }));
+        }
+
+        getRun = () => this.state.run;
 
         onChange = (e) => {
             this.setState({
@@ -775,9 +228,14 @@
                             </td>
                         </tr>
                         <tr>
-                            <th>종목코드</th>
-                            <th>시장구분</th>
-                            <th>종목명</th>
+                            <th rowSpan="2">종목코드</th>
+                            <th rowSpan="2">시장구분</th>
+                            <th rowSpan="2">종목명</th>
+                            <th colSpan="4">금일</th>
+                            <th colSpan="2">이번달 예측</th>
+                            <th></th>
+                        </tr>
+                        <tr>
                             <th>시가</th>
                             <th>고가</th>
                             <th>저가</th>
@@ -791,11 +249,11 @@
                     {this.state.stocks.length != 0 ?
                         this.state.stocks.map((stock, idx) => {
                             return (
-                                <STOCK stock={stock} key={idx} />
+                                <STOCK stock={stock} key={idx} setRun={this.setRun} getRun={this.getRun}/>
                             )
                         }) : this.props.stocks.map((stock, idx) => {
                             return (
-                                <STOCK stock={stock} key={idx} />
+                                <STOCK stock={stock} key={idx} setRun={this.setRun} getRun={this.getRun} />
                             )
                         })
                     }
@@ -811,6 +269,7 @@
             this.state = {
                 // 예측
                 stocks: [],
+                yesterStocks: [],
                 learnignRate: 0.0000000000000001,
                 optimizer: tf.train.sgd(0.0000000000000001),
                 m1: tf.variable(tf.scalar(Math.random(1))),
@@ -849,9 +308,30 @@
 
                 display: 'none',
             };
-        }
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            // 파이어 베이스에서 예측값 가져오기
+            sel(this.getIsuCd(), (data) => {
+                if(data != undefined) {
+                    this.setState((prevState) => {
+                        return {
+                            y: data.max,
+                            y2: data.min,
+                        }
+                    });
+                } else {
+                    // 예측값이 없으면 계산하기
+                    let interval = setInterval(() => {
+                        if(this.props.getRun() == 'y') {
+
+                        } else {
+                            this.props.setRun('y');
+                            clearInterval(interval);
+                            this.getMonth(); // 학습시작
+                        }
+                    }, 1000)
+                }
+            });
+        }
 
         // 학습할 데이터를 각각의 배열에 담기
         tensorinit = () => {
@@ -959,21 +439,6 @@
                         }
                     }
                 });
-
-                //console.log("mingap : " + this.state.mingap);
-                //console.log("gap (predict_y - ys) : " + gap);
-                //console.log("gap2 (mingap - gao) : " + gap2);
-                //console.log(predict_y + " - " + this.state.ys[0] + " = " + gap);
-
-
-                //console.log("predict_y (학습데이터의 예측값 값) : " + Number(String(this.predict(x1,x2,x3)).replace('Tensor','').replace(/a/gi,"")));
-                //console.log("ys (학습데이터의 실제 값 값) : " + this.state.ys[0]);
-
-                //console.log("y (예측해보는 값) : " + Number(String(this.predict(x1,x2,x3)).replace('Tensor','').replace(/a/gi,"")));
-
-                //console.log("==========================");
-                //console.log("learnignRate : " + this.state.learnignRate);
-
                 setTimeout(() => this.start(), 1);
             } else if (this.state.compute < 5) {
                 // 혹시 너무 빨리 끝났다면 다시 계산
@@ -1014,6 +479,15 @@
                 });
 
                 this.tensorinit();
+            } else {
+                console.log('예측 완료!!!');
+                this.props.setRun('n');
+                console.log('n으로 변경');
+                ins(this.getIsuCd(),{
+                    max : this.state.y,
+                    min : this.state.y2,
+                    date : this.getCurrentDate(),
+                });
             }
         }
 
@@ -1077,23 +551,69 @@
 
         // 개별종목 시세추이 (월)
         getMonth = async (isuCd) => {
-
-            await this.getData('dbms/MDC/STAT/standard/MDCSTAT01801', isuCd, null, this.getCurrentDate2(5), this.getCurrentDate2()).then((responseObject) => {
+            await this.getData({
+                bld : 'dbms/MDC/STAT/standard/MDCSTAT01801',
+                isuCd : this.getIsuCd(),
+                strtYymm : this.getCurrentDateMonth(5),
+                endYymm : this.getCurrentDateMonth(),
+            }).then((responseObject) => {
                 this.setState({
                     stocks: responseObject.OutBlock_1,
                 });
+                setTimeout(() => {
+                    this.state.stocks.shift();
+
+                    console.log(this.state.stocks.length);
+
+                    if(this.state.stocks.length > 20) {
+                        this.tensorinit();
+                    } else {
+                        console.log('예측할 데이터가 너무 작아 예측하지 않음');
+                        this.props.setRun('n');
+                        console.log('n으로 변경');
+                    }
+                }, 100);
             });
         }
 
-        getData = (bld, isuCd,ddTp,strtYymm,endYymm) => new Promise(function(resolve, reject) {
+        // 개별종목 시세추이 (일)
+        getDay = async (isuCd) => {
+            await this.getData({
+                bld : 'dbms/MDC/STAT/standard/MDCSTAT01701',
+                isuCd : this.getIsuCd(),
+                strtDd : this.getCurrentDate(1),
+                strtDd : this.getCurrentDate(),
+            }).then((responseObject) => {
+                this.setState({
+                    stocks: responseObject.OutBlock_1,
+                });
+                setTimeout(() => {
+                    this.state.stocks.shift();
+
+                    console.log(this.state.stocks.length);
+
+                    if(this.state.stocks.length > 20) {
+                        this.tensorinit();
+                    } else {
+                        console.log('예측할 데이터가 너무 작아 예측하지 않음');
+                        this.props.setRun('n');
+                        console.log('n으로 변경');
+                    }
+                }, 100);
+            });
+        }
+
+        getData = ({bld,isuCd,ddTp,strtYymm,endYymm,strtDd,strtDd}) => new Promise(function(resolve, reject) {
             let request = new XMLHttpRequest();
 
-            request.open('GET', 'https://yg-01-01.herokuapp.com/http://data.krx.co.kr/comm/bldAttendant/getJsonData.cmd?' +
+            request.open('GET', 'https://yg01.herokuapp.com/http://data.krx.co.kr/comm/bldAttendant/getJsonData.cmd?' +
                 'bld=' + bld +
                 (isuCd != null ? '&isuCd=' + isuCd : '') +
                 (ddTp != null ? '&ddTp=' + ddTp : '') +
-                (strtYymm != null ? '&strtYymm=' + ddTp : '') +
-                (endYymm != null ? '&endYymm=' + ddTp : ''), true);
+                (strtYymm != null ? '&strtYymm=' + strtYymm : '') +
+                (endYymm != null ? '&endYymm=' + endYymm : '') +
+                (strtDd != null ? '&strtDd=' + strtDd : '') +
+                (endDd != null ? '&endDd=' + endDd : ''), true);
             request.onload = (e) => {
                 if (request.status >= 200 && request.status < 400) {
                     let responseObject = JSON.parse(request.responseText);
@@ -1105,16 +625,13 @@
         });
 
         // 오늘 기준으로 년도 변경
-        getCurrentDate2 = (_year = 0) => {
+        getCurrentDateMonth = (_year = 0) => {
             let date = new Date();
             date.setFullYear(date.getFullYear() - _year);
-
             let year = date.getFullYear().toString();
             let month = date.getMonth() + 1;
             month = month < 10 ? '0' + month.toString() : month.toString();
-            let day = date.getDate();
-            day = day < 10 ? '0' + day.toString() : day.toString();
-            return year + month + day;
+            return year + month;
         }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1138,7 +655,7 @@
         getAllStock = () => {
             let request = new XMLHttpRequest();
 
-            request.open('GET', 'https://yg-01-01.herokuapp.com/http://data.krx.co.kr/comm/bldAttendant/getJsonData.cmd?' +
+            request.open('GET', 'https://yg01.herokuapp.com/http://data.krx.co.kr/comm/bldAttendant/getJsonData.cmd?' +
                 'bld=dbms/MDC/STAT/standard/MDCSTAT01701' +
                 '&isuCd=' + this.props.stock.ISU_CD +
                 '&strtDd=' + this.getCurrentDate() +
@@ -1170,6 +687,10 @@
             request.send();
         }
 
+        // 파이어 베이스 데이터 입력
+        // 파이어 베이스 데이터 가져오기
+        //
+
         render() {
             return (<React.Fragment>
                 <tr>
@@ -1199,8 +720,8 @@
                 </tr>
                 <tr style={{"display":this.state.display}}>
                     <td colSpan="10">
-                        <div class="row">
-                            <div class="col">
+                        <div className="row">
+                            <div className="col">
                                 <table className='table table-bordered'>
                                     <thead>
                                         <tr><th colSpan="4">종합정보</th></tr>
@@ -1233,7 +754,7 @@
                                     </tbody>
                                 </table>
                             </div>
-                            <div class="col">
+                            <div className="col">
                                 <table className='table table-bordered'>
                                     <thead>
                                         <tr><th colSpan="4">개요</th></tr>
@@ -1290,7 +811,7 @@
                                     </tbody>
                                 </table>
                             </div>
-                            <div class="col">
+                            <div className="col">
                                 <table className='table table-bordered'>
                                     <thead>
                                         <tr><th colSpan="4">재무정보</th></tr>
@@ -1341,7 +862,6 @@
                 childFunc: {},
             };
 
-
             this.getAllStock();
         }
 
@@ -1375,7 +895,7 @@
         getAllStock = () => {
             let request = new XMLHttpRequest();
 
-            request.open('GET', 'https://yg-01-01.herokuapp.com/http://data.krx.co.kr/comm/bldAttendant/getJsonData.cmd?' +
+            request.open('GET', 'https://yg01.herokuapp.com/http://data.krx.co.kr/comm/bldAttendant/getJsonData.cmd?' +
                 'bld=dbms/MDC/STAT/standard/MDCSTAT01501&' +
                 'mktId=ALL&' +
                 'trdDd=' + this.getDate(), true);
