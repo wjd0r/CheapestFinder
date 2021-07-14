@@ -482,7 +482,7 @@
             } else {
                 console.log('예측 완료!!!');
                 this.props.setRun('n');
-                console.log('n으로 변경');
+                console.log(new Date().toString() + ' : n으로 변경');
                 ins(this.getIsuCd(),{
                     max : this.state.y,
                     min : this.state.y2,
