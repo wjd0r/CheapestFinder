@@ -526,7 +526,10 @@
         }
         // 종합정보
         getGeneral = async (isuCd) => {
-            await this.getData('dbms/MDC/STAT/standard/MDCSTAT02101', isuCd, null, null, null).then((responseObject) => {
+            await this.getData({
+                bld : 'dbms/MDC/STAT/standard/MDCSTAT02101',
+                isuCd : isuCd,
+            }).then((responseObject) => {
                 this.setState({
                     general: responseObject,
                 });
@@ -534,7 +537,10 @@
         }
         // 개요
         getOutline = async (isuCd) => {
-            await this.getData('dbms/MDC/STAT/standard/MDCSTAT02103', isuCd, null, null, null).then((responseObject) => {
+            await this.getData({
+                bld : 'dbms/MDC/STAT/standard/MDCSTAT02103',
+                isuCd : isuCd,
+            }).then((responseObject) => {
                 this.setState({
                     outline: responseObject,
                 });
@@ -542,7 +548,10 @@
         }
         // 재무정보
         getFinance = async (isuCd) => {
-            await this.getData('dbms/MDC/STAT/standard/MDCSTAT02104', isuCd, null, null, null).then((responseObject) => {
+            await this.getData({
+                bld : 'dbms/MDC/STAT/standard/MDCSTAT02104',
+                isuCd : isuCd,
+            }).then((responseObject) => {
                 this.setState({
                     finance: responseObject,
                 });
@@ -550,7 +559,7 @@
         }
 
         // 개별종목 시세추이 (월)
-        getMonth = async (isuCd) => {
+        getMonth = async () => {
             await this.getData({
                 bld : 'dbms/MDC/STAT/standard/MDCSTAT01801',
                 isuCd : this.getIsuCd(),
@@ -603,7 +612,7 @@
             });
         }
 
-        getData = ({bld,isuCd,ddTp,strtYymm,endYymm,strtDd,strtDd}) => new Promise(function(resolve, reject) {
+        getData = ({bld,isuCd,ddTp,strtYymm,endYymm,strtDd,endDd}) => new Promise(function(resolve, reject) {
             let request = new XMLHttpRequest();
 
             request.open('GET', 'https://yg01.herokuapp.com/http://data.krx.co.kr/comm/bldAttendant/getJsonData.cmd?' +
