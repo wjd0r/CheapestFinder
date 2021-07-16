@@ -1,6 +1,5 @@
-class Tensorflow {
+class MyTensorflow {
     stocks = [];
-    yesterStocks = [];
     learnignRate = 0.0000000000000001;
     optimizer = tf.train.sgd(0.0000000000000001);
     m1 = tf.variable(tf.scalar(Math.random(1)));
@@ -8,28 +7,28 @@ class Tensorflow {
     m3 = tf.variable(tf.scalar(Math.random(1)));
     b = tf.variable(tf.scalar(Math.random(1)));
     y = 0;
-    y2 = 0;
     x1s = [];
     x2s = [];
     x3s = [];
     ys = [];
-    run2 = 0;
     mingap = 99999999999;
-    learning_magnification = 1;
     compute = 0;
 
-    init = () => {
-        x1s = stocks.map(value => parseInt(value.MMEND_CLSPRC.replace(/,/g , '')));
-        x2s = stocks.map(value => parseInt(value.HGST_CLSPRC.replace(/,/g , '')));
-        x3s = stocks.map(value => parseInt(value.LWST_CLSPRC.replace(/,/g , '')));
-        ys = prevState.stocks.map(value => parseInt(this.state.run2 ? value.LWST_CLSPRC.replace(/,/g , '') : value.HGST_CLSPRC.replace(/,/g , '')));
+    // 학습할 데이터를 각각의 배열에 담기
+    init = (stocks, completed, ing) => {
+        this.stocks = stocks;
 
-        x1s.shift(); // 처음  요소 삭제
-        x2s.shift(); // 처음  요소 삭제
-        x3s.shift(); // 처음  요소 삭제
-        ys.pop(); // 마지막 요소 삭제
+        this.x1s = this.stocks.map(value => parseInt(value.MMEND_CLSPRC.replace(/,/g , '')));
+        this.x2s = this.stocks.map(value => parseInt(value.HGST_CLSPRC.replace(/,/g , '')));
+        this.x3s = this.stocks.map(value => parseInt(value.LWST_CLSPRC.replace(/,/g , '')));
+        this.ys = this.stocks.map(value => parseInt(value.HGST_CLSPRC.replace(/,/g , '')));
 
-        start();
+        this.x1s.shift(); // 처음  요소 삭제
+        this.x2s.shift(); // 처음  요소 삭제
+        this.x3s.shift(); // 처음  요소 삭제
+        this.ys.pop(); // 마지막 요소 삭제
+
+        this.start(completed, ing);
     }
 
     predict = (x1, x2, x3) => {
@@ -48,16 +47,16 @@ class Tensorflow {
 
     loss = (pred, labels) => pred.sub(labels).square().mean();
 
-    start = () => {
+    start = (completed, ing) => {
         tf.tidy(() => {
             for(let i = 0; i < 10; i++) {
                 optimizer.minimize(() => loss(predict(x1s, x2s, x3s), tf.tensor(ys)));
             }
         });
-        restart();
+        this.restart(completed, ing);
     }
 
-    restart() {
+    restart(completed, ing) {
         // 학습데이터의 예측값
         let predict_y = Number(String(predict(parseFloat(x1s[0]),parseFloat(x2s[0]),parseFloat(x3s[0]))).replace('Tensor','').replace(/a/gi,""));
         // 예측값 - 실제 값
@@ -70,8 +69,6 @@ class Tensorflow {
         let if1 = mingap > gap;
         // 너무 빨리 끝났다면
         let if2 = compute < 5;
-        // 최고가 계산이 끝났다면
-        let if3 = run2 == 0;
 
         if(if1) {
             let gap2 = Math.abs(mingap - gap);
@@ -82,74 +79,30 @@ class Tensorflow {
             else if(gap > 1) { t = 1.1; }
             else if(gap > 0.1) { t = 1; }
 
-            learning_magnification = t;
+            this.mingap = mingap < gap ? mingap : gap;
+            this.learnignRate = learnignRate * t;
+            this.optimizer = tf.train.sgd(learnignRate);
+            this.compute = compute+1;
 
-            mingap = mingap < gap ? mingap : gap;
-            learnignRate = learnignRate * learning_magnification;
-            optimizer = tf.train.sgd(learnignRate);
-            compute = compute+1;
+            ing(y);
 
-            if(run2 == 2) {
-                y2 = Number(String(predict(x1,x2,x3)).replace('Tensor','').replace(/a/gi,""));
-            } else {
-                y = Number(String(predict(x1,x2,x3)).replace('Tensor','').replace(/a/gi,""));
-            }
+            this.y = Number(String(predict(x1,x2,x3)).replace('Tensor','').replace(/a/gi,""));
 
             setTimeout(() => start(), 1);
         } else if (if2) {
 
-            learnignRate = learnignRate * 10;
-            optimizer = tf.train.sgd(learnignRate * 10);
-            m1 = tf.variable(tf.scalar(Math.random(1)));
-            m2 = tf.variable(tf.scalar(Math.random(1)));
-            m3 = tf.variable(tf.scalar(Math.random(1)));
-            b = tf.variable(tf.scalar(Math.random(1)));
-            mingap = 99999999999;
-            compute = 0;
+            this.learnignRate = learnignRate * 10;
+            this.optimizer = tf.train.sgd(learnignRate * 10);
+            this.m1 = tf.variable(tf.scalar(Math.random(1)));
+            this.m2 = tf.variable(tf.scalar(Math.random(1)));
+            this.m3 = tf.variable(tf.scalar(Math.random(1)));
+            this.b = tf.variable(tf.scalar(Math.random(1)));
+            this.mingap = 99999999999;
+            this.compute = 0;
 
             setTimeout(() => start(), 1);
-        } else if (if3) {
-            learnignRate = 0.0000000000000001;
-            optimizer = tf.train.sgd(0.0000000000000001);
-            m1 = tf.variable(tf.scalar(Math.random(1)));
-            m2 = tf.variable(tf.scalar(Math.random(1)));
-            m3 = tf.variable(tf.scalar(Math.random(1)));
-            b = tf.variable(tf.scalar(Math.random(1)));
-            x1s = [];
-            x2s = [];
-            x3s = [];
-            ys = [];
-            run2 = 2;
-            mingap = 99999999999;
-            compute = 0;
-
-            tensorinit();
         } else {
-            completed();
+            completed(m1, m2, m3, b);
         }
     }
-
-
-    constructor(prop) {
-        this.prop = prop;
-    }
-
-    static staticMethod() {
-        /*
-        정적 메소드는 this를 사용할 수 없다.
-        정적 메소드 내부에서 this는 클래스의 인스턴스가 아닌 클래스 자신을 가리킨다.
-        */
-        return 'staticMethod';
-    }
-
-    prototypeMethod() {
-        return this.prop;
-    }
 }
-
-// 정적 메소드는 클래스 이름으로 호출한다.
-console.log(Foo.staticMethod());
-
-const foo = new Foo(123);
-// 정적 메소드는 인스턴스로 호출할 수 없다.
-console.log(foo.staticMethod()); // Uncaught TypeError: foo.staticMethod is not a function

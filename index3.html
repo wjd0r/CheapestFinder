@@ -326,7 +326,8 @@
                         } else {
                             this.props.setRun('y');
                             clearInterval(interval);
-                            this.getMonth(); // 학습시작
+                            // 학습시작
+                            this.getMonth();
                         }
                     }, 1000)
                 }
@@ -481,8 +482,6 @@
                 this.tensorinit();
             } else {
                 console.log('예측 완료!!!');
-                this.state.m1.print();
-
                 this.props.setRun('n');
                 console.log(new Date().toString() + ' : n으로 변경');
                 ins(this.getIsuCd(),{
@@ -581,7 +580,24 @@
                     console.log(this.state.stocks.length);
 
                     if(this.state.stocks.length > 20) {
-                        this.tensorinit();
+                        // 월별 예측 시작
+                        //this.tensorinit();
+                        let myTens = new MyTensorflow();
+
+                        // 월별 최고가 예측
+                        myTens.init(this.state.stocks, (m1, m2, m3, b) => { // 완료
+                        }, (y) => { // 도중
+                        });
+
+                        // 월별 최저가 예측
+                        myTens.init(this.state.stocks, (m1, m2, m3, b) => { // 완료
+                        }, (y2) => { // 도중
+                        });
+
+                        // 실시간 최고가 예측
+                        // 실시간 최저가 예측
+
+
                     } else {
                         console.log('예측할 데이터가 너무 작아 예측하지 않음');
                         this.props.setRun('n');
