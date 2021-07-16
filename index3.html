@@ -481,11 +481,17 @@
                 this.tensorinit();
             } else {
                 console.log('예측 완료!!!');
+                this.state.m1.print();
+
                 this.props.setRun('n');
                 console.log(new Date().toString() + ' : n으로 변경');
                 ins(this.getIsuCd(),{
                     max : this.state.y,
                     min : this.state.y2,
+                    m1 : this.state.m1.toString().replace('Tensor','').replace(/ /gi,""),
+                    m2 : this.state.m2.toString().replace('Tensor','').replace(/ /gi,""),
+                    m3 : this.state.m3.toString().replace('Tensor','').replace(/ /gi,""),
+                    m3 : this.state.b.toString().replace('Tensor','').replace(/ /gi,""),
                     date : this.getCurrentDate(),
                 });
             }
