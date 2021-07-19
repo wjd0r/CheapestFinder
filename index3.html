@@ -28,6 +28,7 @@
 
     <script src="js/partial.js"></script>
     <script src="js/_.js"></script>
+    <script src="js/tensorflow.js"></script>
 
     <link rel="stylesheet" href="./css/bootstrap.css">
     <link rel="stylesheet" href="./css/bootstrap-grid.css">
@@ -115,6 +116,7 @@
             box-sizing: border-box;
             position: fixed;
             top: 0;
+            overflow: auto;
         }
         .article-title {
             height: 60px;
@@ -220,29 +222,30 @@
 
         render() {
             return (<React.Fragment>
-                <table className="table table-hover">
+                <table className="table table-hover" style={{"borderCollapse":"separate","borderSpacing":"0"}}>
                     <thead>
                         <tr>
-                            <td colSpan="10">
+                            <td colSpan="12" style={{"position": "sticky", "top": "0", "background": "white"}}>
                                 <input type="text" placeholder="Search..." onChange={this.onChange}/>
                             </td>
                         </tr>
                         <tr>
-                            <th rowSpan="2">종목코드</th>
-                            <th rowSpan="2">시장구분</th>
-                            <th rowSpan="2">종목명</th>
-                            <th colSpan="4">금일</th>
-                            <th colSpan="2">이번달 예측</th>
-                            <th></th>
+                            <th style={{"position": "sticky", "top": "47px", "background": "white"}} rowSpan="2">종목코드</th>
+                            <th style={{"position": "sticky", "top": "47px", "background": "white"}} rowSpan="2">시장구분</th>
+                            <th style={{"position": "sticky", "top": "47px", "background": "white"}} rowSpan="2">종목명</th>
+                            <th style={{"position": "sticky", "top": "47px", "background": "white"}} colSpan="4">금일</th>
+                            <th style={{"position": "sticky", "top": "47px", "background": "white"}} colSpan="2">오늘 예측</th>
+                            <th style={{"position": "sticky", "top": "47px", "background": "white"}} colSpan="3">이번달 예측</th>
                         </tr>
                         <tr>
-                            <th>시가</th>
-                            <th>고가</th>
-                            <th>저가</th>
-                            <th>거래량</th>
-                            <th>예측 최고가</th>
-                            <th>예측 최저가</th>
-                            <th></th>
+                            <th style={{"position": "sticky", "top": "84px", "background": "white"}}>시가</th>
+                            <th style={{"position": "sticky", "top": "84px", "background": "white"}}>고가</th>
+                            <th style={{"position": "sticky", "top": "84px", "background": "white"}}>저가</th>
+                            <th style={{"position": "sticky", "top": "84px", "background": "white"}}>거래량</th>
+                            <th style={{"position": "sticky", "top": "84px", "background": "white"}}>예측 최고가</th>
+                            <th style={{"position": "sticky", "top": "84px", "background": "white"}}>예측 최저가</th>
+                            <th style={{"position": "sticky", "top": "84px", "background": "white"}}>예측 최고가</th>
+                            <th style={{"position": "sticky", "top": "84px", "background": "white"}} colSpan="2">예측 최저가</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -267,25 +270,9 @@
         constructor(props) {
             super(props);
             this.state = {
-                // 예측
                 stocks: [],
-                yesterStocks: [],
-                learnignRate: 0.0000000000000001,
-                optimizer: tf.train.sgd(0.0000000000000001),
-                m1: tf.variable(tf.scalar(Math.random(1))),
-                m2: tf.variable(tf.scalar(Math.random(1))),
-                m3: tf.variable(tf.scalar(Math.random(1))),
-                b: tf.variable(tf.scalar(Math.random(1))),
-                y: 0,
-                y2: 0,
-                x1s: [],
-                x2s: [],
-                x3s: [],
-                ys: [],
-                run2: 0,
-                mingap: 99999999999,
-                learning_magnification: 1,
-                compute: 0,
+                day: {y: 0,y2: 0},
+                month: {y: 0,y2: 0},
 
                 // 기본정보
                 TRD_DD: '',
@@ -301,7 +288,6 @@
                 MKTCAP: '',
                 LIST_SHRS: '',
 
-
                 general: {},
                 outline: {},
                 finance: {},
@@ -314,13 +300,19 @@
                 if(data != undefined) {
                     this.setState((prevState) => {
                         return {
-                            y: data.max,
-                            y2: data.min,
+                            month: {
+                                y: data.max,
+                                y2: data.min,
+                            },
+                            day: {
+                                y: data.max,
+                                y2: data.min,
+                            },
                         }
                     });
                 } else {
                     // 예측값이 없으면 계산하기
-                    let interval = setInterval(() => {
+                    /*let interval = setInterval(() => {
                         if(this.props.getRun() == 'y') {
 
                         } else {
@@ -329,171 +321,9 @@
                             // 학습시작
                             this.getMonth();
                         }
-                    }, 1000)
+                    }, 1000)*/
                 }
             });
-        }
-
-        // 학습할 데이터를 각각의 배열에 담기
-        tensorinit = () => {
-            this.setState((prevState) => {
-                return {
-                    x1s: prevState.stocks.map(value => parseInt(value.MMEND_CLSPRC.replace(/,/g , ''))), // 과거 종가
-                    x2s: prevState.stocks.map(value => parseInt(value.HGST_CLSPRC.replace(/,/g , ''))), // 과거 최고가
-                    x3s: prevState.stocks.map(value => parseInt(value.LWST_CLSPRC.replace(/,/g , ''))), // 과거 최저가
-                    ys: prevState.stocks.map(value => parseInt(this.state.run2 ? value.LWST_CLSPRC.replace(/,/g , '') : value.HGST_CLSPRC.replace(/,/g , ''))), // 최고가 : 최저
-                }
-            });
-
-            this.state.x1s.shift(); // 처음  요소 삭제
-            this.state.x2s.shift(); // 처음  요소 삭제
-            this.state.x3s.shift(); // 처음  요소 삭제
-            this.state.ys.pop(); // 마지막 요소 삭제
-
-            this.start(); // 계산 시작
-        }
-
-        // y 구하는 예측 식
-        predict = (x1, x2, x3) => {
-            const xs1 = tf.tensor(x1);
-            const xs2 = tf.tensor(x2);
-            const xs3 = tf.tensor(x3);
-
-            const mx1 = xs1.mul(this.state.m1);
-            const mx2 = xs2.mul(this.state.m2);
-            const mx3 = xs3.mul(this.state.m3);
-
-            const ys = mx1.add(mx2).add(mx3).add(this.state.b);
-
-            return ys;
-        }
-
-        // pred 예측한 값이랑 labels 실제값이랑 차이
-        loss = (pred, labels) => pred.sub(labels).square().mean();
-
-        // 학습시작 ( 미니마이져를 하면서 m 값 조절 )
-        start = () => {
-            tf.tidy(() => {
-                for(let i = 0; i < 10; i++) {
-                    const ys = tf.tensor(this.state.ys); // 진짜 y
-                    this.state.optimizer.minimize(() => this.loss(this.predict(this.state.x1s, this.state.x2s, this.state.x3s), ys));
-                }
-            });
-
-            this.restart();
-        }
-
-        // 예측 알고리즘에 대입하여 gap 에 따라 러닝배율 조절
-        restart = () => {
-            // predict_y : 학습데이터의 예측값
-            // ys : 학습데이터의 실제 값
-            // y : 실제 데이터를 넣어 예측해보는 값
-
-            let predict_y = Number(String(this.predict(parseFloat(this.state.x1s[0]),parseFloat(this.state.x2s[0]),parseFloat(this.state.x3s[0]))).replace('Tensor','').replace(/a/gi,""));
-            let gap = Math.abs(predict_y - this.state.ys[0]);
-
-            let x1 = parseFloat(this.state.stocks[1].MMEND_CLSPRC.replace(/,/g, '')); // 예측해야 될 데이터
-            let x2 = parseFloat(this.state.stocks[1].HGST_CLSPRC.replace(/,/g, '')); // 예측해야 될 데이터
-            let x3 = parseFloat(this.state.stocks[1].LWST_CLSPRC.replace(/,/g, '')); // 예측해야 될 데이터
-
-
-
-            if(this.state.mingap > gap) {
-                let gap2 = Math.abs(this.state.mingap - gap);
-
-                this.setState((prevState) => {
-                    let t = 1;
-                    if(gap > 1000) {
-                        t = 1.4;
-                    } else if(gap > 100) {
-                        t = 1.3;
-                    } else if(gap > 10) {
-                        t = 1.2;
-                    } else if(gap > 1) {
-                        t = 1.1;
-                    } else if(gap > 0.1) {
-                        t = 1;
-                    }
-                    return {
-                        learning_magnification: t,
-                    }
-                });
-
-                // 실시간 데이터 변경
-                this.setState((prevState) => {
-                    if(this.state.run2 == 2) {
-                        return {
-                            mingap: prevState.mingap < gap ? prevState.mingap : gap,
-                            learnignRate: prevState.learnignRate * this.state.learning_magnification,
-                            // 진짜 예측
-                            y2: Number(String(this.predict(x1,x2,x3)).replace('Tensor','').replace(/a/gi,"")),
-                            optimizer: tf.train.sgd(this.state.learnignRate),
-                            compute: prevState.compute+1,
-                        }
-                    } else {
-                        return {
-                            mingap: prevState.mingap < gap ? prevState.mingap : gap,
-                            learnignRate: prevState.learnignRate * this.state.learning_magnification,
-                            y: Number(String(this.predict(x1,x2,x3)).replace('Tensor','').replace(/a/gi,"")),
-                            optimizer: tf.train.sgd(this.state.learnignRate),
-                            compute: prevState.compute+1,
-                        }
-                    }
-                });
-                setTimeout(() => this.start(), 1);
-            } else if (this.state.compute < 5) {
-                // 혹시 너무 빨리 끝났다면 다시 계산
-                this.setState((prevState) => {
-                    return {
-                        learnignRate: prevState.learnignRate * 10,
-                        optimizer: tf.train.sgd(prevState.learnignRate * 10),
-                        m1: tf.variable(tf.scalar(Math.random(1))),
-                        m2: tf.variable(tf.scalar(Math.random(1))),
-                        m3: tf.variable(tf.scalar(Math.random(1))),
-                        b: tf.variable(tf.scalar(Math.random(1))),
-                        run2: prevState.run2,
-                        mingap: 99999999999,
-                        compute: 0,
-                    }
-                });
-
-                setTimeout(() => this.start(), 1);
-
-            } else if(this.state.run2 == 0) {
-                // 최고가 계산후
-                this.setState((prevState) => {
-                    return {
-                        learnignRate: 0.0000000000000001,
-                        optimizer: tf.train.sgd(0.0000000000000001),
-                        m1: tf.variable(tf.scalar(Math.random(1))),
-                        m2: tf.variable(tf.scalar(Math.random(1))),
-                        m3: tf.variable(tf.scalar(Math.random(1))),
-                        b: tf.variable(tf.scalar(Math.random(1))),
-                        x1s: [],
-                        x2s: [],
-                        x3s: [],
-                        ys: [],
-                        run2: 2,
-                        mingap: 99999999999,
-                        compute: 0,
-                    }
-                });
-
-                this.tensorinit();
-            } else {
-                console.log('예측 완료!!!');
-                this.props.setRun('n');
-                console.log(new Date().toString() + ' : n으로 변경');
-                ins(this.getIsuCd(),{
-                    max : this.state.y,
-                    min : this.state.y2,
-                    m1 : this.state.m1.toString().replace('Tensor','').replace(/ /gi,""),
-                    m2 : this.state.m2.toString().replace('Tensor','').replace(/ /gi,""),
-                    m3 : this.state.m3.toString().replace('Tensor','').replace(/ /gi,""),
-                    m3 : this.state.b.toString().replace('Tensor','').replace(/ /gi,""),
-                    date : this.getCurrentDate(),
-                });
-            }
         }
 
         // 숫자 더하기
@@ -576,59 +406,70 @@
                 });
                 setTimeout(() => {
                     this.state.stocks.shift();
-
-                    console.log(this.state.stocks.length);
-
                     if(this.state.stocks.length > 20) {
-                        // 월별 예측 시작
-                        //this.tensorinit();
-                        let myTens = new MyTensorflow();
-
-                        // 월별 최고가 예측
-                        myTens.init(this.state.stocks, (m1, m2, m3, b) => { // 완료
-                        }, (y) => { // 도중
-                        });
-
-                        // 월별 최저가 예측
-                        myTens.init(this.state.stocks, (m1, m2, m3, b) => { // 완료
-                        }, (y2) => { // 도중
-                        });
-
-                        // 실시간 최고가 예측
-                        // 실시간 최저가 예측
-
-
+                        this.runTensorMonthHighPrediction();
                     } else {
                         console.log('예측할 데이터가 너무 작아 예측하지 않음');
                         this.props.setRun('n');
-                        console.log('n으로 변경');
                     }
                 }, 100);
             });
         }
 
+        runTensorMonthHighPrediction = () => new MyTensorflow().init( // 월별 최고가 예측
+            this.state.stocks,
+            (m1, m2, m3, b) => this.runTensorMonthLowPrediction(),// 완료
+            (y) => this.setState((prevState) => {
+                return {month: { y: y, y2: prevState.month.y2, }}}
+            ), // 도중
+            {x1:'MMEND_CLSPRC',x2:'HGST_CLSPRC',x3:'LWST_CLSPRC',y:'HGST_CLSPRC'},
+        );
+
+        runTensorMonthLowPrediction = () => new MyTensorflow().init( // 월별 최저가 예측
+            this.state.stocks,
+            (m1, m2, m3, b) => this.getDay(),// 완료
+            (y) => this.setState((prevState) => {
+                return {month: { y: prevState.month.y, y2: y, }}}
+            ), // 도중
+            {x1:'MMEND_CLSPRC',x2:'HGST_CLSPRC',x3:'LWST_CLSPRC',y:'LWST_CLSPRC'},
+        );
+
+        runTensorDayHighPrediction = () => new MyTensorflow().init( // 실시간 최고가 예측
+            this.state.stocks,
+            (m1, m2, m3, b) => this.runTensorDayLowPrediction(),// 완료
+            (y) => this.setState((prevState) => {
+                return {day: { y: y, y2: prevState.day.y2, }}}
+            ), // 도중
+            {x1:'TDD_CLSPRC',x2:'TDD_HGPRC',x3:'TDD_LWPRC',y:'TDD_HGPRC'},
+        );
+
+        runTensorDayLowPrediction = () => new MyTensorflow().init( // 실시간 최저가 예측
+            this.state.stocks,
+            (m1, m2, m3, b) => {},// 완료
+            (y) => this.setState((prevState) => {
+                return {day: { y: prevState.day.y, y2: y, }}}
+            ), // 도중
+            {x1:'TDD_CLSPRC',x2:'TDD_HGPRC',x3:'TDD_LWPRC',y:'TDD_LWPRC'},
+        );
+
         // 개별종목 시세추이 (일)
-        getDay = async (isuCd) => {
+        getDay = async () => {
             await this.getData({
                 bld : 'dbms/MDC/STAT/standard/MDCSTAT01701',
                 isuCd : this.getIsuCd(),
                 strtDd : this.getCurrentDate(1),
-                strtDd : this.getCurrentDate(),
+                endDd : this.getCurrentDate(),
             }).then((responseObject) => {
                 this.setState({
-                    stocks: responseObject.OutBlock_1,
+                    stocks: responseObject.output,
                 });
                 setTimeout(() => {
                     this.state.stocks.shift();
-
-                    console.log(this.state.stocks.length);
-
                     if(this.state.stocks.length > 20) {
-                        this.tensorinit();
+                        this.runTensorDayHighPrediction();
                     } else {
                         console.log('예측할 데이터가 너무 작아 예측하지 않음');
                         this.props.setRun('n');
-                        console.log('n으로 변경');
                     }
                 }, 100);
             });
@@ -665,8 +506,6 @@
             return year + month;
         }
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
         numberWithCommas = (x) => x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 
         // 오늘 기준으로 년도 변경
@@ -682,46 +521,6 @@
             return year + month + day;
         }
 
-        // 개별 종목 시세 추이
-        getAllStock = () => {
-            let request = new XMLHttpRequest();
-
-            request.open('GET', 'https://yg01.herokuapp.com/http://data.krx.co.kr/comm/bldAttendant/getJsonData.cmd?' +
-                'bld=dbms/MDC/STAT/standard/MDCSTAT01701' +
-                '&isuCd=' + this.props.stock.ISU_CD +
-                '&strtDd=' + this.getCurrentDate() +
-                '&endDd=' + this.getCurrentDate(), true);
-            request.onload = (e) => {
-                if (request.status >= 200 && request.status < 400) {
-                    let responseObject = JSON.parse(request.responseText);
-                    if(responseObject.output.length > 0) {
-                        this.setState((prevState) => {
-                            return {
-                                TRD_DD: responseObject.output[0].TRD_DD,
-                                TDD_CLSPRC: responseObject.output[0].TDD_CLSPRC,
-                                FLUC_TP_CD: responseObject.output[0].FLUC_TP_CD,
-                                CMPPREVDD_PRC: responseObject.output[0].CMPPREVDD_PRC,
-                                FLUC_RT: responseObject.output[0].FLUC_RT,
-                                TDD_OPNPRC: responseObject.output[0].TDD_OPNPRC,
-                                TDD_HGPRC: responseObject.output[0].TDD_HGPRC,
-                                TDD_LWPRC: responseObject.output[0].TDD_LWPRC,
-                                ACC_TRDVOL: responseObject.output[0].ACC_TRDVOL,
-                                ACC_TRDVAL: responseObject.output[0].ACC_TRDVAL,
-                                MKTCAP: responseObject.output[0].MKTCAP,
-                                LIST_SHRS: responseObject.output[0].LIST_SHRS,
-                            }
-                        });
-                    }
-                }
-            };
-
-            request.send();
-        }
-
-        // 파이어 베이스 데이터 입력
-        // 파이어 베이스 데이터 가져오기
-        //
-
         render() {
             return (<React.Fragment>
                 <tr>
@@ -732,8 +531,10 @@
                     <td>{this.props.stock.TDD_HGPRC}</td>
                     <td>{this.props.stock.TDD_LWPRC}</td>
                     <td>{this.props.stock.ACC_TRDVOL}</td>
-                    <td>{this.numberWithCommas(Math.round(this.state.y))}원</td>
-                    <td>{this.numberWithCommas(Math.round(this.state.y2))}원</td>
+                    <td>{this.numberWithCommas(Math.round(this.state.day.y))}원</td>
+                    <td>{this.numberWithCommas(Math.round(this.state.day.y2))}원</td>
+                    <td>{this.numberWithCommas(Math.round(this.state.month.y))}원</td>
+                    <td>{this.numberWithCommas(Math.round(this.state.month.y2))}원</td>
                     <td><button type="button"
                                 className="btn btn-danger btn-sm"
                                 data-toggle="collapse"
@@ -881,7 +682,6 @@
             </React.Fragment>);
         }
     }
-
 
     class A extends React.Component {
         constructor(props) {
