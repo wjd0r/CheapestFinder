@@ -20,8 +20,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="320910c3-9705-4ea3-81bb-bbca316673f6" name="Default Changelist" comment="검색된 물품이 없는 경우 로딩 없애고, 물품이 없다고 표시 및 css 수정">
-      <change afterPath="$PROJECT_DIR$/roulette2.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/roulette2.html" beforeDir="false" afterPath="$PROJECT_DIR$/roulette2.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -225,7 +225,7 @@
       <workItem from="1625180309068" duration="2906000" />
       <workItem from="1680666533681" duration="1892000" />
       <workItem from="1680674647746" duration="1600000" />
-      <workItem from="1681097619327" duration="6686000" />
+      <workItem from="1681097619327" duration="7588000" />
     </task>
     <task id="LOCAL-00001" summary="검색된 물품이 없는 경우 로딩 없애고, 물품이 없다고 표시 및 css 수정">
       <created>1619677365393</created>
@@ -276,7 +276,14 @@
       <option name="project" value="LOCAL" />
       <updated>1680667986543</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="룰렛2">
+      <created>1681104325013</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1681104325013</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -298,13 +305,14 @@
     <MESSAGE value="tensorflow" />
     <MESSAGE value="검색된 물품이 없는 경우 로딩 없애고, 물품이 없다고 표시 및 css 수정" />
     <MESSAGE value="업데이트" />
-    <option name="LAST_COMMIT_MESSAGE" value="업데이트" />
+    <MESSAGE value="룰렛2" />
+    <option name="LAST_COMMIT_MESSAGE" value="룰렛2" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="872" y="429" key="Vcs.Push.Dialog.v2" timestamp="1680675045003">
+    <state x="872" y="429" key="Vcs.Push.Dialog.v2" timestamp="1681104326288">
       <screen x="0" y="0" width="2560" height="1392" />
     </state>
-    <state x="872" y="429" key="Vcs.Push.Dialog.v2/2560.232.1920.1032/0.0.2560.1392@0.0.2560.1392" timestamp="1680675045003" />
+    <state x="872" y="429" key="Vcs.Push.Dialog.v2/2560.232.1920.1032/0.0.2560.1392@0.0.2560.1392" timestamp="1681104326288" />
     <state x="988" y="428" width="584" height="536" key="find.popup" timestamp="1681103247455">
       <screen x="0" y="0" width="2560" height="1392" />
     </state>

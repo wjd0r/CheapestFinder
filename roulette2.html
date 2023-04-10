@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
     <title>Hello, world!</title>
     <script crossOrigin src="./js/react.development.js"></script>
@@ -12,6 +12,9 @@
     <style>
         .active {
             background-color: #ffffff;
+        }
+        .grid {
+            grid-template-columns: repeat(auto-fit,minmax(0%,1fr)) !important;
         }
     </style>
     
