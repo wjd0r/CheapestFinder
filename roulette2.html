@@ -31,6 +31,11 @@
         돈: 50,
         배팅포인트: new Array(38).fill(undefined).map(() => false),
         게임카운트: 0,
+        인터벌: null,
+        반복수: 28,
+        틀린횟수: 0,
+        틀린횟수s: [],
+        속도: 200,
       };
     }
     
@@ -38,7 +43,7 @@
       const temp = this.state.모든공;
       temp.push(number);
       
-      if(temp.length > 38)
+      if(temp.length > this.state.반복수)
         temp.shift()
       
       this.setState({
@@ -46,13 +51,22 @@
         게임카운트: this.state.게임카운트 + 1,
       });
 
-      if(this.state.모든공.length == 38)
+      if(this.state.모든공.length == this.state.반복수)
         this.돈계산(number);
     }
     
     랜덤선택() {
-      let randomNumber = Math.floor(Math.random() * 38) - 1;
-      this.선택(randomNumber);
+      if(this.state.인터벌 == null) {
+          this.state.인터벌 = setInterval(() => {
+            let randomNumber = Math.floor(Math.random() * 38) - 1;
+            this.선택(randomNumber);
+          }, this.state.속도);
+      } else {
+        clearInterval(this.state.인터벌)
+        this.setState({
+          인터벌: null,
+        })
+      }
     }
     
     초기화() {
@@ -60,6 +74,7 @@
       this.state.돈 = 50;
       this.state.배팅포인트 = new Array(38).fill(undefined).map(() => false);
       this.state.게임카운트 = 0;
+      this.state.틀린횟수 = 0;
     }
     
     배팅포인트설정() {
@@ -76,12 +91,20 @@
     }
 
     돈계산(number) {
-      if(this.state.배팅포인트[number - 1]) {
-        this.state.돈 += 36
-      } else {
-        this.state.돈 -= this.state.배팅포인트.filter(_배팅포인트 => {
-          return _배팅포인트
-        }).length
+      this.state.돈 -= (this.state.배팅포인트.filter(_배팅포인트 => {
+        return _배팅포인트
+      }).length * (2 ** this.state.틀린횟수))
+
+      if(this.state.배팅포인트[number + 1]) {
+        this.state.돈 += (36 * (2 ** this.state.틀린횟수))
+        const temp = this.state.틀린횟수s;
+        temp.push(this.state.틀린횟수);
+        this.setState({
+          틀린횟수s: temp,
+        });
+        this.state.틀린횟수 = 0;
+      }else {
+        this.state.틀린횟수++;
       }
 
       this.배팅포인트설정();
@@ -96,6 +119,26 @@
     클래스선택 = (number) => {
       return this.state.모든공.includes(number) ? 'secondary' : 'secondary outline';
     }
+    
+    틀린횟수평균 = () => {
+      const result = this.state.틀린횟수s.reduce(function add(sum, currValue) {
+        return sum + currValue;
+      }, 0);
+
+      return (result / this.state.틀린횟수s.length).toFixed(2);
+    }
+
+    onChange = (e) => {
+      this.setState({
+        반복수: e.target.value,
+      })
+    }
+
+    onChange속도 = (e) => {
+      this.setState({
+        속도: e.target.value,
+      })
+    }
 
     render() {
       return (
@@ -104,9 +147,15 @@
             <article>
               <div className="grid">
                 <div><button onClick={() => this.초기화()}>초기화</button></div>
-                <div><button onClick={() => this.랜덤선택()}>랜덤 선택</button></div>
+                <div><button onClick={() => this.랜덤선택()}>랜덤</button></div>
+                <div><input type="text" onChange={this.onChange} value={this.state.반복수} required/></div>
+                <div><input type="text" onChange={this.onChange속도} value={this.state.속도} required/></div>
+              </div>
+              <div className="grid">
                 <div>{this.state.돈}</div>
                 <div>{this.state.게임카운트}</div>
+                <div>{this.state.틀린횟수}</div>
+                <div>{this.틀린횟수평균()}</div>
               </div>
               <div className="grid">
                 <div><button className={this.클래스선택(36)} onClick={() => this.선택(36)}>36</button></div>
