@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
+    <title>Hello, world!</title>
+    <script crossOrigin src="./js/react.development.js"></script>
+    <script crossOrigin src="./js/react-dom.development.js"></script>
+    <script crossOrigin src="./js/babel.js"></script>
+    
+    <style>
+        .active {
+            background-color: #ffffff;
+        }
+    </style>
+    
+</head>
+<body>
+<div id="root" class="item"></div>
+<script type="text/babel">
+  class Roulette extends React.Component {
+    constructor(props) {
+      super(props);
+
+      this.state = {
+        모든공: [],
+        돈: 50,
+        배팅포인트: new Array(38).fill(undefined).map(() => false),
+        게임카운트: 0,
+      };
+    }
+    
+    선택(number) {
+      const temp = this.state.모든공;
+      temp.push(number);
+      
+      if(temp.length > 38)
+        temp.shift()
+      
+      this.setState({
+        모든공: temp,
+        게임카운트: this.state.게임카운트 + 1,
+      });
+
+      if(this.state.모든공.length == 38)
+        this.돈계산(number);
+    }
+    
+    랜덤선택() {
+      let randomNumber = Math.floor(Math.random() * 38) - 1;
+      this.선택(randomNumber);
+    }
+    
+    초기화() {
+      this.state.모든공 = [];
+      this.state.돈 = 50;
+      this.state.배팅포인트 = new Array(38).fill(undefined).map(() => false);
+      this.state.게임카운트 = 0;
+    }
+    
+    배팅포인트설정() {
+      let temp = new Array(38).fill(undefined).map(() => false);
+      const arr = this.중복제거();
+
+      temp = temp.map((number, index) => {
+        return arr.includes(index - 1) ? true : false
+      });
+
+      this.setState({
+        배팅포인트: temp,
+      });
+    }
+
+    돈계산(number) {
+      if(this.state.배팅포인트[number]) {
+        this.state.돈 += 36
+      } else {
+        this.state.돈 -= this.state.배팅포인트.filter(_배팅포인트 => {
+          return _배팅포인트
+        }).length
+      }
+
+      this.배팅포인트설정();
+    }
+    
+    중복제거() {
+      const dupArr = this.state.모든공;
+      const set = new Set(dupArr);
+      return [...set];
+    }
+
+    클래스선택 = (number) => {
+      return this.state.모든공.includes(number) ? 'secondary' : 'secondary outline';
+    }
+
+    render() {
+      return (
+        <React.Fragment>
+          <main className="container">
+            <article>
+              <div className="grid">
+                <div><button onClick={() => this.초기화()}>초기화</button></div>
+                <div><button onClick={() => this.랜덤선택()}>랜덤 선택</button></div>
+                <div>{this.state.돈}</div>
+                <div>{this.state.게임카운트}</div>
+              </div>
+              <div className="grid">
+                <div><button className={this.클래스선택(36)} onClick={() => this.선택(36)}>36</button></div>
+                <div><button className={this.클래스선택(35)} onClick={() => this.선택(35)}>35</button></div>
+                <div><button className={this.클래스선택(34)} onClick={() => this.선택(34)}>34</button></div>
+              </div>
+              <div className="grid">
+                <div><button className={this.클래스선택(33)} onClick={() => this.선택(33)}>33</button></div>
+                <div><button className={this.클래스선택(32)} onClick={() => this.선택(32)}>32</button></div>
+                <div><button className={this.클래스선택(31)} onClick={() => this.선택(31)}>31</button></div>
+              </div>
+              <div className="grid">
+                <div><button className={this.클래스선택(30)} onClick={() => this.선택(30)}>30</button></div>
+                <div><button className={this.클래스선택(29)} onClick={() => this.선택(29)}>29</button></div>
+                <div><button className={this.클래스선택(28)} onClick={() => this.선택(28)}>28</button></div>
+              </div>
+              <div className="grid">
+                <div><button className={this.클래스선택(27)} onClick={() => this.선택(27)}>27</button></div>
+                <div><button className={this.클래스선택(26)} onClick={() => this.선택(26)}>26</button></div>
+                <div><button className={this.클래스선택(25)} onClick={() => this.선택(25)}>25</button></div>
+              </div>
+              <div className="grid">
+                <div><button className={this.클래스선택(24)} onClick={() => this.선택(24)}>24</button></div>
+                <div><button className={this.클래스선택(23)} onClick={() => this.선택(23)}>23</button></div>
+                <div><button className={this.클래스선택(22)} onClick={() => this.선택(22)}>22</button></div>
+              </div>
+              <div className="grid">
+                <div><button className={this.클래스선택(21)} onClick={() => this.선택(21)}>21</button></div>
+                <div><button className={this.클래스선택(20)} onClick={() => this.선택(20)}>20</button></div>
+                <div><button className={this.클래스선택(19)} onClick={() => this.선택(19)}>19</button></div>
+              </div>
+              <div className="grid">
+                <div><button className={this.클래스선택(18)} onClick={() => this.선택(18)}>18</button></div>
+                <div><button className={this.클래스선택(17)} onClick={() => this.선택(17)}>17</button></div>
+                <div><button className={this.클래스선택(16)} onClick={() => this.선택(16)}>16</button></div>
+              </div>
+              <div className="grid">
+                <div><button className={this.클래스선택(15)} onClick={() => this.선택(15)}>15</button></div>
+                <div><button className={this.클래스선택(14)} onClick={() => this.선택(14)}>14</button></div>
+                <div><button className={this.클래스선택(13)} onClick={() => this.선택(13)}>13</button></div>
+              </div>
+              <div className="grid">
+                <div><button className={this.클래스선택(12)} onClick={() => this.선택(12)}>12</button></div>
+                <div><button className={this.클래스선택(11)} onClick={() => this.선택(11)}>11</button></div>
+                <div><button className={this.클래스선택(10)} onClick={() => this.선택(10)}>10</button></div>
+              </div>
+              <div className="grid">
+                <div><button className={this.클래스선택(9)} onClick={() => this.선택(9)}>9</button></div>
+                <div><button className={this.클래스선택(8)} onClick={() => this.선택(8)}>8</button></div>
+                <div><button className={this.클래스선택(7)} onClick={() => this.선택(7)}>7</button></div>
+              </div>
+              <div className="grid">
+                <div><button className={this.클래스선택(6)} onClick={() => this.선택(6)}>6</button></div>
+                <div><button className={this.클래스선택(5)} onClick={() => this.선택(5)}>5</button></div>
+                <div><button className={this.클래스선택(4)} onClick={() => this.선택(4)}>4</button></div>
+              </div>
+              <div className="grid">
+                <div><button className={this.클래스선택(3)} onClick={() => this.선택(3)}>3</button></div>
+                <div><button className={this.클래스선택(2)} onClick={() => this.선택(2)}>2</button></div>
+                <div><button className={this.클래스선택(1)} onClick={() => this.선택(1)}>1</button></div>
+              </div>
+              <div className="grid">
+                <div><button className={this.클래스선택(-1)} onClick={() => this.선택(-1)}>00</button></div>
+                <div><button className={this.클래스선택(0)} onClick={() => this.선택(0)}>0</button></div>
+              </div>
+            </article>
+          </main>
+        </React.Fragment>
+      );
+    }
+  }
+</script>
+<script type="text/babel">
+  ReactDOM.render(<div><Roulette/></div>, document.querySelector('#root'));
+</script>
+</body>
+</html>
