@@ -67,7 +67,7 @@
       const arr = this.중복제거();
 
       temp = temp.map((number, index) => {
-        return arr.includes(index - 1) ? true : false
+        return arr.includes(index - 1) ? false : true
       });
 
       this.setState({
@@ -76,7 +76,7 @@
     }
 
     돈계산(number) {
-      if(this.state.배팅포인트[number]) {
+      if(this.state.배팅포인트[number - 1]) {
         this.state.돈 += 36
       } else {
         this.state.돈 -= this.state.배팅포인트.filter(_배팅포인트 => {
